@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    @apply bg-primary text-primaryWhite
+}
 
 ::-webkit-scrollbar {
     width: .6rem;
@@ -17,6 +20,20 @@
     background-color: #837e7e;
 }
 
+.timeLine {
+    -webkit-appearance: none;
+    @apply h-[13px] rounded-xl relative;
+    background: linear-gradient(90deg, #DA510B 60%, #DFDFDF 40%);
+}
+
+.timeLine::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    @apply bg-primary size-8;
+    border: 1px solid #2C2F33;
+    border-radius: 120px;
+    box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
+}
+
 .neoM-buttons {
     border-radius: 5px;
     background: #2C2F33;
@@ -27,6 +44,5 @@
 .neoM-bg {
     border-radius: 6px;
     background: #2C2F33;
-    box-shadow: inset 5px 5px 8px #1f2124,
-        inset -5px -5px 8px #393d42;
+    box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }

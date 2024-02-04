@@ -23,8 +23,13 @@ export default {
             },
             boxShadow: {
                 regular: "0px 10px 30px -17px"
+            },
+            colors: {
+                "primary": "#2C2F33",
+                "primaryWhite": "#DFDFDF",
+                "primaryOrange": "#DA510B"
             }
-        }
+        },
     },
 
     plugins: [
@@ -33,5 +38,4 @@ export default {
             addVariant('ch-hover', '& > *:hover');
         }
     ],
-    
 }

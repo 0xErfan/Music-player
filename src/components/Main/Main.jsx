@@ -12,12 +12,12 @@ import Recently from './Recently';
 
 export default function Main() {
     return (
-        <main className='bg-[#2C2F33] text-[#DFDFDF] py-6 h-screen'>
+        <main className='py-6 h-screen'>
             <section className='container'>
                 <div className='flex items-center gap-2 h-12'>
                     <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
                     <div className='flex items-center gap-2 justify-between h-full px-3 basis-[85%] neoM-bg ' >
-                        <input className='bg-transparent outline-none placeholder:text-red-400/65  text-red-400/65' placeholder='Search songs...' type="text" />
+                        <input className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search songs...' type="text" />
                         <div className='cursor-pointer'><CiSearch className='size-6' /></div>
                     </div>
                 </div>
