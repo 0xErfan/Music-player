@@ -46,3 +46,25 @@ body {
     background: #2C2F33;
     box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }
+
+.activeNav {
+    position: relative;
+    opacity: 1 !important;
+}
+
+.activeNav::after {
+    content: "";
+    position: absolute;
+    width: 4rem;
+    border-radius: 3px;
+    height: .1rem;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #DA510B;
+} 
+
+.mainNav {
+    background: #2C2F33;
+    box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
+}

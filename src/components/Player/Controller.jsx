@@ -1,8 +1,8 @@
 import React from 'react'
-import { GiPauseButton } from "react-icons/gi";
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
+import { GiPauseButton } from "react-icons/gi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
