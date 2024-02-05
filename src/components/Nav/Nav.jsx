@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GiPauseButton } from "react-icons/gi";
 import { VscDebugStart } from "react-icons/vsc";
 import { FaRegHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
-import { VscLibrary } from "react-icons/vsc";
 import { Link } from 'react-router-dom';
 
 export default function Nav() {
@@ -49,7 +48,7 @@ export default function Nav() {
                             </div>
                             <p>Search</p>
                         </Link>
-                        <Link onClick={() => steActiveNav("account")} to="account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
+                        <Link onClick={() => steActiveNav("account")} to="/account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <FaUser className='size-6' />
                             </div>

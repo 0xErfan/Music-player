@@ -10,10 +10,12 @@ import { FaHeart } from "react-icons/fa";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link } from 'react-router-dom';
+import Toast from '../Toast/Toast';
 
 export default function Main() {
     return (
         <main className='min-h-screen'>
+            <Toast text={"Music Added"} status={1} />
             <section className='container overflow-y-hidden'>
                 <div className='flex items-center mt-2 gap-2 h-12'>
                     <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
@@ -26,7 +28,7 @@ export default function Main() {
                 <div className='grid grid-cols-4 gap-8 mt-9 mb-5'>
                     <Link to="/songs"><Buttons icon={<IoMdMusicalNotes />} title="Songs" /></Link>
                     <Link to="/artists"><Buttons icon={<GiMicrophone />} title="Artist" /></Link>
-                    <Link to="/album"><Buttons icon={<BiAlbum />} title="Album" /></Link>
+                    <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
                     <Buttons icon={<IoFolderOpenOutline />} title="Folder" />
                 </div>
 
