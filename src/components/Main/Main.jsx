@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -11,11 +11,59 @@ import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link } from 'react-router-dom';
 import Toast from '../Toast/Toast';
+import { StateDispatcher, States } from '../DataContext/ReducerAndContexts';
+
 
 export default function Main() {
+    const dispatch = useContext(StateDispatcher)
+    const [updater, setUpdater] = useState(false)
+
+    const { allSongs, toastData } = useContext(States)
+
+    const newFileHandler = async e => {
+        // setUpdater(preve => !preve)
+        const selectedFile = e.target.files[0]
+
+        if (selectedFile.type.startsWith("audio/")) {
+            const songSrc = URL.createObjectURL(selectedFile);
+            const isAdded = allSongs.some(song => { if (song.name == selectedFile.name) { return true; } })
+
+            if (isAdded) {
+                dispatch({
+                    type: "toastOn",
+                    text: "This music already exist!",
+                    status: 0
+                })
+                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                return;
+            } else {
+                const newSong = {
+                    id: allSongs.length,
+                    name: selectedFile.name,
+                    src: songSrc,
+                    lastModifiedDate: selectedFile.lastModifiedDate
+                }
+                dispatch({
+                    type: "newTrack",
+                    payload: newSong,
+                    text: "Music added!",
+                    status: 1
+                })
+                setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+                return;
+            }
+        }
+        dispatch({
+            type: "toastOn",
+            text: "Please choose a file with audio format!",
+            status: 0
+        })
+        setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+    }
+
     return (
         <main className='min-h-screen'>
-            <Toast text={"Music Added"} status={1} />
+            <Toast text={toastData.text} status={toastData.status} />
             <section className='container overflow-y-hidden'>
                 <div className='flex items-center mt-2 gap-2 h-12'>
                     <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
@@ -29,7 +77,10 @@ export default function Main() {
                     <Link to="/songs"><Buttons icon={<IoMdMusicalNotes />} title="Songs" /></Link>
                     <Link to="/artists"><Buttons icon={<GiMicrophone />} title="Artist" /></Link>
                     <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
-                    <Buttons icon={<IoFolderOpenOutline />} title="Folder" />
+                    <label htmlFor="fileUploader">
+                        <Buttons icon={<IoFolderOpenOutline />} title="Folder" />
+                        <input onChange={newFileHandler} className='hidden' id='fileUploader' type="file" />
+                    </label>
                 </div>
 
                 <Link to="songs/recentlies" className='grid grid-cols-1 neoM-buttons cursor-pointer p-3 h-24'>
