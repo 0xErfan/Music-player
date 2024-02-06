@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -16,12 +16,9 @@ import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndCont
 
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
-    const [updater, setUpdater] = useState(false)
-
     const { allSongs, toastData } = useContext(States)
 
     const newFileHandler = async e => {
-        // setUpdater(preve => !preve)
         const selectedFile = e.target.files[0]
 
         if (selectedFile.type.startsWith("audio/")) {

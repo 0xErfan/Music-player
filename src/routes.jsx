@@ -4,7 +4,9 @@ import Albums from "./components/Pages/Albums"
 import Artists from "./components/Pages/Artists"
 import Home from "./components/Pages/Home/Home"
 import Player from "./components/Pages/Player/Player"
-import Authentication from "./components/Authentication/Authentication"
+import Account from "./components/Pages/Account"
+import SignUp from "./components/Authentication/SignIn"
+import Login from "./components/Authentication/LogIn"
 
 const routes = [
     { path: "/", element: <Home /> },
@@ -14,8 +16,10 @@ const routes = [
     { path: "/songs/:type", element: <Songs /> },
     { path: "/albums", element: <Albums /> },
     { path: "/artists", element: <Artists /> },
-    { path: "/account:status", element: < Authentication /> },
+    { path: "/account", element: <Account /> },
+    { path: "/login", element: <Login /> },
+    { path: "/signUp", element: <SignUp /> },
     { path: "/*", element: <p>Not Found</p> }
 ]
 
-export default routes
+export default routes;
