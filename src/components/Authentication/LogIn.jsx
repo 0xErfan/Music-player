@@ -23,22 +23,16 @@ export default function Login() {
         e.preventDefault()
 
         try {
+            
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: formData.email,
                 password: formData.password,
             })
             if (error) throw new Error(error);
             setFormData({ email: "", name: "", password: "" })
-            localStorage.setItem("userToken", data.session.access_token)
-            const {
-                data: { user },
-            } = await supabase.auth.getUser()
-            let metadata = user.user_metadata
-            console.log(metadata);
-
             dispatch({
                 type: "toastOn",
-                text: "You logged successfully",
+                text: "You logged in successfully",
                 status: 1
             })
             console.log(data);
@@ -53,7 +47,7 @@ export default function Login() {
             let errorMessage = error.toString().toLowerCase()
 
             if (errorMessage.includes("credentials")) {
-                errorMessage = "Invalid Email or password"
+                errorMessage = "Wrong email or password"
             } else if (errorMessage.includes("fetch")) {
                 errorMessage = "Check your connection and retry!"
             }

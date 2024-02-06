@@ -1,13 +1,13 @@
-import React, { useContext } from 'react'
 import { Navigate } from 'react-router-dom'
-import { States } from '../ReducerAndContexts/ReducerAndContexts'
+import { isLogin } from '../../utils'
 export default function Account() {
 
-    const { isLogin } = useContext(States)
+
+    const check = isLogin()
 
     return (
         <>
-            {!isLogin ? <Navigate replace={true} to="/login" /> : <div>Account</div>}
+            {!check ? <Navigate replace={true} to="/login" /> : <div>Account</div>}
         </>
     )
 }

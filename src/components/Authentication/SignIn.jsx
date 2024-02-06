@@ -47,13 +47,13 @@ export default function SignUp() {
                 text: "You signed up successfully",
                 status: 1
             })
-            localStorage.setItem("userToken", data.session.access_token)
-            console.log(data);
+
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
                 navigate("/", { replace: true })
                 setIsSubmitting("")
             }, 2000);
+            
         } catch (error) {
 
             let errorMessage = error.toString().toLowerCase()

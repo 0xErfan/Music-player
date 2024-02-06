@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { createContext, useReducer } from 'react'
-import { isLogin } from '../../utils';
+import { isLogin, getUserInfo } from '../../utils';
 
 const initialStates = {
     isPlaying: 0,
     showToast: 0,
-    isLogin: 0,
+    isLogin: false,
     updater: false,
     toastData: { text: "", status: 1 },
     userData: null,
@@ -25,7 +25,6 @@ function stateReducer(state, action) {
         case "newTrack": {
             return {
                 ...state,
-                allSongs: [...state.allSongs, action.payload],
                 showToast: 1,
                 toastData: { ...state.toastData, text: action.text, status: action.status }
             }
@@ -46,6 +45,9 @@ function stateReducer(state, action) {
         case "updater": {
             return { ...state, updater: !state.updater }
         }
+        case "fetchData": {
+            return { ...state, userData: [action.payload] }
+        }
         default: {
             throw new Error("invalid action type!")
         }
@@ -54,12 +56,14 @@ function stateReducer(state, action) {
 
 export default function MainProvider({ children }) {
     const [state, dispatch] = useReducer(stateReducer, initialStates)
-
     useEffect(() => {
-        dispatch({
-            type: "logCheck",
-            payload: isLogin(),
-        })
+        const checkLoginStatus = () => {
+            const isLoggedIn = isLogin()
+            dispatch({ type: "logCheck", payload: isLogin() })
+            if (isLoggedIn) dispatch({ type: "fetchData", payload: getUserInfo() })
+        }
+        checkLoginStatus();
+        
     }, [state.updater])
 
     return (

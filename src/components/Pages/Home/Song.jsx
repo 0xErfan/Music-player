@@ -1,6 +1,8 @@
 import { VscDebugStart } from "react-icons/vsc";
 
-export default function Song() {
+export default function Song({name, cover, duration}) {
+
+
     return (
         <div className='flex items-center gap-2'>
             <div className='h-12 neoM-buttons overflow-hidden flex-[1]'><img className='size-full object-cover' src="./images/city.jpg" /></div>

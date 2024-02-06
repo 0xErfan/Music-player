@@ -12,18 +12,17 @@ import Recently from './Recently';
 import { Link } from 'react-router-dom';
 import Toast from '../../Toast/Toast';
 import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
-
+import { supabase } from "../../../client"
 
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
-    const { allSongs, toastData } = useContext(States)
-
+    const { userData, toastData } = useContext(States)
     const newFileHandler = async e => {
         const selectedFile = e.target.files[0]
 
         if (selectedFile.type.startsWith("audio/")) {
             const songSrc = URL.createObjectURL(selectedFile);
-            const isAdded = allSongs.some(song => { if (song.name == selectedFile.name) { return true; } })
+            const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) { return true; } })
 
             if (isAdded) {
                 dispatch({
@@ -35,11 +34,19 @@ export default function Main() {
                 return;
             } else {
                 const newSong = {
-                    id: allSongs.length,
+                    id: userData[0].user.user_metadata.songs.length,
                     name: selectedFile.name,
                     src: songSrc,
                     lastModifiedDate: selectedFile.lastModifiedDate
                 }
+
+                // need manage failed fetch
+                const { data, error } = await supabase.auth.updateUser({
+                    data: { songs: [...userData[0].user.user_metadata.songs, newSong] }
+                })
+                
+                console.log(data);
+
                 dispatch({
                     type: "newTrack",
                     payload: newSong,
