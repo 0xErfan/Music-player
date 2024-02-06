@@ -6,8 +6,9 @@ const initialStates = {
     isPlaying: 0,
     showToast: 0,
     isLogin: 0,
+    updater: false,
     toastData: { text: "", status: 1 },
-    allSongs: [],
+    userData: null,
 }
 
 export const StateDispatcher = createContext(null);
@@ -42,6 +43,9 @@ function stateReducer(state, action) {
         case "logCheck": {
             return { ...state, isLogin: action.payload }
         }
+        case "updater": {
+            return { ...state, updater: !state.updater }
+        }
         default: {
             throw new Error("invalid action type!")
         }
@@ -56,7 +60,7 @@ export default function MainProvider({ children }) {
             type: "logCheck",
             payload: isLogin(),
         })
-    }, [])
+    }, [state.updater])
 
     return (
         <States.Provider value={state}>
