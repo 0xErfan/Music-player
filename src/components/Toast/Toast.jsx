@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { FaCheck } from "react-icons/fa";
 import { MdError } from "react-icons/md";
-import { States } from '../DataContext/ReducerAndContexts';
+import { States } from '../ReducerAndContexts/ReducerAndContexts';
 
 export default function ({ text, status }) {
     const { showToast } = useContext(States)

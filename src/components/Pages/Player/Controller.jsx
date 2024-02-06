@@ -6,7 +6,7 @@ import { GiPauseButton } from "react-icons/gi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
-import { States, StateDispatcher } from '../DataContext/ReducerAndContexts';
+import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndContexts';
 
 export default function Controller() {
 

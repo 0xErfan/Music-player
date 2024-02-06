@@ -10,8 +10,8 @@ import { FaHeart } from "react-icons/fa";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link } from 'react-router-dom';
-import Toast from '../Toast/Toast';
-import { StateDispatcher, States } from '../DataContext/ReducerAndContexts';
+import Toast from '../../Toast/Toast';
+import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
 
 
 export default function Main() {
