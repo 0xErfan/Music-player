@@ -1,6 +1,7 @@
 import Music from './Music';
 import { IoChevronBackOutline } from "react-icons/io5";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+
 export default function Player() {
 
     return (

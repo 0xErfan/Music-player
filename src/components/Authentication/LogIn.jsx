@@ -81,7 +81,7 @@ export default function Login() {
                         <input id='email' checked={checkbox} onChange={() => setCheckbox(preve => !preve)} className='bg-primary rounded-xl neoM-bg size-6 p-2' type="checkbox" />
                         <p>Remember me for logins</p>
                     </label>
-                    <label className='flex items-center gap-2 justify-between rounded-xl h-14 px-3 basis-[85%] neoM-buttons ' >
+                    <label className='flex items-center cursor-pointer ch:cursor-pointer gap-2 justify-between rounded-xl h-14 px-3 basis-[85%] neoM-buttons ' >
                         <input disabled={isSubmitting == "submmiting"} value="Submit" className='bg-primary flex-1 text-[17px] outline-none placeholder:text-red-400/65 text-red-400/65 placeholder:tracking-wide' type="submit" />
                         <div className='cursor-pointer'><MdDownloadDone className='size-6 flex-[6]' /></div>
                     </label>

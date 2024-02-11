@@ -17,19 +17,21 @@ import { supabase } from "../../../client"
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData } = useContext(States)
+
     const newFileHandler = async e => {
         const selectedFile = e.target.files[0]
 
         if (selectedFile.type.startsWith("audio/")) {
             const songSrc = URL.createObjectURL(selectedFile);
-            const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) { return true; } })
+            const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) return true })
 
             if (isAdded) {
                 dispatch({
                     type: "toastOn",
-                    text: "This music already exist!",
+                    text: "This music already exist !",
                     status: 0
                 })
+                e.target.value = ""  //reest the input file value to be able check next user selection via onchange
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
                 return;
             } else {
@@ -37,24 +39,40 @@ export default function Main() {
                     id: userData[0].user.user_metadata.songs.length,
                     name: selectedFile.name,
                     src: songSrc,
-                    lastModifiedDate: selectedFile.lastModifiedDate
+                    lastModifiedDate: selectedFile.lastModifiedDate,
+                    liked: false,
+                    favorite: false
                 }
 
-                // need manage failed fetch
-                const { data, error } = await supabase.auth.updateUser({
-                    data: { songs: [...userData[0].user.user_metadata.songs, newSong] }
-                })
-                
-                console.log(data);
+                try {
+                    // need manage failed fetch
+                    const { data, error } = await supabase.auth.updateUser({
+                        data: { songs: [...userData[0].user.user_metadata.songs, newSong] }
+                    })
 
-                dispatch({
-                    type: "newTrack",
-                    payload: newSong,
-                    text: "Music added!",
-                    status: 1
-                })
-                setTimeout(() => dispatch({ type: "toastOff" }), 3000);
-                return;
+                    if (error) throw new Error(error)
+                    console.log(data);
+
+                    dispatch({ type: "updater" })
+                    dispatch({
+                        type: "toastOn",
+                        text: "Music added successfully !",
+                        status: 1
+                    })
+                    e.target.value = ""
+                    setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+                    return;
+
+                } catch (err) {
+                    dispatch({
+                        type: "toastOn",
+                        text: "Check your internet connection !",
+                        status: 0
+                    })
+                    e.target.value = ""
+                    setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                    return;
+                }
             }
         }
         dispatch({
@@ -62,6 +80,7 @@ export default function Main() {
             text: "Please choose a file with audio format!",
             status: 0
         })
+        e.target.value = ""
         setTimeout(() => dispatch({ type: "toastOff" }), 2000);
     }
 

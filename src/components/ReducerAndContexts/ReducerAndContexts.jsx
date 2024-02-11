@@ -7,12 +7,13 @@ const initialStates = {
     showToast: 0,
     isLogin: false,
     updater: false,
+    currentSong: null,
     toastData: { text: "", status: 1 },
     userData: null,
 }
-
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
+export let mainUserData;
 
 function stateReducer(state, action) {
     switch (action.type) {
@@ -48,6 +49,9 @@ function stateReducer(state, action) {
         case "fetchData": {
             return { ...state, userData: [action.payload] }
         }
+        case "changeCurrent": {
+            return { ...state, currentSong: [action.payload] }
+        }
         default: {
             throw new Error("invalid action type!")
         }
@@ -56,6 +60,13 @@ function stateReducer(state, action) {
 
 export default function MainProvider({ children }) {
     const [state, dispatch] = useReducer(stateReducer, initialStates)
+
+    let userMetadata = state.userData && state.userData[0].user.user_metadata
+    if (userMetadata) {
+        mainUserData = userMetadata
+        state.currentSong = userMetadata.songs[0]
+    }
+    
     useEffect(() => {
         const checkLoginStatus = () => {
             const isLoggedIn = isLogin()
@@ -63,7 +74,6 @@ export default function MainProvider({ children }) {
             if (isLoggedIn) dispatch({ type: "fetchData", payload: getUserInfo() })
         }
         checkLoginStatus();
-        
     }, [state.updater])
 
     return (
