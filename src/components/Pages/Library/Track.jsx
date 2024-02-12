@@ -7,13 +7,9 @@ import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndCont
 export default function Track(data) {
 
     const { cover, name, artistname, duration, src } = data
-
-    const state = useContext(States)
+        
     const dispatch = useContext(StateDispatcher)
-    const palyerHandler = () => {
-        dispatch({ type: "changeCurrent", payload: { ...data } })
-        console.log(state.currentSong);
-    }
+    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: { ...data } }) }
 
     return (
         <div onClick={palyerHandler} className='flex items-center gap-3 max-w-full cursor-pointer'>
@@ -23,8 +19,6 @@ export default function Track(data) {
                     :
                     <div className='flex duration-300'><SlUser className='size-[34px] p-1' /></div>
             }
-
-            {/* <audio src={src}></audio> */}
 
             <div className='flex-[7] text-sm text-gray-200/50'>
                 <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{name ? name : "?"}</h3>
