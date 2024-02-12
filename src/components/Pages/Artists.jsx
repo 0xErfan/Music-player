@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function Artists() {
   return (
-    <div>Artists</div>
+    <div className='text-2xl font-bold text-center mt-12'>No artist yet !</div>
   )
 }
