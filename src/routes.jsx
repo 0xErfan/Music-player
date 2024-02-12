@@ -19,7 +19,7 @@ const routes = [
     { path: "/account", element: <Account /> },
     { path: "/login", element: <Login /> },
     { path: "/signUp", element: <SignUp /> },
-    { path: "/*", element: <p>Not Found</p> }
+    // { path: "/*", element: <p>Not Found</p> }
 ]
 
 export default routes;

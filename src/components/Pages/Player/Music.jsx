@@ -7,7 +7,6 @@ export default function Music() {
 
     const { currentSong } = useContext(States)
     
-    console.log(currentSong);
     return (
         <>
             <div className='neoM-buttons m-auto rounded-xl my-14 max-w-[80%] aspect-square border-[10px] overflow-hidden border-primary'>
@@ -16,7 +15,7 @@ export default function Music() {
             <div className='text-center space-y-1 mb-6'>
                 <h3 className='text-xl'>{currentSong ? currentSong.name : "?"}</h3>
             </div>
-            <Controller />
+            <Controller src={currentSong?.src} />
         </>
     )
 }

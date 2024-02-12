@@ -20,9 +20,11 @@ export default function Main() {
 
     const newFileHandler = async e => {
         const selectedFile = e.target.files[0]
-
+        const blob = new Blob([selectedFile], { type: "audio/mp3" });
+        
+        if (!userData[0]) return
         if (selectedFile.type.startsWith("audio/")) {
-            const songSrc = URL.createObjectURL(selectedFile);
+            const songSrc = URL.createObjectURL(blob);
             const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) return true })
 
             if (isAdded) {
@@ -45,7 +47,6 @@ export default function Main() {
                 }
 
                 try {
-                    // need manage failed fetch
                     const { data, error } = await supabase.auth.updateUser({
                         data: { songs: [...userData[0].user.user_metadata.songs, newSong] }
                     })

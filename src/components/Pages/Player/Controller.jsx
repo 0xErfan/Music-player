@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
@@ -8,10 +8,17 @@ import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
 import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndContexts';
 
-export default function Controller() {
+export default function Controller({ src }) {
 
-    const {isPlaying} = useContext(States)
+    const { isPlaying } = useContext(States)
     const dispatch = useContext(StateDispatcher)
+    // if (src) {
+    //     const audio = new Audio();
+    //     audio.src = src
+    //     console.log(audio);
+    //     audio.play();
+
+    // }
 
     return (
         <>
@@ -22,6 +29,10 @@ export default function Controller() {
                 </div>
                 <input className='timeLine' type="range"></input>
             </div>
+
+            {
+                src && <audio src={src}></audio>
+            }
 
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
                 <div className='neoM-buttons'><IoPlayBackSharp className='size-12 p-4' /></div>
