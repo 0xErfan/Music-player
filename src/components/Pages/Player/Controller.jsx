@@ -13,7 +13,7 @@ import Toast from '../../Toast/Toast';
 
 export default function Controller({ src, audio }) {
 
-    const { isPlaying, currentSong, toastData } = useContext(States)
+    const { isPlaying, songIndex, currentSong, toastData } = useContext(States)
     const dispatch = useContext(StateDispatcher)
 
     const songLikeHandler = async () => {
@@ -61,7 +61,7 @@ export default function Controller({ src, audio }) {
 
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
                 <div
-                    onClick={() => dispatch({ type: "changeCurrent", payload: currentSong.id == 0 ? mainUserData.songs.length - 1 : currentSong.id - 1 })}
+                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })}
                     className='neoM-buttons'><IoPlayBackSharp className='size-12 p-4' />
                 </div>
 
@@ -74,7 +74,7 @@ export default function Controller({ src, audio }) {
                     }
                 </div>
                 <div
-                    onClick={() => dispatch({ type: "changeCurrent", payload: currentSong.id == mainUserData.songs.length - 1 ? 0 : currentSong.id + 1 })}
+                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == mainUserData.songs.length - 1 ? 0 : songIndex + 1 })}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
             </div>
