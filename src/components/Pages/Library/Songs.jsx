@@ -34,10 +34,10 @@ export default function Songs() {
                     filteredSongs = mainUserData.slice(-5);
                     break;
                 case "playlist":
-                    filteredSongs = mainUserData.filter(song => song.liked);
+                    filteredSongs = mainUserData.filter(song => song.favorite);
                     break;
                 case "favorites":
-                    filteredSongs = mainUserData.filter(song => song.favorite);
+                    filteredSongs = mainUserData.filter(song => song.liked);
                     break;
                 default:
                     filteredSongs = mainUserData;

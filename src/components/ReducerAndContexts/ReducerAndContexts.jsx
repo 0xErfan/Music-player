@@ -5,6 +5,7 @@ import { isLogin, getUserInfo } from '../../utils';
 const initialStates = {
     isPlaying: 0,
     showToast: 0,
+    songIndex: 0,
     isLogin: false,
     updater: false,
     currentSong: null,
@@ -50,7 +51,7 @@ function stateReducer(state, action) {
             return { ...state, userData: [action.payload] }
         }
         case "changeCurrent": {
-            return { ...state, currentSong: [action.payload] }
+            return { ...state, songIndex: action.payload, isPlaying: true }
         }
         default: {
             throw new Error("invalid action type!")
@@ -64,7 +65,7 @@ export default function MainProvider({ children }) {
     let userMetadata = state.userData && state.userData[0].user.user_metadata
     if (userMetadata) {
         mainUserData = userMetadata
-        state.currentSong = userMetadata.songs[0]
+        state.currentSong = userMetadata.songs[state.songIndex]
     }
     
     useEffect(() => {

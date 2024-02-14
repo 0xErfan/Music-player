@@ -10,24 +10,20 @@ import Toast from '../../Toast/Toast';
 export default function Track(data) {
 
     const dispatch = useContext(StateDispatcher)
-    const { toastData } = useContext(States)
+    const { toastData, songIndex, currentSong } = useContext(States)
     const { cover, id, name, artistname, duration, src } = data
 
-    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: { ...data } }) }
+    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: id }) }
+
     const updater = () => data.onUpdater()
 
     const deleteHandler = async id => {
-
         const updatedData = mainUserData.songs.filter(song => song.id !== id)
         // make it separate later
         try {
-            const { data, error } = await supabase.auth.updateUser({
-                data: { songs: updatedData }
-            })
+            const { data, error } = await supabase.auth.updateUser({ data: { songs: updatedData } })
 
             if (error) throw new Error(error)
-            console.log(data);
-
             dispatch({ type: "updater" })
             dispatch({
                 type: "toastOn",
@@ -36,17 +32,13 @@ export default function Track(data) {
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
             updater()
-            return;
-
         } catch (error) {
-            console.log(error);
             dispatch({
                 type: "toastOn",
                 text: "Check your internet connection !",
                 status: 0
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 2000);
-            return;
         }
     }
 

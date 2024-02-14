@@ -53,9 +53,9 @@ export default function SignUp() {
                 navigate("/", { replace: true })
                 setIsSubmitting("")
             }, 2000);
-            
-        } catch (error) {
 
+        } catch (error) {
+            console.log(error);
             let errorMessage = error.toString().toLowerCase()
 
             if (errorMessage.includes("characters")) {
