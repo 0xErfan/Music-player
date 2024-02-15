@@ -24,7 +24,11 @@ export default function Songs() {
         }
     }, [update]);
 
-    const songUpdater = () => setUpdate(preve => !preve)
+    const songUpdater = id => {
+        setUpdate(preve => !preve)
+        let removedArray = [...mainUserData].filter(song => song.id != id)
+        if (!removedArray.length) setFilteredSongs([])
+    }
 
     useEffect(() => {
         if (mainUserData.length) {
@@ -43,10 +47,7 @@ export default function Songs() {
                     filteredSongs = mainUserData;
                     break;
             }
-            // Update the UI with the filteredSongs
-            // For example, you can set the filteredSongs to a state variable and use it in your UI\
             setFilteredSongs(filteredSongs);
-
         }
     }, [mainUserData, params.type]);
 
@@ -68,7 +69,7 @@ export default function Songs() {
 
                 <div className='space-y-2'>
                     {
-                        !filteredSongs?.length ?
+                        !filteredSongs.length ?
                             <div className='text-2xl font-bold text-center'>No songs yet...</div>
                             :
                             filteredSongs.map(song => <Track key={song.id} onUpdater={songUpdater} {...song} />)
