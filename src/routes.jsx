@@ -12,7 +12,7 @@ const routes = [
     { path: "/", element: <Home /> },
     { path: "/player", element: <Player /> },
     { path: "/songs", element: <Songs /> },
-    { path: "/search", element: <Search /> },
+    { path: "/search/:text", element: <Search /> },
     { path: "/songs/:type", element: <Songs /> },
     { path: "/albums", element: <Albums /> },
     { path: "/artists", element: <Artists /> },

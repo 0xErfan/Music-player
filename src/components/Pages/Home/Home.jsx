@@ -1,4 +1,4 @@
-import React, { useContext, useId } from 'react'
+import React, { useContext, useId, useRef } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -9,7 +9,7 @@ import { MdQueueMusic } from "react-icons/md";
 import { FaHeart } from "react-icons/fa";
 import Buttons from './Buttons';
 import Recently from './Recently';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Toast from '../../Toast/Toast';
 import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
@@ -18,11 +18,15 @@ import { supabase } from "../../../client"
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData } = useContext(States)
+    const navigate = useNavigate()
+    const inputRef = useRef()
 
     let userSongs
     if (userData) userSongs = userData[0].user.user_metadata.songs
 
-    const newFileHandler = async e => {
+    const newSongSearchHandler = () => inputRef.current.value.trim().length && navigate(`/search/${inputRef.current.value}`)
+
+    const newSongHandler = async e => {
         const selectedFile = e.target.files[0]
 
         if (!userData[0]) return
@@ -66,7 +70,6 @@ export default function Main() {
                     })
 
                     if (error) throw new Error(error)
-                    console.log(data);
 
                     dispatch({ type: "updater" })
                     dispatch({
@@ -106,8 +109,8 @@ export default function Main() {
                 <div className='flex items-center mt-2 gap-2 h-12'>
                     <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
                     <div className='flex items-center gap-2 justify-between h-full px-3 basis-[85%] neoM-bg ' >
-                        <input className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
-                        <div className='cursor-pointer'><CiSearch className='size-6' /></div>
+                        <input ref={inputRef} onKeyDown={e => e.key == "Enter" && newSongSearchHandler(e)} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
+                        <div onClick={newSongSearchHandler} className='cursor-pointer'><CiSearch className='size-6' /></div>
                     </div>
                 </div>
 
@@ -117,7 +120,7 @@ export default function Main() {
                     <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
                     <label htmlFor="fileUploader">
                         <Buttons icon={<IoFolderOpenOutline />} title="Folder" />
-                        <input onChange={newFileHandler} className='hidden' id='fileUploader' type="file" />
+                        <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />
                     </label>
                 </div>
 

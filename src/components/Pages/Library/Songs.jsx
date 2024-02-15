@@ -6,10 +6,12 @@ import { CiSearch } from "react-icons/ci";
 import { VscDebugStart } from "react-icons/vsc";
 import Track from './Track';
 import { getUserInfo, isLogin } from '../../../utils';
+
 export default function Songs() {
 
     const [mainUserData, setMainUserData] = useState([])
     const [filteredSongs, setFilteredSongs] = useState([])
+    const [search, setSearch] = useState("")
     const [update, setUpdate] = useState(false)
 
     const navigate = useNavigate()
@@ -28,6 +30,12 @@ export default function Songs() {
         setUpdate(preve => !preve)
         let removedArray = [...mainUserData].filter(song => song.id != id)
         if (!removedArray.length) setFilteredSongs([])
+    }
+
+    const songSearchHandler = e => {
+        setSearch(e.target.value)
+        let newSongsFilter = [...mainUserData].filter(song => song.name.toLowerCase().includes(e.target.value))
+        setFilteredSongs(newSongsFilter)
     }
 
     useEffect(() => {
@@ -59,7 +67,7 @@ export default function Songs() {
                     <h3 className='font-bold text-2xl capitalize'>{params.type ? params.type : "All songs"}</h3>
                 </div>
                 <div className='flex items-center gap-2 justify-between px-3 basis-[85%] h-12 neoM-bg ' >
-                    <input className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search ${filteredSongs?.length} tracks...`} type="text" />
+                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search ${filteredSongs?.length} tracks...`} type="text" />
                     <div className='cursor-pointer'><CiSearch className='size-6' /></div>
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
