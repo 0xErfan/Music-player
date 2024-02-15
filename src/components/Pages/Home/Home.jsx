@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useId } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -12,14 +12,15 @@ import Recently from './Recently';
 import { Link } from 'react-router-dom';
 import Toast from '../../Toast/Toast';
 import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
+import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
 import { supabase } from "../../../client"
 
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData } = useContext(States)
 
-    if (!userData) return
-    const userSongs = userData[0].user.user_metadata.songs
+    let userSongs
+    if (userData) userSongs = userData[0].user.user_metadata.songs
 
     const newFileHandler = async e => {
         const selectedFile = e.target.files[0]
@@ -51,7 +52,7 @@ export default function Main() {
                 audioElem.src = songSrc;
 
                 const newSong = {
-                    id: userData[0].user.user_metadata.songs.length,
+                    id: mainUserData.counter,
                     name: selectedFile.name,
                     audio: audioElem,
                     lastModifiedDate: selectedFile.lastModifiedDate,
@@ -61,7 +62,7 @@ export default function Main() {
 
                 try {
                     const { data, error } = await supabase.auth.updateUser({
-                        data: { songs: [...userData[0].user.user_metadata.songs, newSong] }
+                        data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
                     })
 
                     if (error) throw new Error(error)
@@ -124,7 +125,7 @@ export default function Main() {
                     <div><MdQueueMusic className='size-9' /></div>
                     <div className='flex items-center justify-between h-4/5 text-[18px]'>
                         <p>Recently Added</p>
-                        <p>{userSongs.slice(-5).length}</p>
+                        <p>{userSongs?.slice(-5).length}</p>
                     </div>
                 </Link>
 
@@ -133,14 +134,14 @@ export default function Main() {
                         <div className='px-1'><IoMdMusicalNotes className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Playlist</p>
-                            <p>{userSongs.filter(song => song.favorite).length}</p>
+                            <p>{userSongs?.filter(song => song.favorite).length}</p>
                         </div>
                     </Link>
                     <Link to="songs/favorites" className='neoM-buttons p-2'>
                         <div className='px-1'><FaHeart className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Favorite</p>
-                            <p>{userSongs.filter(song => song.liked).length}</p>
+                            <p>{userSongs?.filter(song => song.liked).length}</p>
                         </div>
                     </Link>
                 </div>

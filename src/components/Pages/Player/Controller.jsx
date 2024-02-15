@@ -13,41 +13,9 @@ import Toast from '../../Toast/Toast';
 
 export default function Controller({ src, audio }) {
 
-    const { isPlaying, songIndex, currentSong, toastData } = useContext(States)
+    const { isPlaying, songIndex, currentSong, toastData, like } = useContext(States)
     const dispatch = useContext(StateDispatcher)
-
-    const songLikeHandler = async () => {
-
-        if (mainUserData.songs.length) {
-            try {
-
-                let updatedData = [...mainUserData.songs]
-
-                updatedData.some(song => {
-                    if (song.id == currentSong.id) {
-                        song.liked = !song.liked
-                        return true
-                    }
-                })
-
-                const { data, error } = await supabase.auth.updateUser({
-                    data: { songs: updatedData }
-                })
-                if (error) throw new Error(error)
-            } catch (error) {
-                console.log(error);
-                dispatch({
-                    type: "toastOn",
-                    text: "Check your internet connection !",
-                    status: 0
-                })
-                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
-                return
-            }
-            dispatch({ type: "updater" })
-        }
-    }
-
+    
     return (
         <>
             <Toast text={toastData.text} status={toastData.status} />
@@ -84,7 +52,7 @@ export default function Controller({ src, audio }) {
                 <div className='neoM-buttons'><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
                     className={`neoM-buttons ${currentSong?.liked && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
-                        onClick={songLikeHandler}
+                        onClick={like}
                     />
                 </div>
                 <div className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>

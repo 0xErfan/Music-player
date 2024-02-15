@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../../utils';
+import { supabase } from '../../client';
 
 const initialStates = {
     isPlaying: 0,
@@ -10,8 +11,9 @@ const initialStates = {
     updater: false,
     currentSong: null,
     toastData: { text: "", status: 1 },
-    userData: null,
+    userData: null
 }
+
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
 export let mainUserData;
@@ -62,12 +64,43 @@ function stateReducer(state, action) {
 export default function MainProvider({ children }) {
     const [state, dispatch] = useReducer(stateReducer, initialStates)
 
+    state.like = async function songLikeHandler() {
+
+        if (mainUserData.songs.length) {
+            try {
+
+                let updatedData = [...mainUserData.songs]
+
+                updatedData.some(song => {
+                    if (song.id == state.currentSong.id) {
+                        song.liked = !song.liked
+                        return true
+                    }
+                })
+
+                const { data, error } = await supabase.auth.updateUser({
+                    data: { songs: updatedData }
+                })
+                if (error) throw new Error(error)
+            } catch (error) {
+                dispatch({
+                    type: "toastOn",
+                    text: "Check your internet connection !",
+                    status: 0
+                })
+                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                return
+            }
+            dispatch({ type: "updater" })
+        }
+    }
+    
     let userMetadata = state.userData && state.userData[0].user.user_metadata
     if (userMetadata) {
         mainUserData = userMetadata
         state.currentSong = userMetadata.songs[state.songIndex]
     }
-    
+
     useEffect(() => {
         const checkLoginStatus = () => {
             const isLoggedIn = isLogin()

@@ -13,7 +13,7 @@ export default function Track(data) {
     const { toastData, songIndex, currentSong } = useContext(States)
     const { cover, id, name, artistname, duration, src } = data
 
-    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: id }) }
+    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: mainUserData.songs.findIndex(song => song.id == id) }) }
 
     const updater = () => data.onUpdater()
 

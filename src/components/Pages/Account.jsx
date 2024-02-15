@@ -9,9 +9,9 @@ export default function Account() {
     const [update, setUpdate] = useState(false)
 
     const logoutHandler = () => {
-
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
         dispatch({ type: "updater" })
+        dispatch({ type: "changeCurrent", payload: null })
         setUpdate(preve => !preve)
     }
 

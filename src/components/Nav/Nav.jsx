@@ -1,30 +1,40 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GiPauseButton } from "react-icons/gi";
 import { VscDebugStart } from "react-icons/vsc";
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContexts';
 
 export default function Nav() {
 
     const [activeNav, steActiveNav] = useState(location.pathname)
-
+    const { currentSong, isPlaying, like } = useContext(States)
+    const dispatch = useContext(StateDispatcher)
+    useEffect(() => {
+        console.log(currentSong);
+    }, [currentSong])
     return (
         <nav className="fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
-            <div className=''>
+            <div>
                 {
-                    "" && (
+                    currentSong && (
                         <div className='flex items-center justify-between relative px-4 py-2 text-sm bg-gray-800 gap-4'>
-                            <div className='flex flex-1 items-center justify-center ch:size-5'>{"w" ? <GiPauseButton /> : <VscDebugStart />}</div>
+                            <div
+                                onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
+                                className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'
+                            >{isPlaying ? <GiPauseButton /> : <VscDebugStart />}</div>
 
                             <div className='flex-[8]'>
-                                <h3 className='font-bold'>Danial - Kado</h3>
-                                <p>Danial</p>
+                                <h3 className='font-bold'>{currentSong.name || "?"}</h3>
+                                <p>{currentSong.artist || "?"}</p>
                             </div>
                             <div className='h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 w-1/3 rounded-full'></div>
-                            <div className='flex flex-1 items-center justify-center ch:size-5'><FaRegHeart /></div>
+                            <div
+                                onClick={like}
+                                className={`flex flex-1 items-center cursor-pointer ${currentSong.liked && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
                         </div>
                     )
                 }

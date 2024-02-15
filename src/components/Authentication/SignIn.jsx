@@ -32,7 +32,8 @@ export default function SignUp() {
             options: {
                 data: {
                     songs: [],
-                    username: formData.name
+                    username: formData.name,
+                    counter: 0
                 },
             },
         }
@@ -40,7 +41,6 @@ export default function SignUp() {
         try {
             const { data, error } = await supabase.auth.signUp(userData)
             if (error) throw new Error(error);
-
             setFormData({ email: "", name: "", password: "" })
             dispatch({
                 type: "toastOn",
@@ -55,7 +55,6 @@ export default function SignUp() {
             }, 2000);
 
         } catch (error) {
-            console.log(error);
             let errorMessage = error.toString().toLowerCase()
 
             if (errorMessage.includes("characters")) {

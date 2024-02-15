@@ -3,7 +3,7 @@ import { FaLock } from "react-icons/fa6";
 import { MdDownloadDone } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineMail } from "react-icons/hi";
-import { StateDispatcher, States } from '../ReducerAndContexts/ReducerAndContexts';
+import { StateDispatcher, States, mainUserData } from '../ReducerAndContexts/ReducerAndContexts';
 import { supabase } from '../../client';
 import Toast from '../Toast/Toast';
 
@@ -12,7 +12,7 @@ export default function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" })
     const [isSubmitting, setIsSubmitting] = useState("")
     const [checkbox, setCheckbox] = useState(false)
-    const { toastData } = useContext(States)
+    const { toastData, songIndex } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
 
@@ -23,7 +23,6 @@ export default function Login() {
         e.preventDefault()
 
         try {
-            
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: formData.email,
                 password: formData.password,
@@ -35,13 +34,14 @@ export default function Login() {
                 text: "You logged in successfully",
                 status: 1
             })
-            console.log(data);
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
                 dispatch({ type: "updater" })
                 navigate("/", { replace: true })
                 setIsSubmitting("")
             }, 2000);
+            dispatch({ type: "updater" })
+
         } catch (error) {
             console.log(error);
             let errorMessage = error.toString().toLowerCase()
