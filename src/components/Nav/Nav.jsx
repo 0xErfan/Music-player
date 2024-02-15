@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContexts';
 
 export default function Nav() {
@@ -13,11 +13,12 @@ export default function Nav() {
     const [activeNav, steActiveNav] = useState(location.pathname)
     const { currentSong, isPlaying, like } = useContext(States)
     const dispatch = useContext(StateDispatcher)
-    useEffect(() => {
-        console.log(currentSong);
-    }, [currentSong])
+    const navigate = useNavigate()
+
+    useEffect(() => steActiveNav(location.pathname), [location.pathname])
+
     return (
-        <nav className="fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
+        <nav onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")} className="fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
             <div>
                 {
                     currentSong && (
