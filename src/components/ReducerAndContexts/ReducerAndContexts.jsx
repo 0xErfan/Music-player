@@ -7,11 +7,13 @@ const initialStates = {
     isPlaying: 0,
     showToast: 0,
     songIndex: 0,
+    isShuffle: false,
     isLogin: false,
     updater: false,
     currentSong: null,
     toastData: { text: "", status: 1 },
-    userData: null
+    userData: null,
+    userSongs: null
 }
 
 export const StateDispatcher = createContext(null);
@@ -55,6 +57,8 @@ function stateReducer(state, action) {
         case "changeCurrent": {
             return { ...state, songIndex: action.payload, isPlaying: true }
         }
+        case "changeShuffle":
+            return { ...state, isShuffle: !state.isShuffle }
         default: {
             throw new Error("invalid action type!")
         }
@@ -94,7 +98,7 @@ export default function MainProvider({ children }) {
             dispatch({ type: "updater" })
         }
     }
-    
+
     let userMetadata = state.userData && state.userData[0].user.user_metadata
     if (userMetadata) {
         mainUserData = userMetadata

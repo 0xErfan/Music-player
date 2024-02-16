@@ -23,7 +23,7 @@ body {
 .timeLine {
     -webkit-appearance: none;
     @apply h-[13px] rounded-xl relative;
-    background: linear-gradient(90deg, #DA510B 60%, #DFDFDF 40%);
+    background: linear-gradient(90deg, #DA510B 50%, #DFDFDF 50%);
 }
 
 .timeLine::-webkit-slider-thumb {
@@ -62,7 +62,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background-color: #DA510B;
-} 
+}
 
 .mainNav {
     background: #2C2F33;

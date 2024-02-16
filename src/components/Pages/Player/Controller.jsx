@@ -8,7 +8,6 @@ import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
 import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
-import { supabase } from '../../../client';
 import Toast from '../../Toast/Toast';
 
 export default function Controller({ src, audio }) {

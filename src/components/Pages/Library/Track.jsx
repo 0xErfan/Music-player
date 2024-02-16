@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { SlUser } from "react-icons/sl";
+import { FiMusic } from "react-icons/fi";
 import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
 import { supabase } from '../../../client';
@@ -50,7 +50,7 @@ export default function Track(data) {
                 cover ?
                     <img className='flex-1 shrink-0 size-14 rounded-sm object-cover aspect-square' src={cover} alt="img" />
                     :
-                    <div className='flex duration-300'><SlUser className='size-[34px] p-1' /></div>
+                    <div className='flex duration-300'><FiMusic className='size-[34px] p-1' /></div>
             }
 
             <div className='flex-[7] text-sm text-gray-200/50'>
