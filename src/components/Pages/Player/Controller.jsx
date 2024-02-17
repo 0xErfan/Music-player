@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
@@ -20,6 +20,7 @@ export default function Controller() {
         currentSec: 0
     })
     const dispatch = useContext(StateDispatcher)
+    const nextSong = useRef()
 
     useEffect(() => {
         let { duration, currentTime } = musicMetadata;
@@ -28,12 +29,14 @@ export default function Controller() {
         updatedMusicTimer.min = Math.trunc(duration / 60);
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
 
-        if (currentTime > 59) {
+        if (currentTime == duration) {
+            updatedMusicTimer.currentMin = 0
+            updatedMusicTimer.currentSec = 0
+            nextSong.current.click()
+        } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
-        } else {
-            updatedMusicTimer.currentSec = Math.trunc(currentTime);
-        }
+        } else updatedMusicTimer.currentSec = Math.trunc(currentTime);
 
         setMusicMetadata(updatedMusicTimer);
 
@@ -66,6 +69,7 @@ export default function Controller() {
                     }
                 </div>
                 <div
+                    ref={nextSong}
                     onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == mainUserData.songs.length - 1 ? 0 : songIndex + 1 })}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
