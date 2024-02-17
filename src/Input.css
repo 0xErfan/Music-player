@@ -23,7 +23,6 @@ body {
 .timeLine {
     -webkit-appearance: none;
     @apply h-[13px] rounded-xl relative;
-    background: linear-gradient(90deg, #DA510B 50%, #DFDFDF 50%);
 }
 
 .timeLine::-webkit-slider-thumb {

@@ -76,7 +76,7 @@ function stateReducer(state, action) {
 export default function MainProvider({ children }) {
     const [state, dispatch] = useReducer(stateReducer, initialStates)
 
-    state.like = async function songLikeHandler() {
+    state.like = async () => {
 
         if (mainUserData.songs.length) {
             try {
@@ -107,6 +107,11 @@ export default function MainProvider({ children }) {
         }
     }
 
+    state.setCurrentTime = time => {
+        audio.current.currentTime = time
+        dispatch({ type: "play" })
+    }
+
     let audio = useRef(new Audio());
 
     const fetchMusic = async () => {
@@ -118,7 +123,6 @@ export default function MainProvider({ children }) {
 
     useEffect(() => {
         fetchMusic()
-
     }, [state.currentSong])
 
 
@@ -129,7 +133,7 @@ export default function MainProvider({ children }) {
 
 
     useEffect(() => {
-        let timer, min, sec;
+        let timer;
 
         if (state.isPlaying) {
             audio.current.play()

@@ -12,15 +12,9 @@ import Toast from '../../Toast/Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like } = useContext(States)
-    const [musicTimer, setMusicMetadata] = useState({
-        min: null,
-        sec: null,
-        currentMin: 0,
-        currentSec: 0
-    })
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime } = useContext(States)
+    const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const dispatch = useContext(StateDispatcher)
-    const nextSong = useRef()
 
     useEffect(() => {
         let { duration, currentTime } = musicMetadata;
@@ -32,7 +26,7 @@ export default function Controller() {
         if (currentTime == duration) {
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
-            nextSong.current.click()
+            dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
@@ -51,7 +45,11 @@ export default function Controller() {
                     <p>{`${musicTimer.currentMin.toString().padStart(2, "0")}:${musicTimer.currentSec.toString().padStart(2, "0")}`}</p>
                     <p>{`${musicTimer.min}:${musicTimer.sec}`}</p>
                 </div>
-                <input className='timeLine' type="range"></input>
+                <input
+                    style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100}%)` }}
+                    onChange={e => setCurrentTime(e.target.value)}
+                    value={musicMetadata.currentTime}
+                    className='timeLine' min={0} max={musicMetadata.duration} type="range"></input>
             </div>
 
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
@@ -69,8 +67,7 @@ export default function Controller() {
                     }
                 </div>
                 <div
-                    ref={nextSong}
-                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == mainUserData.songs.length - 1 ? 0 : songIndex + 1 })}
+                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
             </div>
