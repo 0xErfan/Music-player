@@ -1,6 +1,6 @@
 import { VscDebugStart } from "react-icons/vsc";
 
-export default function Song({name, cover, duration}) {
+export default function Song() {
 
 
     return (

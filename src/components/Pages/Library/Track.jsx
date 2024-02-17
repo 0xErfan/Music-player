@@ -10,12 +10,12 @@ import Toast from '../../Toast/Toast';
 export default function Track(data) {
 
     const dispatch = useContext(StateDispatcher)
-    const { toastData } = useContext(States)
+    const { toastData, userSongsStorage } = useContext(States)
     const { cover, id, name, artistname, duration, src } = data
 
-    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: mainUserData.songs.findIndex(song => song.id == id) }) }
+    const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
-    const updater = () => {data.onUpdater(id), console.log(mainUserData)}
+    const updater = () => { data.onUpdater(id) }
 
     const deleteHandler = async id => {
         const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
@@ -33,7 +33,7 @@ export default function Track(data) {
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
             updater()
         } catch (error) {
-            console.log(error); 
+            console.log(error);
             dispatch({
                 type: "toastOn",
                 text: "Check your internet connection !",

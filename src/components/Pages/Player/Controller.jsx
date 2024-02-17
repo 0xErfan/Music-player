@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
@@ -10,18 +10,43 @@ import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndCont
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
 import Toast from '../../Toast/Toast';
 
-export default function Controller({ src, audio }) {
+export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, toastData, like } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like } = useContext(States)
+    const [musicTimer, setMusicMetadata] = useState({
+        min: null,
+        sec: null,
+        currentMin: 0,
+        currentSec: 0
+    })
     const dispatch = useContext(StateDispatcher)
-    
+
+    useEffect(() => {
+        let { duration, currentTime } = musicMetadata;
+        let updatedMusicTimer = { ...musicTimer };
+
+        updatedMusicTimer.min = Math.trunc(duration / 60);
+        updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
+
+        if (currentTime > 59) {
+            updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
+            updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
+        } else {
+            updatedMusicTimer.currentSec = Math.trunc(currentTime);
+        }
+
+        setMusicMetadata(updatedMusicTimer);
+
+    }, [musicMetadata.currentTime, musicMetadata.duration]);
+
+
     return (
         <>
             <Toast text={toastData.text} status={toastData.status} />
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
-                    <p>2:43</p>
-                    <p>3:50</p>
+                    <p>{`${musicTimer.currentMin.toString().padStart(2, "0")}:${musicTimer.currentSec.toString().padStart(2, "0")}`}</p>
+                    <p>{`${musicTimer.min}:${musicTimer.sec}`}</p>
                 </div>
                 <input className='timeLine' type="range"></input>
             </div>

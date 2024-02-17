@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../../utils';
 import { supabase } from '../../client';
@@ -10,10 +10,12 @@ const initialStates = {
     isShuffle: false,
     isLogin: false,
     updater: false,
+    storageUpdate: false,
     currentSong: null,
+    musicMetadata: { currentTime: null, duration: null },
     toastData: { text: "", status: 1 },
     userData: null,
-    userSongs: null
+    userSongsStorage: []
 }
 
 export const StateDispatcher = createContext(null);
@@ -54,8 +56,14 @@ function stateReducer(state, action) {
         case "fetchData": {
             return { ...state, userData: [action.payload] }
         }
+        case "storageManage": {
+            return { ...state, userSongsStorage: action.payload }
+        }
         case "changeCurrent": {
             return { ...state, songIndex: action.payload, isPlaying: true }
+        }
+        case "changeMetadata": {
+            return { ...state, musicMetadata: action.payload }
         }
         case "changeShuffle":
             return { ...state, isShuffle: !state.isShuffle }
@@ -99,17 +107,88 @@ export default function MainProvider({ children }) {
         }
     }
 
+    let audio = useRef(new Audio());
+
+    const fetchMusic = async () => {
+        if (state.userData && state.currentSong) {
+            const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
+            audio.current.src = musicUrl
+        }
+    }
+
+    useEffect(() => {
+        fetchMusic()
+
+    }, [state.currentSong])
+
+
+
+
+
+
+
+
+    useEffect(() => {
+        let timer, min, sec;
+
+        if (state.isPlaying) {
+            audio.current.play()
+
+            timer = setInterval(() => {
+                dispatch({
+                    type: "changeMetadata", payload: {
+                        ...state.musicMetadata,
+                        currentTime: Math.trunc(audio.current.currentTime),
+                        duration: Math.trunc(audio.current.duration)
+                    }
+                })
+            }, 1000)
+        } else {
+            audio.current.pause()
+        }
+        return (() => clearInterval(timer))
+    }, [state.currentSong, state.isPlaying, state.musicMetadata])
+
+
+
+
+
+
+
+
+
+
+
+
+
     let userMetadata = state.userData && state.userData[0].user.user_metadata
-    if (userMetadata) {
+    if (userMetadata || state.userSongsStorage) {
         mainUserData = userMetadata
-        state.currentSong = userMetadata.songs[state.songIndex]
+        state.currentSong = state.userSongsStorage[state.songIndex]
+    }
+
+    async function fetchData() {
+        const { data, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
+
+        if (data) dispatch({ type: "storageManage", payload: data })
+        if (error) {
+            dispatch({
+                type: "toastOn",
+                text: "Check your internet connection!",
+                status: 0
+            })
+            setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+        }
     }
 
     useEffect(() => {
         const checkLoginStatus = () => {
             const isLoggedIn = isLogin()
             dispatch({ type: "logCheck", payload: isLogin() })
-            if (isLoggedIn) dispatch({ type: "fetchData", payload: getUserInfo() })
+            if (isLoggedIn) {
+                dispatch({ type: "fetchData", payload: getUserInfo() })
+                fetchData()
+            }
         }
         checkLoginStatus();
     }, [state.updater])

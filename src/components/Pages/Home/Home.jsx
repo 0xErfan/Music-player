@@ -27,9 +27,8 @@ export default function Main() {
     const newSongSearchHandler = () => inputRef.current.value.trim().length && navigate(`/search/${inputRef.current.value}`)
 
     const newSongHandler = async e => {
+
         const selectedFile = e.target.files[0]
-        // const blob = new Blob([selectedFile], { type: "audio/mpeg" });
-        // const songSrc = URL.createObjectURL(blob);
         if (!userData[0]) return
 
         if (selectedFile.type.startsWith("audio/")) {
@@ -57,11 +56,6 @@ export default function Main() {
 
                 try {
 
-                    const { data, error } = await supabase.auth.updateUser({
-                        data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
-                    })
-                    if (error) throw new Error(error)
-
                     dispatch({
                         type: "toastOn",
                         text: "Uploading song...",
@@ -73,6 +67,11 @@ export default function Main() {
                         .upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
 
                     if (uploadError) throw new Error(uploadError)
+                    
+                    const { data, error } = await supabase.auth.updateUser({
+                        data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
+                    })
+                    if (error) throw new Error(error)
 
 
                     dispatch({ type: "updater" })
