@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { mainUserData } from '../ReducerAndContexts/ReducerAndContexts';
 import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContexts';
 
@@ -13,10 +13,21 @@ export default function Nav() {
 
     const [activeNav, steActiveNav] = useState(location.pathname)
     const { currentSong, isPlaying, like, musicMetadata } = useContext(States)
+    const [audioData, setAudioData] = useState({ duration: 0, currentTime: 0 })
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
 
     useEffect(() => steActiveNav(location.pathname), [location.pathname])
+
+    useEffect(() => {
+        const updatedData = { duration: 0, currentTime: 0 }
+        const { duration, currentTime } = musicMetadata
+
+        updatedData.currentTime = currentTime
+        updatedData.duration = duration
+
+        setAudioData({ ...updatedData })
+    }, [musicMetadata.duration, musicMetadata.currentTime])
 
     return (
         <nav onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")} className="fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
@@ -28,12 +39,11 @@ export default function Nav() {
                                 onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
                                 className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'
                             >{isPlaying ? <GiPauseButton /> : <VscDebugStart />}</div>
-
                             <div className='flex-[8]'>
                                 <h3 className='font-bold'>{currentSong.name || "?"}</h3>
                                 <p>{currentSong.artist || "?"}</p>
                             </div>
-                            <div className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 w-[${(musicMetadata.currentTime / musicMetadata.duration) * 100}%] rounded-full`}></div>
+                            <div style={{width: `${(audioData.currentTime / audioData.duration) * 100}%`}} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
                             <div
                                 onClick={like}
                                 className={`flex flex-1 items-center cursor-pointer ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>

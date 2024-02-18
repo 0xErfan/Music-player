@@ -12,7 +12,7 @@ import Toast from '../../Toast/Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const dispatch = useContext(StateDispatcher)
 
@@ -26,7 +26,7 @@ export default function Controller() {
         if (currentTime == duration) {
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
-            dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
+            dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : shouldRepeat ? songIndex : songIndex + 1 })
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
@@ -73,7 +73,10 @@ export default function Controller() {
             </div>
 
             <div className='flex items-center justify-center gap-3 mt-8 ch:cursor-pointer'>
-                <div className='neoM-buttons'><FiRepeat className='size-10 p-[10px]' /></div>
+                <div
+                    onClick={() => dispatch({ type: "shouldRepeatChanger", payload: !shouldRepeat })}
+                    title='Repeat'
+                    className='neoM-buttons'><FiRepeat className={`size-10 p-[10px] duration-200 ${shouldRepeat && "text-primaryOrange"}`} /></div>
                 <div className='neoM-buttons'><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
                     className={`neoM-buttons ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'

@@ -8,6 +8,7 @@ const initialStates = {
     showToast: 0,
     songIndex: 0,
     isShuffle: false,
+    shouldRepeat: false,
     isLogin: false,
     updater: false,
     storageUpdate: false,
@@ -64,6 +65,9 @@ function stateReducer(state, action) {
         }
         case "changeMetadata": {
             return { ...state, musicMetadata: action.payload }
+        }
+        case "shouldRepeatChanger": {
+            return { ...state, shouldRepeat: action.payload }
         }
         case "changeShuffle":
             return { ...state, isShuffle: !state.isShuffle }
