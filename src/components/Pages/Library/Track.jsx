@@ -10,18 +10,18 @@ import Toast from '../../Toast/Toast';
 export default function Track(data) {
 
     const dispatch = useContext(StateDispatcher)
-    const { toastData, userSongsStorage } = useContext(States)
-    const { cover, id, name, artistname, duration, src } = data
+    const { toastData, userSongsStorage, userData } = useContext(States)
+    const { cover, id, name, artistname, duration } = data
 
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const updater = () => { data.onUpdater(id) }
 
-    const deleteHandler = async id => {
-        const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
+    const deleteHandler = async () => {
+        // const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
         // make it separate later
         try {
-            const { data, error } = await supabase.auth.updateUser({ data: { songs: updatedData } })
+            const { data, error } = await supabase.storage.from("users").remove(userData[0].user.email + `/${name}`)
 
             if (error) throw new Error(error)
             dispatch({ type: "updater" })
@@ -61,7 +61,7 @@ export default function Track(data) {
                     <p>{duration ? duration : "00:00"}</p>
                 </div>
             </div>
-            <div onClick={() => deleteHandler(id)} className='flex-[1/2] active:bg-black/25 duration-300 aspect-square rounded-full'>
+            <div onClick={deleteHandler} className='flex-[1/2] active:bg-black/25 duration-300 aspect-square rounded-full'>
                 <PiDotsThreeVerticalBold className='size-[34px] p-1' />
             </div>
         </div>

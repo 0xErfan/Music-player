@@ -125,17 +125,9 @@ export default function MainProvider({ children }) {
         fetchMusic()
     }, [state.currentSong])
 
-
-
-
-
-
-
-
     useEffect(() => {
-        let timer;
-
-        if (state.isPlaying) {
+        let timer, ignore = true;
+        if (state.isPlaying && ignore) {
             audio.current.play()
 
             timer = setInterval(() => {
@@ -147,23 +139,10 @@ export default function MainProvider({ children }) {
                     }
                 })
             }, 1000)
-        } else {
-            audio.current.pause()
-        }
-        return (() => clearInterval(timer))
+        } else audio.current.pause()
+
+        return (() => {clearInterval(timer), ignore = false})
     }, [state.currentSong, state.isPlaying, state.musicMetadata])
-
-
-
-
-
-
-
-
-
-
-
-
 
     let userMetadata = state.userData && state.userData[0].user.user_metadata
     if (userMetadata || state.userSongsStorage) {

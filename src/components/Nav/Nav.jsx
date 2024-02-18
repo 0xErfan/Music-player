@@ -11,7 +11,7 @@ import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContext
 export default function Nav() {
 
     const [activeNav, steActiveNav] = useState(location.pathname)
-    const { currentSong, isPlaying, like } = useContext(States)
+    const { currentSong, isPlaying, like, musicMetadata } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
 
@@ -32,7 +32,7 @@ export default function Nav() {
                                 <h3 className='font-bold'>{currentSong.name || "?"}</h3>
                                 <p>{currentSong.artist || "?"}</p>
                             </div>
-                            <div className='h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 w-1/3 rounded-full'></div>
+                            <div className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 w-[${(musicMetadata.currentTime / musicMetadata.duration) * 100}%] rounded-full`}></div>
                             <div
                                 onClick={like}
                                 className={`flex flex-1 items-center cursor-pointer ${currentSong.liked && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
@@ -41,25 +41,25 @@ export default function Nav() {
                 }
                 <div className='mainNav'>
                     <ul className='grid grid-cols-4 text-xs text-center ch:py-3 ch-hover:bg-[#2E3239] ch:duration-200'>
-                        <Link onClick={() => steActiveNav("/")} to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
+                        <Link to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <AiFillHome className='size-6' />
                             </div>
                             <p>Home</p>
                         </Link>
-                        <Link onClick={() => steActiveNav("player")} to="/player" className={`flex ${activeNav.includes("player") && "activeNav"} flex-col`}>
+                        <Link to="/player" className={`flex ${activeNav.includes("player") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <VscDebugStart className='size-6' />
                             </div>
                             <p>Player</p>
                         </Link>
-                        <Link onClick={() => steActiveNav("search")} to="/search" className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
+                        <Link to="/search" className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <CiSearch className='size-6' />
                             </div>
                             <p>Search</p>
                         </Link>
-                        <Link onClick={() => steActiveNav("account")} to="/account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
+                        <Link to="/account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <FaUser className='size-6' />
                             </div>

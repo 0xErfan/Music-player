@@ -34,7 +34,7 @@ export default function Controller() {
 
         setMusicMetadata(updatedMusicTimer);
 
-    }, [musicMetadata.currentTime, musicMetadata.duration]);
+    }, [musicMetadata.currentTime, musicMetadata.duration], mainUserData);
 
 
     return (
