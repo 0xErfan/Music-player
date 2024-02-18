@@ -3,6 +3,7 @@ import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
 import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
+import { GiPauseButton } from "react-icons/gi";
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast/Toast';
@@ -10,7 +11,7 @@ import Toast from '../../Toast/Toast';
 export default function Track(data) {
 
     const dispatch = useContext(StateDispatcher)
-    const { toastData, userSongsStorage, userData } = useContext(States)
+    const { toastData, userSongsStorage, userData, currentSong, isPlaying } = useContext(States)
     const { cover, id, name, artistname, duration } = data
 
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
@@ -18,12 +19,15 @@ export default function Track(data) {
     const updater = () => { data.onUpdater(id) }
 
     const deleteHandler = async () => {
-        // const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
+        const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
         // make it separate later
         try {
             const { data, error } = await supabase.storage.from("users").remove(userData[0].user.email + `/${name}`)
-
             if (error) throw new Error(error)
+
+            const { updatedSongsData, updatedSongsError } = await supabase.auth.updateUser({ data: { songs: updatedData } })
+            if (updatedSongsError) throw new Error(updatedSongsError)
+
             dispatch({ type: "updater" })
             dispatch({
                 type: "toastOn",
@@ -57,7 +61,13 @@ export default function Track(data) {
                 <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{name ? name : "?"}</h3>
                 <p className='text-sm'>{artistname ? artistname : "?"}</p>
                 <div className='flex gap-2 items-center text-xs'>
-                    <IoTriangle className='rotate-90 size-[10px]' />
+                    {
+                        (currentSong?.name == name && isPlaying) ?
+                            <p className='flex items-center text-red-400'>Now Playing</p>
+                            :
+                            <IoTriangle className='rotate-90 size-[10px]' />
+                    }
+
                     <p>{duration ? duration : "00:00"}</p>
                 </div>
             </div>

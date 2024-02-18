@@ -82,9 +82,8 @@ export default function MainProvider({ children }) {
             try {
 
                 let updatedData = [...mainUserData.songs]
-
                 updatedData.some(song => {
-                    if (song.id == state.currentSong.id) {
+                    if (song.name == state.currentSong.name) {
                         song.liked = !song.liked
                         return true
                     }
@@ -93,6 +92,7 @@ export default function MainProvider({ children }) {
                 const { data, error } = await supabase.auth.updateUser({
                     data: { songs: updatedData }
                 })
+                console.log(data);
                 if (error) throw new Error(error)
             } catch (error) {
                 dispatch({
@@ -121,9 +121,7 @@ export default function MainProvider({ children }) {
         }
     }
 
-    useEffect(() => {
-        fetchMusic()
-    }, [state.currentSong])
+    useEffect(() => { fetchMusic() }, [state.currentSong])
 
     useEffect(() => {
         let timer, ignore = true;
@@ -141,7 +139,7 @@ export default function MainProvider({ children }) {
             }, 1000)
         } else audio.current.pause()
 
-        return (() => {clearInterval(timer), ignore = false})
+        return (() => { clearInterval(timer), ignore = false })
     }, [state.currentSong, state.isPlaying, state.musicMetadata])
 
     let userMetadata = state.userData && state.userData[0].user.user_metadata

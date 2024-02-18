@@ -76,8 +76,8 @@ export default function Controller() {
                 <div className='neoM-buttons'><FiRepeat className='size-10 p-[10px]' /></div>
                 <div className='neoM-buttons'><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
-                    className={`neoM-buttons ${currentSong?.liked && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
-                        onClick={like}
+                    className={`neoM-buttons ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
+                        onClick={() => like(currentSong.name)}
                     />
                 </div>
                 <div className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>

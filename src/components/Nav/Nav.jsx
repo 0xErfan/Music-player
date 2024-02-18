@@ -6,6 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { mainUserData } from '../ReducerAndContexts/ReducerAndContexts';
 import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContexts';
 
 export default function Nav() {
@@ -35,7 +36,7 @@ export default function Nav() {
                             <div className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 w-[${(musicMetadata.currentTime / musicMetadata.duration) * 100}%] rounded-full`}></div>
                             <div
                                 onClick={like}
-                                className={`flex flex-1 items-center cursor-pointer ${currentSong.liked && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
+                                className={`flex flex-1 items-center cursor-pointer ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
                         </div>
                     )
                 }
