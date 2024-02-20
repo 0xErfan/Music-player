@@ -26,7 +26,8 @@ export default {
                 "primary": "#2C2F33",
                 "primaryWhite": "#DFDFDF",
                 "primaryOrange": "#DA510B"
-            }
+            },
+            fontFamily: { "josefinSans": "josefinSans", "anta": "anta" }
         },
     },
 

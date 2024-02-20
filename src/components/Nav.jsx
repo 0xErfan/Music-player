@@ -6,8 +6,8 @@ import { CiSearch } from "react-icons/ci";
 import { AiFillHome } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
-import { mainUserData } from '../ReducerAndContexts/ReducerAndContexts';
-import { States, StateDispatcher } from '../ReducerAndContexts/ReducerAndContexts';
+import { mainUserData } from './ReducerAndContexts';
+import { States, StateDispatcher } from './ReducerAndContexts';
 
 export default function Nav() {
 
@@ -30,7 +30,7 @@ export default function Nav() {
     }, [musicMetadata.duration, musicMetadata.currentTime])
 
     return (
-        <nav onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")} className="fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
+        <nav onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")} className="navbar fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
             <div>
                 {
                     currentSong && (

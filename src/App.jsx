@@ -1,7 +1,7 @@
 import "./Input.css"
-import Nav from "./components/Nav/Nav"
+import Nav from "./components/Nav"
 import { useRoutes } from "react-router-dom"
-import MainProvider from "./components/ReducerAndContexts/ReducerAndContexts"
+import MainProvider from "./components/ReducerAndContexts"
 import routesData from "./routes"
 
 function App() {

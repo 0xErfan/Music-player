@@ -1,5 +1,5 @@
 import Controller from './Controller';
-import { States } from '../../ReducerAndContexts/ReducerAndContexts';
+import { States } from '../../ReducerAndContexts';
 import { useContext } from 'react';
 import { FiMusic } from "react-icons/fi";
 export default function Music() {

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { FaCheck } from "react-icons/fa";
 import { MdError } from "react-icons/md";
-import { States } from '../ReducerAndContexts/ReducerAndContexts';
+import { States } from './ReducerAndContexts';
 import { InfinitySpin } from 'react-loader-spinner';
 
 export default function ({ text, status, loader }) {

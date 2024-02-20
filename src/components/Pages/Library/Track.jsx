@@ -2,11 +2,11 @@ import React, { useContext, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
-import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
+import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { GiPauseButton } from "react-icons/gi";
-import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
+import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
-import Toast from '../../Toast/Toast';
+import Toast from '../../Toast';
 
 export default function Track(data) {
 

@@ -3,9 +3,9 @@ import { FaLock } from "react-icons/fa6";
 import { MdDownloadDone } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineMail } from "react-icons/hi";
-import { StateDispatcher, States, mainUserData } from '../ReducerAndContexts/ReducerAndContexts';
+import { StateDispatcher, States, mainUserData } from '../ReducerAndContexts';
 import { supabase } from '../../client';
-import Toast from '../Toast/Toast';
+import Toast from '../Toast';
 
 export default function Login() {
 

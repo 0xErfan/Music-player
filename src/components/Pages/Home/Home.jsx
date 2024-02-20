@@ -10,9 +10,9 @@ import { FaHeart } from "react-icons/fa";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link, useNavigate } from 'react-router-dom';
-import Toast from '../../Toast/Toast';
-import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
-import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
+import Toast from '../../Toast';
+import { StateDispatcher, States } from '../../ReducerAndContexts';
+import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
 
 export default function Main() {

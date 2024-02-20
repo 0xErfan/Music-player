@@ -6,15 +6,18 @@ import { GiPauseButton } from "react-icons/gi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
-import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndContexts';
-import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
-import { musicUrl } from '../../ReducerAndContexts/ReducerAndContexts';
-import Toast from '../../Toast/Toast';
+import { States, StateDispatcher } from '../../ReducerAndContexts';
+import { mainUserData } from '../../ReducerAndContexts';
+import { musicUrl } from '../../ReducerAndContexts';
+import Toast from '../../Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore, setMusicVolume } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
+    const [showVolume, setShowVolume] = useState(false)
+    const [volumeValue, setVolumeValue] = useState(6)
+
     const dispatch = useContext(StateDispatcher)
 
     useEffect(() => {
@@ -40,8 +43,15 @@ export default function Controller() {
     const shareMusic = async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
 
     return (
-        <>
+        <div className='relative'>
             <Toast key="toast" text={toastData.text} status={toastData.status} />
+            <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
+            <div className={`flex items-center justify-center -rotate-90 w-[230px] duration-200 transition-all rounded-md absolute ${showVolume ? "-top-[12rem] opacity-1" : "opacity-0 -top-[42rem]"} -right-20 bg-transparent backdrop-blur-md h-12 z-50`}>
+                <input
+                    onChange={e => { setMusicVolume(e.target.value), setVolumeValue(e.target.value)}}
+                    value={volumeValue}
+                    className='p-4 size-[90%]' max={10} type="range" />
+            </div>
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
                     {/*create padStart generator */}
@@ -86,7 +96,7 @@ export default function Controller() {
                     onClick={() => dispatch({ type: "shouldRepeatChanger", payload: !shouldRepeat })}
                     title='Repeat'
                     className='neoM-buttons'><FiRepeat className={`size-10 p-[10px] duration-200 ${shouldRepeat && "text-primaryOrange"}`} /></div>
-                <div className='neoM-buttons'><IoVolumeHigh className='size-10 p-[10px]' /></div>
+                <div onClick={() => setShowVolume(preve => !preve)} className={`neoM-buttons ${showVolume && "text-primaryOrange"}`}><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
                     className={`neoM-buttons ${mainUserData?.songs.find(song => song.liked && song.name == currentSong?.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
                         onClick={() => like(currentSong.name)}
@@ -94,6 +104,6 @@ export default function Controller() {
                 </div>
                 <div onClick={() => shareMusic(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
             </div>
-        </>
+        </div>
     )
 }

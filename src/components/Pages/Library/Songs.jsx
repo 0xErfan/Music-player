@@ -6,7 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import { VscDebugStart } from "react-icons/vsc";
 import { GiPauseButton } from "react-icons/gi";
 import Track from './Track';
-import { StateDispatcher, States } from '../../ReducerAndContexts/ReducerAndContexts';
+import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { getUserInfo, isLogin } from '../../../utils';
 
 export default function Songs() {
@@ -53,6 +53,9 @@ export default function Songs() {
                     filteredSongs = mainUserData.filter(song => song.favorite);
                     break;
                 case "favorites":
+                    filteredSongs = mainUserData.filter(song => song.liked);
+                    break;
+                case "/":
                     filteredSongs = mainUserData.filter(song => song.liked);
                     break;
                 default:

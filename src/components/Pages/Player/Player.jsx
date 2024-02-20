@@ -4,7 +4,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef } from 'react';
 import { supabase } from '../../../client';
-import { States, mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
+import { States, mainUserData } from '../../ReducerAndContexts';
 import { getUserInfo } from '../../../utils';
 
 export default function Player() {

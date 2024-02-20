@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer {
+    @font-face {
+        font-family: "josefinSans";
+        src: url("/fonts/JosefinSans-VariableFont_wght.ttf");
+    }
+
+    @font-face {
+        font-family: "anta";
+        src: url("/fonts/Anta-Regular.ttf");
+    }
+}
+
 body {
-    @apply bg-primary text-primaryWhite
+    @apply bg-primary text-primaryWhite font-josefinSans
+}
+
+.navbar {
+    @apply font-anta
 }
 
 ::-webkit-scrollbar {

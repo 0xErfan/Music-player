@@ -5,8 +5,8 @@ import { FaLock } from "react-icons/fa6";
 import { MdDownloadDone } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../client';
-import { StateDispatcher, States } from '../ReducerAndContexts/ReducerAndContexts';
-import Toast from '../Toast/Toast';
+import { StateDispatcher, States } from '../ReducerAndContexts';
+import Toast from '../Toast';
 
 export default function SignUp() {
     const { toastData } = useContext(States)
