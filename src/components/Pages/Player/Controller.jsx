@@ -8,11 +8,12 @@ import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
 import { States, StateDispatcher } from '../../ReducerAndContexts/ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts/ReducerAndContexts';
+import { musicUrl } from '../../ReducerAndContexts/ReducerAndContexts';
 import Toast from '../../Toast/Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const dispatch = useContext(StateDispatcher)
 
@@ -36,25 +37,30 @@ export default function Controller() {
 
     }, [musicMetadata.currentTime, musicMetadata.duration], mainUserData);
 
+    const shareMusic = async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
 
     return (
         <>
-            <Toast text={toastData.text} status={toastData.status} />
+            <Toast key="toast" text={toastData.text} status={toastData.status} />
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
+                    {/*create padStart generator */}
                     <p>{`${musicTimer.currentMin.toString().padStart(2, "0")}:${musicTimer.currentSec.toString().padStart(2, "0")}`}</p>
-                    <p>{`${musicTimer.min}:${musicTimer.sec}`}</p>
+                    <p>{`${musicTimer.min.toString().padStart(2, "0")}:${musicTimer.sec.toString().padStart(2, "0")}`}</p>
                 </div>
                 <input
                     style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100}%)` }}
                     onChange={e => setCurrentTime(e.target.value)}
-                    value={musicMetadata.currentTime}
-                    className='timeLine' min={0} max={musicMetadata.duration} type="range"></input>
+                    value={musicMetadata.currentTime ?? 0}
+                    className='timeLine' min={0} max={musicMetadata.duration ? musicMetadata.duration : ""} type="range"></input>
             </div>
 
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
                 <div
-                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })}
+                    onClick={() => {
+                        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+                        dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
+                    }}
                     className='neoM-buttons'><IoPlayBackSharp className='size-12 p-4' />
                 </div>
 
@@ -67,7 +73,10 @@ export default function Controller() {
                     }
                 </div>
                 <div
-                    onClick={() => dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })}
+                    onClick={() => {
+                        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+                        dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
+                    }}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
             </div>
@@ -79,11 +88,11 @@ export default function Controller() {
                     className='neoM-buttons'><FiRepeat className={`size-10 p-[10px] duration-200 ${shouldRepeat && "text-primaryOrange"}`} /></div>
                 <div className='neoM-buttons'><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
-                    className={`neoM-buttons ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
+                    className={`neoM-buttons ${mainUserData?.songs.find(song => song.liked && song.name == currentSong?.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
                         onClick={() => like(currentSong.name)}
                     />
                 </div>
-                <div className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
+                <div onClick={() => shareMusic(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
             </div>
         </>
     )

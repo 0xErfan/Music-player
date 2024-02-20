@@ -39,7 +39,7 @@ export default function Main() {
                 dispatch({
                     type: "toastOn",
                     text: "This music already exist !",
-                    status: 0
+                    status: 0,
                 })
                 e.target.value = ""  //reest the input file value to be able check next user selection via onchange
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
@@ -58,8 +58,9 @@ export default function Main() {
 
                     dispatch({
                         type: "toastOn",
-                        text: "Uploading song...",
-                        status: 1 // add a loader later
+                        text: "Uploading song, please wait...",
+                        status: 1,
+                        loader: 1
                     })
 
                     const { uploadData, uploadError } = await supabase.storage
@@ -107,7 +108,7 @@ export default function Main() {
 
     return (
         <main className='min-h-screen'>
-            <Toast text={toastData.text} status={toastData.status} />
+            <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
             <section className='container overflow-y-hidden'>
                 <div className='flex items-center mt-2 gap-2 h-12'>
                     <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>

@@ -3,25 +3,10 @@ import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../../utils';
 import { supabase } from '../../client';
 
-const initialStates = {
-    isPlaying: 0,
-    showToast: 0,
-    songIndex: 0,
-    isShuffle: false,
-    shouldRepeat: false,
-    isLogin: false,
-    updater: false,
-    storageUpdate: false,
-    currentSong: null,
-    musicMetadata: { currentTime: null, duration: null },
-    toastData: { text: "", status: 1 },
-    userData: null,
-    userSongsStorage: []
-}
-
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
 export let mainUserData;
+export let musicUrl;
 
 function stateReducer(state, action) {
     switch (action.type) {
@@ -29,20 +14,20 @@ function stateReducer(state, action) {
             return { ...state, isPlaying: 0 };
         }
         case "play": {
-            return { ...state, isPlaying: 1 }
+            return { ...state, isPlaying: 1, shouldIgnore: false }
         }
         case "newTrack": {
             return {
                 ...state,
                 showToast: 1,
-                toastData: { ...state.toastData, text: action.text, status: action.status }
+                toastData: { ...state.toastData, text: action.text, status: action.status, loader: action.loader }
             }
         }
         case "toastOn": {
             return {
                 ...state,
                 showToast: 1,
-                toastData: { ...state.toastData, text: action.text, status: action.status }
+                toastData: { ...state.toastData, text: action.text, status: action.status, loader: action.loader }
             }
         }
         case "toastOff": {
@@ -61,13 +46,16 @@ function stateReducer(state, action) {
             return { ...state, userSongsStorage: action.payload }
         }
         case "changeCurrent": {
-            return { ...state, songIndex: action.payload, isPlaying: true }
+            return { ...state, songIndex: action.payload, isPlaying: state.shouldIgnore ? 0 : 1 }
         }
         case "changeMetadata": {
             return { ...state, musicMetadata: action.payload }
         }
         case "shouldRepeatChanger": {
             return { ...state, shouldRepeat: action.payload }
+        }
+        case "shouldIgnoreDisabler": {
+            return { ...state, shouldIgnore: false }
         }
         case "changeShuffle":
             return { ...state, isShuffle: !state.isShuffle }
@@ -78,7 +66,26 @@ function stateReducer(state, action) {
 }
 
 export default function MainProvider({ children }) {
-    const [state, dispatch] = useReducer(stateReducer, initialStates)
+
+    const [state, dispatch] = useReducer(stateReducer, {
+        isPlaying: 0,
+        showToast: 0,
+        songIndex: 0,
+        isShuffle: false,
+        shouldRepeat: false,
+        shouldIgnore: true,
+        isLogin: false,
+        updater: false,
+        storageUpdate: false,
+        storageUpdate: false,
+        currentSong: null,
+        musicMetadata: { currentTime: null, duration: null },
+        toastData: { text: "", status: 1, loader: 1 },
+        userData: null,
+        userSongsStorage: []
+    })
+
+    let audio = useRef(new Audio());
 
     state.like = async () => {
 
@@ -116,11 +123,9 @@ export default function MainProvider({ children }) {
         dispatch({ type: "play" })
     }
 
-    let audio = useRef(new Audio());
-
     const fetchMusic = async () => {
         if (state.userData && state.currentSong) {
-            const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
+            musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
             audio.current.src = musicUrl
         }
     }
@@ -130,7 +135,7 @@ export default function MainProvider({ children }) {
     useEffect(() => {
         let timer, ignore = true;
         if (state.isPlaying && ignore) {
-            audio.current.play()
+            !state.shouldIgnore && audio.current.play()
 
             timer = setInterval(() => {
                 dispatch({
@@ -141,7 +146,7 @@ export default function MainProvider({ children }) {
                     }
                 })
             }, 1000)
-        } else audio.current.pause()
+        } else !state.shouldIgnore && audio.current.pause()
 
         return (() => { clearInterval(timer), ignore = false })
     }, [state.currentSong, state.isPlaying, state.musicMetadata])
