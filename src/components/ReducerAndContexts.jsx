@@ -58,10 +58,10 @@ function stateReducer(state, action) {
             return { ...state, shouldIgnore: false }
         }
         case "volumeChanger": {
-            return { ...state, musicVolume: action.payload }
+            return { ...state, musicVolume: +action.payload }
         }
         case "changeShuffle":
-            return { ...state, isShuffle: !state.isShuffle }
+            return { ...state, isShuffle: action.payload }
         default: {
             throw new Error("invalid action type!")
         }
@@ -107,7 +107,6 @@ export default function MainProvider({ children }) {
                 const { data, error } = await supabase.auth.updateUser({
                     data: { songs: updatedData }
                 })
-                console.log(data);
                 if (error) throw new Error(error)
             } catch (error) {
                 dispatch({

@@ -48,7 +48,7 @@ export default function Track(data) {
     }
 
     return (
-        <div onClick={palyerHandler} className='flex items-center gap-3 max-w-full cursor-pointer'>
+        <div className='flex items-center gap-3 max-w-full cursor-pointer'>
             <Toast text={toastData.text} status={toastData.status} />
             {
                 cover ?
@@ -57,7 +57,7 @@ export default function Track(data) {
                     <div className='flex duration-300'><FiMusic className='size-[34px] p-1' /></div>
             }
 
-            <div className='flex-[7] text-sm text-gray-200/50'>
+            <div onClick={palyerHandler} className='flex-[7] text-sm text-gray-200/50'>
                 <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{name ? name : "?"}</h3>
                 <p className='text-sm'>{artistname ? artistname : "?"}</p>
                 <div className='flex gap-2 items-center text-xs'>

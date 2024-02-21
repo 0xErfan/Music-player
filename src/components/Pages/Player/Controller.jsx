@@ -13,7 +13,7 @@ import Toast from '../../Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore, musicVolume } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const [showVolume, setShowVolume] = useState(false)
     const dispatch = useContext(StateDispatcher)
@@ -26,9 +26,17 @@ export default function Controller() {
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
 
         if (currentTime == duration) {
+            let newSongIndex;
+
+            if (shouldRepeat) {
+                newSongIndex = songIndex
+            } else if (isShuffle) {
+                newSongIndex = Math.floor(Math.random() * mainUserData?.songs.length)
+            } else newSongIndex = songIndex + 1
+            
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
-            dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : shouldRepeat ? songIndex : songIndex + 1 })
+            dispatch({ type: "changeCurrent", payload: newSongIndex })
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
@@ -91,7 +99,7 @@ export default function Controller() {
 
             <div className='flex items-center justify-center gap-3 mt-8 ch:cursor-pointer'>
                 <div
-                    onClick={() => dispatch({ type: "shouldRepeatChanger", payload: !shouldRepeat })}
+                    onClick={() => { dispatch({ type: "shouldRepeatChanger", payload: !shouldRepeat }), dispatch({ type: "changeShuffle", payload: false }) }}
                     title='Repeat'
                     className='neoM-buttons'><FiRepeat className={`size-10 p-[10px] duration-200 ${shouldRepeat && "text-primaryOrange"}`} /></div>
                 <div onClick={() => setShowVolume(preve => !preve)} className={`neoM-buttons ${showVolume && "text-primaryOrange"}`}><IoVolumeHigh className='size-10 p-[10px]' /></div>

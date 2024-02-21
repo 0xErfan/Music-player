@@ -80,7 +80,7 @@ export default function Songs() {
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
 
-                    <div onClick={() => dispatch({ type: "changeShuffle" })} className={`flex items-center justify-center bg-primary neoM-buttons ${isShuffle && "text-primaryOrange"} duration-200 rounded-full ch:size-7 p-2`}><LiaRandomSolid /></div>
+                    <div onClick={() => { dispatch({ type: "changeShuffle", payload: !isShuffle }), dispatch({ type: "shouldRepeatChanger", payload: isShuffle && false }) }} className={`flex items-center justify-center bg-primary neoM-buttons ${isShuffle && "text-primaryOrange"} duration-200 rounded-full ch:size-7 p-2`}><LiaRandomSolid /></div>
                     <div
                         onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
                         className='flex items-center justify-center text-primary bg-primaryWhite rounded-full ch:size-7 p-2'>
