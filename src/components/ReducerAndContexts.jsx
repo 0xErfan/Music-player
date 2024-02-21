@@ -57,6 +57,9 @@ function stateReducer(state, action) {
         case "shouldIgnoreDisabler": {
             return { ...state, shouldIgnore: false }
         }
+        case "volumeChanger": {
+            return { ...state, musicVolume: action.payload }
+        }
         case "changeShuffle":
             return { ...state, isShuffle: !state.isShuffle }
         default: {
@@ -74,6 +77,7 @@ export default function MainProvider({ children }) {
         isShuffle: false,
         shouldRepeat: false,
         shouldIgnore: true,
+        musicVolume: 6,
         isLogin: false,
         updater: false,
         storageUpdate: false,
@@ -132,7 +136,7 @@ export default function MainProvider({ children }) {
         }
     }
 
-    useEffect(() => { fetchMusic() }, [state.currentSong])
+    useEffect(() => { fetchMusic() }, [state.currentSong?.name])
 
     useEffect(() => {
         let timer, ignore = true;

@@ -30,7 +30,10 @@ export default function Nav() {
     }, [musicMetadata.duration, musicMetadata.currentTime])
 
     return (
-        <nav onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")} className="navbar fixed bottom-0 right-0 left-0 z-40 text-primaryWhite">
+        <nav
+            onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")}
+            className="navbar fixed bottom-0 left-0 right-0 z-30 text-primaryWhite">
+
             <div>
                 {
                     currentSong && (
@@ -43,7 +46,7 @@ export default function Nav() {
                                 <h3 className='font-bold'>{currentSong.name || "?"}</h3>
                                 <p>{currentSong.artist || "?"}</p>
                             </div>
-                            <div style={{width: `${(audioData.currentTime / audioData.duration) * 100}%`}} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
+                            <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
                             <div
                                 onClick={like}
                                 className={`flex flex-1 items-center cursor-pointer ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
@@ -52,25 +55,25 @@ export default function Nav() {
                 }
                 <div className='mainNav'>
                     <ul className='grid grid-cols-4 text-xs text-center ch:py-3 ch-hover:bg-[#2E3239] ch:duration-200'>
-                        <Link to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
+                        <Link replace={true} to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <AiFillHome className='size-6' />
                             </div>
                             <p>Home</p>
                         </Link>
-                        <Link to="/player" className={`flex ${activeNav.includes("player") && "activeNav"} flex-col`}>
+                        <Link to="/player" replace={true} className={`flex ${activeNav.includes("player") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <VscDebugStart className='size-6' />
                             </div>
                             <p>Player</p>
                         </Link>
-                        <Link to="/search" className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
+                        <Link to="/search" replace={true} className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <CiSearch className='size-6' />
                             </div>
                             <p>Search</p>
                         </Link>
-                        <Link to="/account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
+                        <Link to="/account" replace={true} className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <FaUser className='size-6' />
                             </div>

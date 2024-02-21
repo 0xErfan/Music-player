@@ -26,7 +26,7 @@ export default function Songs() {
             const userData = getUserInfo().user.user_metadata;
             setMainUserData(userData.songs);
         } else {
-            navigate("/logIn", { replace: true });
+            navigate("/logIn");
         }
     }, [update]);
 
@@ -70,7 +70,7 @@ export default function Songs() {
         <>
             <section className='container'>
                 <div className='flex items-center gap-6 my-6'>
-                    <div onClick={() => navigate(-1, { replace: true })} className='flex cursor-pointer items-center justify-center bg-primary neoM-buttons rounded-full ch:size-8 p-2'><IoArrowBack /></div>
+                    <div onClick={() => navigate(-1)} className='flex cursor-pointer items-center justify-center bg-primary neoM-buttons rounded-full ch:size-8 p-2'><IoArrowBack /></div>
                     <h3 className='font-bold text-2xl capitalize'>{params.type || "All songs"}</h3>
                 </div>
 

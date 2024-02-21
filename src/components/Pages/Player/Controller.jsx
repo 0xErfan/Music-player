@@ -13,11 +13,9 @@ import Toast from '../../Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore, setMusicVolume } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, shouldIgnore, musicVolume } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const [showVolume, setShowVolume] = useState(false)
-    const [volumeValue, setVolumeValue] = useState(6)
-
     const dispatch = useContext(StateDispatcher)
 
     useEffect(() => {
@@ -48,8 +46,8 @@ export default function Controller() {
             <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
             <div className={`flex items-center justify-center -rotate-90 w-[230px] duration-200 transition-all rounded-md absolute ${showVolume ? "-top-[12rem] opacity-1" : "opacity-0 -top-[42rem]"} -right-20 bg-transparent backdrop-blur-md h-12 z-50`}>
                 <input
-                    onChange={e => { setMusicVolume(e.target.value), setVolumeValue(e.target.value)}}
-                    value={volumeValue}
+                    onChange={e => dispatch({ type: "volumeChanger", payload: e.target.value })}
+                    value={musicVolume}
                     className='p-4 size-[90%]' max={10} type="range" />
             </div>
             <div className='flex flex-col mb-16 space-y-2'>

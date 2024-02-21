@@ -76,7 +76,8 @@ body {
     bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #DA510B;
+    background: #2C2F33;
+    box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }
 
 .mainNav {

@@ -50,7 +50,7 @@ export default function SignUp() {
 
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
-                navigate("/", { replace: true })
+                navigate("/")
                 setIsSubmitting("")
             }, 2000);
 

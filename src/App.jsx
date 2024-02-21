@@ -9,8 +9,8 @@ function App() {
 
     return (
         <MainProvider>
-            <Nav />
             {routes}
+            <Nav />
         </MainProvider>
     )
 }

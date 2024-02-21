@@ -11,8 +11,9 @@ import Login from "./components/Authentication/LogIn"
 const routes = [
     { path: "/", element: <Home /> },
     { path: "/player", element: <Player /> },
-    { path: "/search/", element: <Search /> },
+    { path: "/search", element: <Search /> },
     { path: "/search/:text", element: <Search /> },
+    { path: "/songs", element: <Songs /> },
     { path: "/songs/:type", element: <Songs /> },
     { path: "/albums", element: <Albums /> },
     { path: "/artists", element: <Artists /> },

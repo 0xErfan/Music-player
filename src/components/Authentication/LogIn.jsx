@@ -37,7 +37,7 @@ export default function Login() {
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
                 dispatch({ type: "updater" })
-                navigate("/", { replace: true })
+                navigate("/")
                 setIsSubmitting("")
             }, 2000);
             dispatch({ type: "updater" })
