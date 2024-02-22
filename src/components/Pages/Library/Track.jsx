@@ -4,19 +4,30 @@ import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
 import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { GiPauseButton } from "react-icons/gi";
+import { FaDownload } from "react-icons/fa6";
+import { MdPlaylistAdd } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast';
 
 export default function Track(data) {
 
+    const [showDetails, setShowDetails] = useState(false)
+    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like } = useContext(States)
     const dispatch = useContext(StateDispatcher)
-    const { toastData, userSongsStorage, userData, currentSong, isPlaying } = useContext(States)
-    const { cover, id, name, artistname, duration } = data
+    const { cover, id, name, artistname, duration, favorite } = data
 
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const updater = () => { data.onUpdater(id) }
+
+    const songLikeToggler = async () => {
+        await like("favorite", name)
+        dispatch({ type: "filteredSongsUpdater" })
+        setShowDetails(false)
+    }
 
     const deleteHandler = async () => {
         const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
@@ -48,8 +59,9 @@ export default function Track(data) {
     }
 
     return (
-        <div className='flex items-center gap-3 max-w-full cursor-pointer'>
+        <div className='flex items-center gap-3'>
             <Toast text={toastData.text} status={toastData.status} />
+            <div onClick={() => setShowDetails(false)} className={` ${showDetails ? "fixed" : "hidden"} inset-0 z-30`}></div>
             {
                 cover ?
                     <img className='flex-1 shrink-0 size-14 rounded-sm object-cover aspect-square' src={cover} alt="img" />
@@ -57,7 +69,7 @@ export default function Track(data) {
                     <div className='flex duration-300'><FiMusic className='size-[34px] p-1' /></div>
             }
 
-            <div onClick={palyerHandler} className='flex-[7] text-sm text-gray-200/50'>
+            <div onClick={palyerHandler} className='flex-[7] text-sm text-gray-200/50 cursor-pointer'>
                 <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{name ? name : "?"}</h3>
                 <p className='text-sm'>{artistname ? artistname : "?"}</p>
                 <div className='flex gap-2 items-center text-xs'>
@@ -71,8 +83,16 @@ export default function Track(data) {
                     <p>{duration ? duration : "00:00"}</p>
                 </div>
             </div>
-            <div onClick={deleteHandler} className='flex-[1/2] active:bg-black/25 duration-300 aspect-square rounded-full'>
-                <PiDotsThreeVerticalBold className='size-[34px] p-1' />
+            <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 z-40 relative aspect-square rounded-full'>
+                <PiDotsThreeVerticalBold className='size-[34px] p-1 z-0 cursor-pointer' />
+                <div className={`inset-0 -left-[185px] z-40 ${showDetails ? "absolute" : "hidden"} neoM-bg h-36 p-4 -my-4 z-0`}>
+                    <ul className='space-y-2 ch:flex ch:items-center ch:gap-2 ch:justify-between ch:cursor-pointer ch:duration-200 ch:opacity-70 ch-hover:opacity-100'>
+                        <li onClick={songLikeToggler}>{favorite ? "Remove from" : "Add to"} playlist <MdPlaylistAdd className='shrink-0' /></li>
+                        <li>Download <FaDownload /></li>
+                        <li>Share <IoMdShare /></li>
+                        <li className='text-primaryOrange ' onClick={deleteHandler}>Delete <MdDelete /></li>
+                    </ul>
+                </div>
             </div>
         </div>
     )

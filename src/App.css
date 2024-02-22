@@ -614,8 +614,16 @@ video {
   inset: 0px;
 }
 
+.-left-\[185px\] {
+  left: -185px;
+}
+
 .-left-\[300px\] {
   left: -300px;
+}
+
+.-right-20 {
+  right: -5rem;
 }
 
 .-top-\[12rem\] {
@@ -638,16 +646,20 @@ video {
   left: 1rem;
 }
 
-.left-\[9rem\] {
-  left: 9rem;
-}
-
 .right-0 {
   right: 0px;
 }
 
 .top-8 {
   top: 2rem;
+}
+
+.z-0 {
+  z-index: 0;
+}
+
+.z-30 {
+  z-index: 30;
 }
 
 .z-40 {
@@ -660,6 +672,11 @@ video {
 
 .m-auto {
   margin: auto;
+}
+
+.-my-4 {
+  margin-top: -1rem;
+  margin-bottom: -1rem;
 }
 
 .my-14 {
@@ -816,6 +833,10 @@ video {
   height: 6rem;
 }
 
+.h-36 {
+  height: 9rem;
+}
+
 .h-4\/5 {
   height: 80%;
 }
@@ -866,10 +887,6 @@ video {
 
 .max-w-\[80\%\] {
   max-width: 80%;
-}
-
-.max-w-full {
-  max-width: 100%;
 }
 
 .flex-1 {
@@ -1301,11 +1318,33 @@ video {
   transition-duration: 300ms;
 }
 
+@layer {
+  @font-face {
+    font-family: "josefinSans";
+
+    src: url("/fonts/JosefinSans-VariableFont_wght.ttf");
+  }
+
+  @font-face {
+    font-family: "anta";
+
+    src: url("/fonts/Anta-Regular.ttf");
+  }
+}
+
 body {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   --tw-bg-opacity: 1;
   background-color: rgb(44 47 51 / var(--tw-bg-opacity));
+  font-family: josefinSans;
   --tw-text-opacity: 1;
   color: rgb(223 223 223 / var(--tw-text-opacity));
+}
+
+.navbar {
+  font-family: anta;
 }
 
 ::-webkit-scrollbar {
@@ -1368,7 +1407,8 @@ body {
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #DA510B;
+  background: #2C2F33;
+  box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }
 
 .mainNav {
@@ -1413,6 +1453,10 @@ body {
   background-color: rgb(0 0 0 / 0.25);
 }
 
+.ch\:flex > * {
+  display: flex;
+}
+
 .ch\:size-5 > * {
   width: 1.25rem;
   height: 1.25rem;
@@ -1440,6 +1484,14 @@ body {
   justify-content: center;
 }
 
+.ch\:justify-between > * {
+  justify-content: space-between;
+}
+
+.ch\:gap-2 > * {
+  gap: 0.5rem;
+}
+
 .ch\:break-words > * {
   overflow-wrap: break-word;
 }
@@ -1453,6 +1505,10 @@ body {
   padding-bottom: 0.75rem;
 }
 
+.ch\:opacity-70 > * {
+  opacity: 0.7;
+}
+
 .ch\:duration-200 > * {
   transition-duration: 200ms;
 }
@@ -1460,4 +1516,8 @@ body {
 .ch-hover\:bg-\[\#2E3239\] > *:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(46 50 57 / var(--tw-bg-opacity));
+}
+
+.ch-hover\:opacity-100 > *:hover {
+  opacity: 1;
 }

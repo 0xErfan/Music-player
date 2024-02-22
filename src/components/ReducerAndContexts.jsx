@@ -39,6 +39,9 @@ function stateReducer(state, action) {
         case "updater": {
             return { ...state, updater: !state.updater }
         }
+        case "filteredSongsUpdater": {
+            return { ...state, filteredSongsUpdater: !state.filteredSongsUpdater }
+        }
         case "fetchData": {
             return { ...state, userData: [action.payload] }
         }
@@ -80,26 +83,30 @@ export default function MainProvider({ children }) {
         musicVolume: 6,
         isLogin: false,
         updater: false,
+        filteredSongsUpdater: false,
         storageUpdate: false,
         storageUpdate: false,
         currentSong: null,
         musicMetadata: { currentTime: null, duration: null },
-        toastData: { text: "", status: 1, loader: 1 },
+        toastData: { text: null, status: 0, loader: 0 },
         userData: null,
         userSongsStorage: []
     })
 
     let audio = useRef(new Audio());
 
-    state.like = async () => {
+    state.setMusicVolume = (volume) => { audio.current.volume = volume }
+
+    state.like = async (action, name) => {
 
         if (mainUserData.songs.length) {
             try {
 
                 let updatedData = [...mainUserData.songs]
+
                 updatedData.some(song => {
-                    if (song.name == state.currentSong.name) {
-                        song.liked = !song.liked
+                    if (song.name == name) {
+                        song[action] = !song[action]
                         return true
                     }
                 })
@@ -108,6 +115,7 @@ export default function MainProvider({ children }) {
                     data: { songs: updatedData }
                 })
                 if (error) throw new Error(error)
+                dispatch({ type: "filteredSongsUpdater" })
             } catch (error) {
                 dispatch({
                     type: "toastOn",
@@ -126,8 +134,6 @@ export default function MainProvider({ children }) {
         dispatch({ type: "play" })
     }
 
-    state.setMusicVolume = volume => audio.current.volume = volume / 10
-
     const fetchMusic = async () => {
         if (state.userData && state.currentSong) {
             musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
@@ -140,7 +146,7 @@ export default function MainProvider({ children }) {
     useEffect(() => {
         let timer, ignore = true;
         if (state.isPlaying && ignore) {
-            !state.shouldIgnore && audio.current.play()
+            !state.shouldIgnore && audio.current.play().catch(err => {})
 
             timer = setInterval(() => {
                 dispatch({

@@ -13,7 +13,7 @@ import Toast from '../../Toast';
 
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume, setMusicVolume } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const [showVolume, setShowVolume] = useState(false)
     const dispatch = useContext(StateDispatcher)
@@ -33,7 +33,7 @@ export default function Controller() {
             } else if (isShuffle) {
                 newSongIndex = Math.floor(Math.random() * mainUserData?.songs.length)
             } else newSongIndex = songIndex + 1
-            
+
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
             dispatch({ type: "changeCurrent", payload: newSongIndex })
@@ -54,7 +54,7 @@ export default function Controller() {
             <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
             <div className={`flex items-center justify-center -rotate-90 w-[230px] duration-200 transition-all rounded-md absolute ${showVolume ? "-top-[12rem] opacity-1" : "opacity-0 -top-[42rem]"} -right-20 bg-transparent backdrop-blur-md h-12 z-50`}>
                 <input
-                    onChange={e => dispatch({ type: "volumeChanger", payload: e.target.value })}
+                    onChange={e => { dispatch({ type: "volumeChanger", payload: e.target.value }), setMusicVolume(e.target.value / 10) }}
                     value={musicVolume}
                     className='p-4 size-[90%]' max={10} type="range" />
             </div>
@@ -105,7 +105,7 @@ export default function Controller() {
                 <div onClick={() => setShowVolume(preve => !preve)} className={`neoM-buttons ${showVolume && "text-primaryOrange"}`}><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
                     className={`neoM-buttons ${mainUserData?.songs.find(song => song.liked && song.name == currentSong?.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
-                        onClick={() => like(currentSong.name)}
+                        onClick={() => like("liked", currentSong.name)}
                     />
                 </div>
                 <div onClick={() => shareMusic(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>

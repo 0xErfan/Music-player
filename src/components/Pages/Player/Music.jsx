@@ -8,11 +8,11 @@ export default function Music() {
 
     return (
         <>
-            <div className='neoM-buttons m-auto rounded-xl my-14 max-w-[80%] aspect-square border-[10px] overflow-hidden border-primary'>
+            <div className='flex flex-col neoM-buttons m-auto rounded-xl my-14 max-w-[80%] aspect-square border-[10px] overflow-hidden border-primary'>
                 {
                     currentSong?.cover ? <img className='object-cover size-full rounded-[8px]' src="images/city.jpg" alt="city" />
                         :
-                        <FiMusic className="flex items-center size-full p-20 neoM-bg rounded-[8px]" />
+                        <FiMusic className="flex items-center size-full shrink-0 p-20 neoM-bg rounded-[8px]" />
                 }
             </div>
             <div className='text-center space-y-1 mb-6'>

@@ -48,7 +48,7 @@ export default function Nav() {
                             </div>
                             <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
                             <div
-                                onClick={like}
+                                onClick={() => like("liked", currentSong.name)}
                                 className={`flex flex-1 items-center cursor-pointer ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
                         </div>
                     )

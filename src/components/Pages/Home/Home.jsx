@@ -31,7 +31,7 @@ export default function Main() {
         const selectedFile = e.target.files[0]
         if (!userData[0]) return
 
-        if (selectedFile.type.startsWith("audio/")) {
+        if (selectedFile || selectedFile.type.startsWith("audio/")) {
 
             const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) return true })
 
@@ -68,7 +68,7 @@ export default function Main() {
                         .upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
 
                     if (uploadError) throw new Error(uploadError)
-                    
+
                     const { data, error } = await supabase.auth.updateUser({
                         data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
                     })
@@ -100,7 +100,7 @@ export default function Main() {
         dispatch({
             type: "toastOn",
             text: "Please choose a file with audio format!",
-            status: 0
+            status: 0,
         })
         e.target.value = ""
         setTimeout(() => dispatch({ type: "toastOff" }), 2000);

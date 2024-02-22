@@ -15,7 +15,7 @@ export default function Songs() {
     const [filteredSongs, setFilteredSongs] = useState([])
     const [search, setSearch] = useState("")
     const [update, setUpdate] = useState(false)
-    const { isShuffle, isPlaying } = useContext(States)
+    const { isShuffle, isPlaying, filteredSongsUpdater } = useContext(States)
     const dispatch = useContext(StateDispatcher)
 
     const navigate = useNavigate()
@@ -25,10 +25,8 @@ export default function Songs() {
         if (isLogin()) {
             const userData = getUserInfo().user.user_metadata;
             setMainUserData(userData.songs);
-        } else {
-            navigate("/logIn");
-        }
-    }, [update]);
+        } else navigate("/logIn");
+    }, [update, filteredSongsUpdater]);
 
     const songUpdater = id => {
         setUpdate(preve => !preve)
@@ -75,12 +73,13 @@ export default function Songs() {
                 </div>
 
                 <div className='flex items-center gap-2 justify-between px-3 basis-[85%] h-12 neoM-bg ' >
-                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search ${filteredSongs?.length} tracks...`} type="text" />
+                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search in ${filteredSongs?.length} tracks...`} type="text" />
                     <div className='cursor-pointer'><CiSearch className='size-6' /></div>
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
 
                     <div onClick={() => { dispatch({ type: "changeShuffle", payload: !isShuffle }), dispatch({ type: "shouldRepeatChanger", payload: isShuffle && false }) }} className={`flex items-center justify-center bg-primary neoM-buttons ${isShuffle && "text-primaryOrange"} duration-200 rounded-full ch:size-7 p-2`}><LiaRandomSolid /></div>
+
                     <div
                         onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
                         className='flex items-center justify-center text-primary bg-primaryWhite rounded-full ch:size-7 p-2'>
