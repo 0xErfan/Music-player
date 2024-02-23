@@ -8,6 +8,7 @@ import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import { mainUserData } from './ReducerAndContexts';
 import { States, StateDispatcher } from './ReducerAndContexts';
+import { isLogin } from '../utils';
 
 export default function Nav() {
 
@@ -61,8 +62,8 @@ export default function Nav() {
                             </div>
                             <p>Home</p>
                         </Link>
-                        <Link to="/player" replace={true} className={`flex ${activeNav.includes("player") && "activeNav"} flex-col`}>
-                            <div className='flex items-center justify-center cursor-pointer'>
+                        <Link to="/player" replace={true} className={`flex ${activeNav.includes("player") && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
+                            <div className='flex items-center justify-center'>
                                 <VscDebugStart className='size-6' />
                             </div>
                             <p>Player</p>
@@ -76,6 +77,7 @@ export default function Nav() {
                         <Link to="/account" replace={true} className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <FaUser className='size-6' />
+                                <span className={`${!isLogin() && "relative loginAlert"} `}></span>
                             </div>
                             <p>Account</p>
                         </Link>

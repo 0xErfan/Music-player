@@ -13,6 +13,7 @@ export const defaultState = {
     shouldRepeat: false,
     shouldIgnore: true,
     musicVolume: 6,
+    isLoaded: true,
     isLogin: false,
     updater: false,
     filteredSongsUpdater: false,
@@ -87,6 +88,9 @@ function stateReducer(state, action) {
         case "reseter": {
             return { ...action.payload }
         }
+        case "removeLoading": {
+            return { ...state, isLoaded: true }
+        }
         case "changeShuffle":
             return { ...state, isShuffle: action.payload }
         default: {
@@ -105,6 +109,7 @@ export default function MainProvider({ children }) {
         shouldRepeat: false,
         shouldIgnore: true,
         musicVolume: 6,
+        isLoaded: false,
         isLogin: false,
         updater: false,
         filteredSongsUpdater: false,
@@ -219,6 +224,8 @@ export default function MainProvider({ children }) {
         }
         checkLoginStatus();
     }, [state.updater])
+
+    useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
 
     return (
         <States.Provider value={state}>

@@ -2,10 +2,14 @@ import Music from './Music';
 import { IoChevronBackOutline } from "react-icons/io5";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
+import { isLogin } from '../../../utils';
+import { useEffect } from 'react';
 
 export default function Player() {
 
     const navigate = useNavigate()
+    
+    useEffect(() => { !isLogin() && navigate("/login") }, [])
 
     return (
         <section className='bg-primary'>

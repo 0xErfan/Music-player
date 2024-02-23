@@ -21,7 +21,7 @@ import { supabase } from "../../../client"
 
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
-    const { userData, toastData } = useContext(States)
+    const { userData, toastData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
     const navigate = useNavigate()
     const inputRef = useRef()
@@ -115,6 +115,24 @@ export default function Main() {
     return (
         <main className='min-h-screen'>
             <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
+
+        {/* Loader */}
+            <div class={`middle ${isLoaded ? "hidden" : "absolute"} left-0 right-0 w-full  z-40 h-screen`}>
+                <div className="flex items-center flex-col justify-center h-full">
+                    <div>
+                        <div className="bar bar1"></div>
+                        <div className="bar bar2"></div>
+                        <div className="bar bar3"></div>
+                        <div className="bar bar4"></div>
+                        <div className="bar bar5"></div>
+                        <div className="bar bar6"></div>
+                        <div className="bar bar7"></div>
+                        <div className="bar bar8"></div>
+                    </div>
+                    <h3 className=" text-xl mt-2 font-bold font-anta text-center">Loading...</h3>
+                </div>
+            </div>
+
 
             <section className='container relative overflow-y-hidden'>
 
