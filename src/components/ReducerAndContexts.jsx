@@ -90,7 +90,8 @@ export default function MainProvider({ children }) {
         musicMetadata: { currentTime: null, duration: null },
         toastData: { text: null, status: 0, loader: 0 },
         userData: null,
-        userSongsStorage: []
+        userSongsStorage: [],
+        share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
     })
 
     let audio = useRef(new Audio());

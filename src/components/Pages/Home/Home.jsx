@@ -1,4 +1,4 @@
-import React, { useContext, useId, useRef } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -6,7 +6,11 @@ import { BiAlbum } from "react-icons/bi";
 import { GiMicrophone } from "react-icons/gi";
 import { IoMdMusicalNotes } from "react-icons/io";
 import { MdQueueMusic } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa6";
+import { FaTelegramPlane } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa6";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,6 +22,7 @@ import { supabase } from "../../../client"
 export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData } = useContext(States)
+    const [sideMenuShow, setSideMenuShow] = useState(false)
     const navigate = useNavigate()
     const inputRef = useRef()
 
@@ -109,9 +114,28 @@ export default function Main() {
     return (
         <main className='min-h-screen'>
             <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
-            <section className='container overflow-y-hidden'>
+
+            <section className='container relative overflow-y-hidden'>
+
+                <div onClick={() => setSideMenuShow(false)} className={` ${sideMenuShow ? "fixed" : "hidden"} inset-0 z-40`}></div>
+                <div className={`fixed h-screen top-0 bottom-0 duration-200 ${sideMenuShow ? "left-0" : "-left-[250px]"} neoM-bg z-40`}>
+                    <div className='flex items-center justify-between text-2xl px-4 mt-3 w-[250px]'>
+                        <h2 className='font-bold'>Pro music player</h2>
+                        <IoClose onClick={() => setSideMenuShow(false)} className='cursor-pointer' />
+                    </div>
+                    <div className='flex justify-center items-center gap-1 pt-8'>Any/Many bugs? <a target='_blank' href='https://t.me/0oErfan' className='underline text-primaryOrange'>Let me know</a></div>
+                    <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-nowrap neoM-bg py-3 px-10 space-y-4'>
+                        Created by <span className='text-primaryOrange'>0xErfan</span>
+                        <div className='flex items-center justify-evenly ch:ch:size-9 ch:ch:border ch:ch:border-primaryWhite/20 ch:ch:p-2 ch:ch:rounded-full'>
+                            <a target='_blank' href="https://www.instagram.com/libanogs.so"><FaInstagram /></a>
+                            <a target='_blank' href="https://t.me/0oErfan"><FaTelegramPlane /></a>
+                            <a target='_blank' href="https://github.com/0xErfan"><FaGithub /></a>
+                        </div>
+                    </div>
+                </div>
+
                 <div className='flex items-center mt-2 gap-2 h-12'>
-                    <div className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
+                    <div onClick={() => setSideMenuShow(true)} className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
                     <div className='flex items-center gap-2 justify-between h-full px-3 basis-[85%] neoM-bg ' >
                         <input ref={inputRef} onKeyDown={e => e.key == "Enter" && newSongSearchHandler(e)} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
                         <div onClick={newSongSearchHandler} className='cursor-pointer'><CiSearch className='size-6' /></div>

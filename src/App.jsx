@@ -9,8 +9,10 @@ function App() {
 
     return (
         <MainProvider>
-            {routes}
-            <Nav />
+            <div className="max-w-[500px] w-full m-auto">
+                {routes}
+                <Nav />
+            </div>
         </MainProvider>
     )
 }

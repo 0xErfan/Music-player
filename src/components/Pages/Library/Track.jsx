@@ -2,8 +2,7 @@ import React, { useContext, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
-import { StateDispatcher, States } from '../../ReducerAndContexts';
-import { GiPauseButton } from "react-icons/gi";
+import { StateDispatcher, States, musicUrl } from '../../ReducerAndContexts';
 import { FaDownload } from "react-icons/fa6";
 import { MdPlaylistAdd } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -11,21 +10,20 @@ import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast';
+import { getUserInfo } from '../../../utils';
 
 export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
-    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like } = useContext(States)
+    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, duration, favorite } = data
-
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const updater = () => { data.onUpdater(id) }
 
     const songLikeToggler = async () => {
         await like("favorite", name)
-        dispatch({ type: "filteredSongsUpdater" })
         setShowDetails(false)
     }
 
@@ -58,6 +56,40 @@ export default function Track(data) {
         }
     }
 
+    const musicDownloadHandler = async () => {
+        try {
+            const { data, error } = await supabase.storage.from("users").download(getUserInfo().user.email + "/" + name);
+            if (error) throw new Error(error)
+            downloadFile(data, name);
+
+            dispatch({
+                type: "toastOn",
+                text: "Download started (:",
+                status: 1
+            })
+            setTimeout(() => dispatch({ type: "toastOff" }), 1000);
+        } catch (error) {
+            dispatch({
+                type: "toastOn",
+                text: "Please check your connection !",
+                status: 0
+            })
+            setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+        }
+        setShowDetails(false)
+    };
+
+    const downloadFile = (musicBlob, fileName) => {
+        const blobUrl = URL.createObjectURL(musicBlob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+    };
+
     return (
         <div className='flex items-center gap-3'>
             <Toast text={toastData.text} status={toastData.status} />
@@ -83,13 +115,13 @@ export default function Track(data) {
                     <p>{duration ? duration : "00:00"}</p>
                 </div>
             </div>
-            <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 z-40 relative aspect-square rounded-full'>
+            <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>
                 <PiDotsThreeVerticalBold className='size-[34px] p-1 z-0 cursor-pointer' />
                 <div className={`inset-0 -left-[185px] z-40 ${showDetails ? "absolute" : "hidden"} neoM-bg h-36 p-4 -my-4 z-0`}>
                     <ul className='space-y-2 ch:flex ch:items-center ch:gap-2 ch:justify-between ch:cursor-pointer ch:duration-200 ch:opacity-70 ch-hover:opacity-100'>
                         <li onClick={songLikeToggler}>{favorite ? "Remove from" : "Add to"} playlist <MdPlaylistAdd className='shrink-0' /></li>
-                        <li>Download <FaDownload /></li>
-                        <li>Share <IoMdShare /></li>
+                        <li onClick={musicDownloadHandler}>Download <FaDownload /></li>
+                        <li onClick={() => share(musicUrl)}>Share <IoMdShare /></li>
                         <li className='text-primaryOrange ' onClick={deleteHandler}>Delete <MdDelete /></li>
                     </ul>
                 </div>

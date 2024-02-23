@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
@@ -10,10 +10,10 @@ import { States, StateDispatcher } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { musicUrl } from '../../ReducerAndContexts';
 import Toast from '../../Toast';
-
+import { padStarter } from '../../../utils';
 export default function Controller() {
 
-    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume, setMusicVolume } = useContext(States)
+    const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume, setMusicVolume, share } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const [showVolume, setShowVolume] = useState(false)
     const dispatch = useContext(StateDispatcher)
@@ -46,8 +46,6 @@ export default function Controller() {
 
     }, [musicMetadata.currentTime, musicMetadata.duration], mainUserData);
 
-    const shareMusic = async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
-
     return (
         <div className='relative'>
             <Toast key="toast" text={toastData.text} status={toastData.status} />
@@ -60,9 +58,8 @@ export default function Controller() {
             </div>
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
-                    {/*create padStart generator */}
-                    <p>{`${musicTimer.currentMin.toString().padStart(2, "0")}:${musicTimer.currentSec.toString().padStart(2, "0")}`}</p>
-                    <p>{`${musicTimer.min.toString().padStart(2, "0")}:${musicTimer.sec.toString().padStart(2, "0")}`}</p>
+                    <p>{padStarter(musicTimer.currentMin) + ":" + padStarter(musicTimer.currentSec)}</p>
+                    <p>{padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec)}</p>
                 </div>
                 <input
                     style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100}%)` }}
@@ -108,7 +105,7 @@ export default function Controller() {
                         onClick={() => like("liked", currentSong.name)}
                     />
                 </div>
-                <div onClick={() => shareMusic(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
+                <div onClick={() => share(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
             </div>
         </div>
     )
