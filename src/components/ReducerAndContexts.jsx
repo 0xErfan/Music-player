@@ -5,6 +5,27 @@ import { supabase } from '../client';
 
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
+export const defaultState = {
+    isPlaying: 0,
+    showToast: 0,
+    songIndex: 0,
+    isShuffle: false,
+    shouldRepeat: false,
+    shouldIgnore: true,
+    musicVolume: 6,
+    isLogin: false,
+    updater: false,
+    filteredSongsUpdater: false,
+    storageUpdate: false,
+    storageUpdate: false,
+    currentSong: null,
+    musicMetadata: { currentTime: null, duration: null },
+    toastData: { text: null, status: 0, loader: 0 },
+    userData: null,
+    userSongsStorage: [],
+    share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
+}
+
 export let mainUserData;
 export let musicUrl;
 
@@ -63,6 +84,9 @@ function stateReducer(state, action) {
         case "volumeChanger": {
             return { ...state, musicVolume: +action.payload }
         }
+        case "reseter": {
+            return { ...action.payload }
+        }
         case "changeShuffle":
             return { ...state, isShuffle: action.payload }
         default: {
@@ -91,7 +115,8 @@ export default function MainProvider({ children }) {
         toastData: { text: null, status: 0, loader: 0 },
         userData: null,
         userSongsStorage: [],
-        share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
+        share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)),
+        stopMusic: () => { audio.current.pause(), audio.current.src = "", audio.current = null }
     })
 
     let audio = useRef(new Audio());
@@ -147,7 +172,7 @@ export default function MainProvider({ children }) {
     useEffect(() => {
         let timer, ignore = true;
         if (state.isPlaying && ignore) {
-            !state.shouldIgnore && audio.current.play().catch(err => {})
+            !state.shouldIgnore && audio.current.play().catch(err => { })
 
             timer = setInterval(() => {
                 dispatch({

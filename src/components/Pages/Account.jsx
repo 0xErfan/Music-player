@@ -1,17 +1,20 @@
 import { Navigate } from 'react-router-dom'
 import { getUserInfo, isLogin } from '../../utils'
-import { StateDispatcher } from '../ReducerAndContexts'
+import { StateDispatcher, States } from '../ReducerAndContexts'
 import { useContext, useState } from 'react'
+import { defaultState } from '../ReducerAndContexts'
 
 export default function Account() {
 
     const dispatch = useContext(StateDispatcher)
+    const { stopMusic } = useContext(States)
     const [update, setUpdate] = useState(false)
 
     const logoutHandler = () => {
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
+        stopMusic()
         dispatch({ type: "updater" })
-        dispatch({ type: "changeCurrent", payload: null })
+        dispatch({ type: "reseter", payload: defaultState })
         setUpdate(preve => !preve)
     }
 

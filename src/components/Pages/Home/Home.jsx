@@ -86,6 +86,7 @@ export default function Main() {
                         text: "Music added successfully !",
                         status: 1
                     })
+                    dispatch({ type: "filteredSongsUpdater" })
                     e.target.value = ""
                     setTimeout(() => dispatch({ type: "toastOff" }), 1000);
                     return;

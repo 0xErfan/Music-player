@@ -21,24 +21,7 @@ export default function Songs() {
     const navigate = useNavigate()
     const params = useParams()
 
-    useEffect(() => {
-        if (isLogin()) {
-            const userData = getUserInfo().user.user_metadata;
-            setMainUserData(userData.songs);
-        } else navigate("/logIn");
-    }, [update, filteredSongsUpdater]);
-
-    const songUpdater = id => {
-        setUpdate(preve => !preve)
-        let removedArray = [...mainUserData].filter(song => song.id != id)
-        if (!removedArray.length) setFilteredSongs([])
-    }
-
-    const songSearchHandler = e => {
-        setSearch(e.target.value)
-        let newSongsFilter = [...mainUserData].filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
-        setFilteredSongs(newSongsFilter)
-    }
+    useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs)}, [update, filteredSongsUpdater]);
 
     useEffect(() => {
         if (mainUserData.length) {
@@ -63,6 +46,17 @@ export default function Songs() {
             setFilteredSongs(filteredSongs);
         }
     }, [mainUserData, params.type]);
+    const songUpdater = id => {
+        setUpdate(preve => !preve)
+        let removedArray = [...mainUserData].filter(song => song.id != id)
+        if (!removedArray.length) setFilteredSongs([])
+    }
+
+    const songSearchHandler = e => {
+        setSearch(e.target.value)
+        let newSongsFilter = [...mainUserData].filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
+        setFilteredSongs(newSongsFilter)
+    }
 
     return (
         <>
@@ -73,7 +67,7 @@ export default function Songs() {
                 </div>
 
                 <div className='flex items-center gap-2 justify-between px-3 basis-[85%] h-12 neoM-bg ' >
-                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search in ${filteredSongs?.length} tracks...`} type="text" />
+                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search in ${filteredSongs?.length} musics...`} type="text" />
                     <div className='cursor-pointer'><CiSearch className='size-6' /></div>
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
