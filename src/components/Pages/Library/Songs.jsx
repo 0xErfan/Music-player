@@ -62,7 +62,7 @@ export default function Songs() {
         <>
             <section className='container'>
                 <div className='flex items-center gap-6 my-6'>
-                    <div onClick={() => navigate(-1)} className='flex cursor-pointer items-center justify-center bg-primary neoM-buttons rounded-full ch:size-8 p-2'><IoArrowBack /></div>
+                    <div onClick={() => navigate(-1)} className='flex cursor-pointer items-center justify-center bg-primary neoM-buttons duration-200 transition-all rounded-full ch:size-8 p-2'><IoArrowBack /></div>
                     <h3 className='font-bold text-2xl capitalize'>{params.type || "All songs"}</h3>
                 </div>
 
@@ -72,7 +72,7 @@ export default function Songs() {
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
 
-                    <div onClick={() => { dispatch({ type: "changeShuffle", payload: !isShuffle }), dispatch({ type: "shouldRepeatChanger", payload: isShuffle && false }) }} className={`flex items-center justify-center bg-primary neoM-buttons ${isShuffle && "text-primaryOrange"} duration-200 rounded-full ch:size-7 p-2`}><LiaRandomSolid /></div>
+                    <div onClick={() => { dispatch({ type: "changeShuffle", payload: !isShuffle }), dispatch({ type: "shouldRepeatChanger", payload: isShuffle && false }) }} className={`flex items-center justify-center bg-primary neoM-buttons duration-200 transition-all ${isShuffle && "text-primaryOrange"} duration-200 rounded-full ch:size-7 p-2`}><LiaRandomSolid /></div>
 
                     <div
                         onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}

@@ -136,7 +136,7 @@ export default function Main() {
                 </div>
 
                 <div className='flex items-center mt-2 gap-2 h-12'>
-                    <div onClick={() => setSideMenuShow(true)} className='flex items-center justify-center h-full neoM-buttons cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
+                    <div onClick={() => setSideMenuShow(true)} className='flex items-center justify-center h-full neoM-buttons duration-200 transition-all cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
                     <div className='flex items-center gap-2 justify-between h-full px-3 basis-[85%] neoM-bg ' >
                         <input ref={inputRef} onKeyDown={e => e.key == "Enter" && newSongSearchHandler(e)} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
                         <div onClick={newSongSearchHandler} className='cursor-pointer'><CiSearch className='size-6' /></div>
@@ -153,7 +153,7 @@ export default function Main() {
                     </label>
                 </div>
 
-                <Link to="songs/recentlies" className='grid grid-cols-1 neoM-buttons cursor-pointer p-3 h-24'>
+                <Link to="songs/recentlies" className='grid grid-cols-1 neoM-buttons duration-200 transition-all cursor-pointer p-3 h-24'>
                     <div><MdQueueMusic className='size-9' /></div>
                     <div className='flex items-center justify-between h-4/5 text-[18px]'>
                         <p>Recently Added</p>
@@ -162,14 +162,14 @@ export default function Main() {
                 </Link>
 
                 <div className='grid grid-cols-2 ch:cursor-pointer gap-6 mt-5 h-24'>
-                    <Link to="songs/playlist" className='neoM-buttons p-2'>
+                    <Link to="songs/playlist" className='neoM-buttons duration-200 transition-all p-2'>
                         <div className='px-1'><IoMdMusicalNotes className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Playlist</p>
                             <p>{userSongs?.filter(song => song.favorite).length}</p>
                         </div>
                     </Link>
-                    <Link to="songs/favorites" className='neoM-buttons p-2'>
+                    <Link to="songs/favorites" className='neoM-buttons duration-200 transition-all p-2'>
                         <div className='px-1'><FaHeart className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Favorite</p>

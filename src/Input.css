@@ -62,6 +62,11 @@ body {
     box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }
 
+.neoM-buttons:active {
+    background: #2C2F33;
+    box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
+}
+
 .activeNav {
     position: relative;
     opacity: 1 !important;
