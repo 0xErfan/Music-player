@@ -67,8 +67,8 @@ export default function Songs() {
                 </div>
 
                 <div className='flex items-center gap-2 justify-between px-3 basis-[85%] h-12 neoM-bg ' >
-                    <input value={search} onChange={songSearchHandler} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search in ${filteredSongs?.length} musics...`} type="text" />
-                    <div className='cursor-pointer'><CiSearch className='size-6' /></div>
+                    <input value={search} onChange={songSearchHandler} className='flex-[6] bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder={`Search in ${filteredSongs?.length} musics...`} type="text" />
+                    <div className='cursor-pointer'><CiSearch className='size-6 flex-1' /></div>
                 </div>
                 <div className='flex items-center justify-end gap-4 ch:cursor-pointer my-6'>
 

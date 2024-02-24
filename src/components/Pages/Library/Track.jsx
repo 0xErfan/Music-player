@@ -67,7 +67,7 @@ export default function Track(data) {
                 text: "Download started (:",
                 status: 1
             })
-            setTimeout(() => dispatch({ type: "toastOff" }), 1000);
+            setTimeout(() => dispatch({ type: "toastOff" }), 2000);
         } catch (error) {
             dispatch({
                 type: "toastOn",

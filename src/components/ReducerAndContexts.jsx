@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../utils';
 import { supabase } from '../client';
@@ -23,6 +23,7 @@ export const defaultState = {
     musicMetadata: { currentTime: null, duration: null },
     toastData: { text: null, status: 0, loader: 0 },
     userData: null,
+    recentlyPlayedSongs: [],
     userSongsStorage: [],
     share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
 }
@@ -73,6 +74,9 @@ function stateReducer(state, action) {
         case "changeCurrent": {
             return { ...state, songIndex: action.payload, isPlaying: state.shouldIgnore ? 0 : 1 }
         }
+        case "recentlyPlayedSongsChange": {
+            return { ...state, recentlyPlayedSongs: action.payload }
+        }
         case "changeMetadata": {
             return { ...state, musicMetadata: action.payload }
         }
@@ -120,6 +124,7 @@ export default function MainProvider({ children }) {
         toastData: { text: null, status: 0, loader: 0 },
         userData: null,
         userSongsStorage: [],
+        recentlyPlayedSongs: [],
         share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)),
         stopMusic: () => { audio.current.pause(), audio.current.src = "", audio.current = null }
     })
@@ -173,6 +178,23 @@ export default function MainProvider({ children }) {
             audio.current.src = musicUrl
         }
     }
+
+    useEffect(() => {
+        let recentlyPlayed = [...state.recentlyPlayedSongs]
+        let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong.name)
+
+        if (state.currentSong) {
+
+            if (repeatedSong.length) {
+                recentlyPlayed = recentlyPlayed.filter(song => song.name != state.currentSong.name)
+                recentlyPlayed.push(repeatedSong[0])
+            } else if (recentlyPlayed.length <= 4) {
+                recentlyPlayed.push({ ...state.currentSong })
+            } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
+
+            dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+        }
+    }, [state.currentSong])
 
     useEffect(() => { fetchMusic() }, [state.currentSong?.name])
 
