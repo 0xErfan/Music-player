@@ -618,6 +618,10 @@ video {
   left: -185px;
 }
 
+.-left-\[250px\] {
+  left: -250px;
+}
+
 .-left-\[300px\] {
   left: -300px;
 }
@@ -638,8 +642,16 @@ video {
   bottom: 0px;
 }
 
+.bottom-4 {
+  bottom: 1rem;
+}
+
 .left-0 {
   left: 0px;
+}
+
+.left-1\/2 {
+  left: 50%;
 }
 
 .left-4 {
@@ -648,6 +660,10 @@ video {
 
 .right-0 {
   right: 0px;
+}
+
+.top-0 {
+  top: 0px;
 }
 
 .top-8 {
@@ -873,6 +889,10 @@ video {
   width: 230px;
 }
 
+.w-\[250px\] {
+  width: 250px;
+}
+
 .w-\[300px\] {
   width: 300px;
 }
@@ -883,6 +903,10 @@ video {
 
 .max-w-\[210px\] {
   max-width: 210px;
+}
+
+.max-w-\[500px\] {
+  max-width: 500px;
 }
 
 .max-w-\[80\%\] {
@@ -927,6 +951,11 @@ video {
 
 .basis-\[85\%\] {
   flex-basis: 85%;
+}
+
+.-translate-x-1\/2 {
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .-rotate-90 {
@@ -980,6 +1009,14 @@ video {
   justify-content: space-between;
 }
 
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -1028,6 +1065,10 @@ video {
 
 .overflow-y-hidden {
   overflow-y: hidden;
+}
+
+.text-nowrap {
+  text-wrap: nowrap;
 }
 
 .break-words {
@@ -1143,9 +1184,9 @@ video {
   padding-right: 0.25rem;
 }
 
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+.px-10 {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .px-3 {
@@ -1158,14 +1199,14 @@ video {
   padding-right: 1rem;
 }
 
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .py-4 {
@@ -1185,8 +1226,16 @@ video {
   padding-top: 1.5rem;
 }
 
+.pt-8 {
+  padding-top: 2rem;
+}
+
 .text-center {
   text-align: center;
+}
+
+.font-anta {
+  font-family: anta;
 }
 
 .text-2xl {
@@ -1287,6 +1336,10 @@ video {
 
 .opacity-100 {
   opacity: 1;
+}
+
+.opacity-20 {
+  opacity: 0.2;
 }
 
 .outline-none {
@@ -1393,6 +1446,11 @@ body {
   box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
 }
 
+.neoM-buttons:active {
+  background: #2C2F33;
+  box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
+}
+
 .activeNav {
   position: relative;
   opacity: 1 !important;
@@ -1414,6 +1472,104 @@ body {
 .mainNav {
   background: #2C2F33;
   box-shadow: inset 5px 5px 8px #1f2124, inset -5px -5px 8px #393d42;
+}
+
+.loginAlert::after {
+  content: "";
+  position: absolute;
+  width: .5rem;
+  border-radius: 50%;
+  height: .5rem;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #DA510B
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8,0,1,1);
+  }
+
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0,0,0.2,1);
+  }
+}
+
+.loginAlert::after {
+  animation: bounce 1s infinite;
+}
+
+/* loader styles */
+
+.middle {
+  background: #2C2F33;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.bar {
+  width: 10px;
+  height: 70px;
+  background: #fff;
+  display: inline-block;
+  transform-origin: bottom center;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  box-shadow: 5px 10px 20px inset #DA510B;
+  animation: loader 1.2s linear infinite;
+}
+
+.bar1 {
+  animation-delay: 0.1s;
+}
+
+.bar2 {
+  animation-delay: 0.2s;
+}
+
+.bar3 {
+  animation-delay: 0.3s;
+}
+
+.bar4 {
+  animation-delay: 0.4s;
+}
+
+.bar5 {
+  animation-delay: 0.5s;
+}
+
+.bar6 {
+  animation-delay: 0.6s;
+}
+
+.bar7 {
+  animation-delay: 0.7s;
+}
+
+.bar8 {
+  animation-delay: 0.8s;
+}
+
+@keyframes loader {
+  0% {
+    transform: scaleY(0.1);
+  }
+
+  50% {
+    transform: scaleY(1);
+    background: white;
+  }
+
+  100% {
+    transform: scaleY(0.1);
+    background: transparent;
+  }
 }
 
 .\*\:size-8 > * {
@@ -1457,6 +1613,11 @@ body {
   display: flex;
 }
 
+.ch\:ch\:size-9 > * > * {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
 .ch\:size-5 > * {
   width: 1.25rem;
   height: 1.25rem;
@@ -1496,8 +1657,24 @@ body {
   overflow-wrap: break-word;
 }
 
+.ch\:ch\:rounded-full > * > * {
+  border-radius: 9999px;
+}
+
 .ch\:rounded-xl > * {
   border-radius: 0.75rem;
+}
+
+.ch\:ch\:border > * > * {
+  border-width: 1px;
+}
+
+.ch\:ch\:border-primaryWhite\/20 > * > * {
+  border-color: rgb(223 223 223 / 0.2);
+}
+
+.ch\:ch\:p-2 > * > * {
+  padding: 0.5rem;
 }
 
 .ch\:py-3 > * {

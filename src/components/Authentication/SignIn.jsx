@@ -85,7 +85,7 @@ export default function SignUp() {
         <section className='flex items-center justify-center h-screen'>
             <Toast text={toastData.text} status={toastData.status} />
             <div className='container'>
-                <h2 className='text-3xl mb-8'>SIGN UP</h2>
+                <h2 className='text-3xl mb-8 font-anta'>SIGN UP</h2>
                 <form className='space-y-4' onSubmit={submitHandler}>
                     <label className='flex items-center gap-2 justify-between h-14 px-3 basis-[85%] neoM-bg ' >
                         <input value={formData.name} onChange={e => changeHandler({ e, type: "name" })} className='bg-primary flex-1 text-[17px] outline-none placeholder:text-red-400/65 text-red-400/65 placeholder:tracking-wide' placeholder='Name' type="text" />

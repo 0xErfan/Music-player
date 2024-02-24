@@ -14,8 +14,11 @@ const padStarter = (val, len = 2) => {
     } else return newVal
 }
 
+const tagRemover = value => value.replace(value.slice(value.lastIndexOf(".")), "")
+
 export {
     isLogin,
     getUserInfo,
-    padStarter
+    padStarter,
+    tagRemover
 }

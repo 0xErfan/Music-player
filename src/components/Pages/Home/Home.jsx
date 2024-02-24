@@ -36,7 +36,7 @@ export default function Main() {
         const selectedFile = e.target.files[0]
         if (!userData[0]) return
 
-        if (selectedFile || selectedFile.type.startsWith("audio/")) {
+        if (selectedFile && selectedFile.type.startsWith("audio/")) {
 
             const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) return true })
 
@@ -109,15 +109,15 @@ export default function Main() {
             status: 0,
         })
         e.target.value = ""
-        setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+        setTimeout(() => dispatch({ type: "toastOff" }), 2800);
     }
 
     return (
         <main className='min-h-screen'>
             <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
 
-        {/* Loader */}
-            <div class={`middle ${isLoaded ? "hidden" : "absolute"} left-0 right-0 w-full  z-40 h-screen`}>
+            {/* Loader */}
+            <div className={`middle ${isLoaded ? "hidden" : "absolute"} left-0 right-0 w-full  z-40 h-screen`}>
                 <div className="flex items-center flex-col justify-center h-full">
                     <div>
                         <div className="bar bar1"></div>
@@ -143,7 +143,7 @@ export default function Main() {
                         <IoClose onClick={() => setSideMenuShow(false)} className='cursor-pointer' />
                     </div>
                     <div className='flex justify-center items-center gap-1 pt-8'>Any/Many bugs? <a target='_blank' href='https://t.me/0oErfan' className='underline text-primaryOrange'>Let me know</a></div>
-                    <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-nowrap neoM-bg py-3 px-10 space-y-4'>
+                    <div className='fixed bottom-0 w-full max-w-[250px] text-nowrap neoM-bg py-3 px-10 space-y-4'>
                         Created by <span className='text-primaryOrange'>0xErfan</span>
                         <div className='flex items-center justify-evenly ch:ch:size-9 ch:ch:border ch:ch:border-primaryWhite/20 ch:ch:p-2 ch:ch:rounded-full'>
                             <a target='_blank' href="https://www.instagram.com/libanogs.so"><FaInstagram /></a>

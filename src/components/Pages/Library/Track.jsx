@@ -10,7 +10,7 @@ import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast';
-import { getUserInfo } from '../../../utils';
+import { getUserInfo, tagRemover } from '../../../utils';
 
 export default function Track(data) {
 
@@ -102,8 +102,8 @@ export default function Track(data) {
             }
 
             <div onClick={palyerHandler} className='flex-[7] text-sm text-gray-200/50 cursor-pointer'>
-                <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{name ? name : "?"}</h3>
-                <p className='text-sm'>{artistname ? artistname : "?"}</p>
+                <h3 className='font-bold text-md text-primaryWhite line-clamp-1 max-w-[210px] ]'>{tagRemover(name) || "?"}</h3>
+                <p className='text-sm'>{artistname || "?"}</p>
                 <div className='flex gap-2 items-center text-xs'>
                     {
                         (currentSong?.name == name && isPlaying) ?
@@ -112,7 +112,7 @@ export default function Track(data) {
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
 
-                    <p>{duration ? duration : "00:00"}</p>
+                    <p>{currentSong?.duration || "00:00"}</p>
                 </div>
             </div>
             <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>

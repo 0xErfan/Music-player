@@ -166,6 +166,8 @@ export default function MainProvider({ children }) {
     }
 
     const fetchMusic = async () => {
+        if (!audio.current) audio.current = new Audio() //re-assign the audio if the user logged out(logout will make audio null)
+
         if (state.userData && state.currentSong) {
             musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
             audio.current.src = musicUrl

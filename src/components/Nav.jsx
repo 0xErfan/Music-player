@@ -8,7 +8,7 @@ import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import { mainUserData } from './ReducerAndContexts';
 import { States, StateDispatcher } from './ReducerAndContexts';
-import { isLogin } from '../utils';
+import { isLogin, tagRemover } from '../utils';
 
 export default function Nav() {
 
@@ -38,13 +38,13 @@ export default function Nav() {
             <div>
                 {
                     currentSong && (
-                        <div className='flex items-center justify-between relative px-4 py-2 text-sm bg-gray-800 gap-4'>
+                        <div className='flex items-center justify-between relative px-4 py-2 text-sm bg-black/70 gap-4'>
                             <div
                                 onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
                                 className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'
                             >{isPlaying ? <GiPauseButton /> : <VscDebugStart />}</div>
                             <div className='flex-[8]'>
-                                <h3 className='font-bold'>{currentSong.name || "?"}</h3>
+                                <h3 className='font-bold'>{tagRemover(currentSong.name) || "?"}</h3>
                                 <p>{currentSong.artist || "?"}</p>
                             </div>
                             <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
@@ -55,7 +55,7 @@ export default function Nav() {
                     )
                 }
                 <div className='mainNav'>
-                    <ul className='grid grid-cols-4 text-xs text-center ch:py-3 ch-hover:bg-[#2E3239] ch:duration-200'>
+                    <ul className='grid grid-cols-4 text-xs text-center ch:py-3'>
                         <Link replace={true} to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <AiFillHome className='size-6' />

@@ -8,20 +8,25 @@ import { useEffect } from 'react';
 export default function Player() {
 
     const navigate = useNavigate()
-    
     useEffect(() => { !isLogin() && navigate("/login") }, [])
 
     return (
-        <section className='bg-primary'>
-            <div className='container'>
-                <div>
-                    <div className='flex items-center justify-between pt-6 cursor-pointer'>
-                        <IoChevronBackOutline onClick={() => navigate(-1)} className='size-12 p-3 neoM-buttons' />
-                        {/* <HiOutlineDotsVertical className='size-12 p-3 neoM-buttons' /> */}
-                    </div>
-                </div>
-                <Music />
-            </div>
-        </section>
+        <>
+            {
+                isLogin() && (
+                    <section className='bg-primary'>
+                        <div className='container'>
+                            <div>
+                                <div className='flex items-center justify-between pt-6 cursor-pointer'>
+                                    <IoChevronBackOutline onClick={() => navigate(-1)} className='size-12 p-3 neoM-buttons' />
+                                    {/* <HiOutlineDotsVertical className='size-12 p-3 neoM-buttons' /> */}
+                                </div>
+                            </div>
+                            <Music />
+                        </div>
+                    </section>
+                )
+            }
+        </>
     )
 }
