@@ -11,7 +11,9 @@ export default function Recently() {
             <h4 className='text-2xl pt-12 pb-6'>Recently Played</h4>
             <div className='flex flex-col gap-3'>
                 {
-                    [...recentlyPlayedSongs].reverse().map(song => <Song key={song.id} {...song} />)
+                    [...recentlyPlayedSongs].length ? [...recentlyPlayedSongs].reverse().map(song => <Song key={song.id} {...song} />)
+                    :
+                    <div className="text-center text-primaryOrange font-anta">No music played yet! try to add some(:</div>
                 }
             </div>
         </>

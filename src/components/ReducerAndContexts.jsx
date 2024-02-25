@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../utils';
 import { supabase } from '../client';
@@ -182,7 +182,6 @@ export default function MainProvider({ children }) {
     useEffect(() => {
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong.name)
-
         if (state.currentSong) {
 
             if (repeatedSong.length) {

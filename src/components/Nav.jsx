@@ -56,30 +56,30 @@ export default function Nav() {
                 }
                 <div className='mainNav'>
                     <ul className='grid grid-cols-4 text-xs text-center ch:py-3'>
-                        <Link replace={true} to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
+                        <Link to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <AiFillHome className='size-6' />
                             </div>
-                            <p>Home</p>
+                            Home
                         </Link>
-                        <Link to="/player" replace={true} className={`flex ${activeNav.includes("player") && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
+                        <Link to="/player" className={`flex text-primaryOrange ${activeNav.includes("player") && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
                             <div className='flex items-center justify-center'>
                                 <VscDebugStart className='size-6' />
                             </div>
-                            <p>Player</p>
+                            Player
                         </Link>
-                        <Link to="/search" replace={true} className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
+                        <Link to="/search" className={`flex ${activeNav.includes("search") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <CiSearch className='size-6' />
                             </div>
-                            <p>Search</p>
+                            Search
                         </Link>
-                        <Link to="/account" replace={true} className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
+                        <Link to="/account" className={`flex ${activeNav.includes("account") && "activeNav"} flex-col`}>
                             <div className='flex items-center justify-center cursor-pointer'>
                                 <FaUser className='size-6' />
                                 <span className={`${!isLogin() && "relative loginAlert"} `}></span>
                             </div>
-                            <p>Account</p>
+                            Account
                         </Link>
                     </ul>
                 </div>

@@ -17,7 +17,7 @@ export default function Music() {
                 }
             </div>
             <div className='text-center space-y-1 mb-2'>
-                <h3 className='text-xl min-h-14 line-clamp-2'>{currentSong ? tagRemover(currentSong.name) : "?"}</h3>
+                <h3 className='text-xl min-h-14 line-clamp-2'>{currentSong ? tagRemover(currentSong.name) : "Loading..."}</h3>
             </div>
             <Controller {...currentSong} />
         </>

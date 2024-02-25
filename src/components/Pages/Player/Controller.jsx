@@ -11,6 +11,8 @@ import { mainUserData } from '../../ReducerAndContexts';
 import { musicUrl } from '../../ReducerAndContexts';
 import Toast from '../../Toast';
 import { padStarter } from '../../../utils';
+
+
 export default function Controller() {
 
     const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume, setMusicVolume, share } = useContext(States)
@@ -26,25 +28,27 @@ export default function Controller() {
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
 
         if (currentTime == duration) {
-            let newSongIndex;
-
-            if (shouldRepeat) {
-                newSongIndex = songIndex
-            } else if (isShuffle) {
-                newSongIndex = Math.floor(Math.random() * mainUserData?.songs.length)
-            } else newSongIndex = songIndex + 1
 
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
-            dispatch({ type: "changeCurrent", payload: newSongIndex })
+
+            if (isShuffle) {
+                dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * mainUserData?.songs.length) })
+                return
+            } else if (shouldRepeat) {
+                dispatch({ type: "changeCurrent", payload: songIndex })
+                return
+            }
+
+            if (!shouldIgnore) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
+
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
         } else updatedMusicTimer.currentSec = Math.trunc(currentTime);
 
         setMusicMetadata(updatedMusicTimer);
-
-    }, [musicMetadata.currentTime, musicMetadata.duration], mainUserData);
+    }, [musicMetadata.currentTime, musicMetadata.duration]);
 
     return (
         <div className='relative'>
@@ -54,7 +58,7 @@ export default function Controller() {
                 <input
                     onChange={e => { dispatch({ type: "volumeChanger", payload: e.target.value }), setMusicVolume(e.target.value / 10) }}
                     value={musicVolume}
-                    className='p-4 size-[90%]' max={10} type="range" />
+                    className='p-4 size-[90%]' min={1} max={10} type="range" />
             </div>
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>

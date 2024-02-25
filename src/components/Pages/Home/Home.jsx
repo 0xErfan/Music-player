@@ -156,7 +156,7 @@ export default function Main() {
                 <div className='flex items-center mt-2 gap-2 h-12'>
                     <div onClick={() => setSideMenuShow(true)} className='flex items-center justify-center h-full neoM-buttons duration-200 transition-all cursor-pointer basis-[15%]'><IoReorderThreeOutline className="size-8" /></div>
                     <div className='flex items-center gap-2 justify-between h-full px-3 basis-[85%] neoM-bg ' >
-                        <input ref={inputRef} onKeyDown={e => e.key == "Enter" && newSongSearchHandler(e)} className='bg-primary outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
+                        <input ref={inputRef} onKeyDown={e => e.key == "Enter" && newSongSearchHandler(e)} className='bg-primary flex-[7] outline-none placeholder:text-red-400/65 text-red-400/65' placeholder='Search new songs...' type="text" />
                         <div onClick={newSongSearchHandler} className='cursor-pointer'><CiSearch className='size-6' /></div>
                     </div>
                 </div>

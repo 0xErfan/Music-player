@@ -1,5 +1,5 @@
 
-const isLogin = () =>  {
+const isLogin = () => {
     const localStorageData = JSON.parse(localStorage.getItem("sb-inbskwhewximhtmsxqxi-auth-token"))
     if (!localStorageData) return false
     return true;
