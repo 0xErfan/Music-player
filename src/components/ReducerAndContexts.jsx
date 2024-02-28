@@ -37,7 +37,11 @@ function stateReducer(state, action) {
             return { ...state, isPlaying: 0 };
         }
         case "play": {
-            return { ...state, isPlaying: 1, shouldIgnore: false }
+            if (state.currentSong) {
+                return { ...state, isPlaying: 1, shouldIgnore: false }
+            } else {
+                return { ...state }
+            }
         }
         case "newTrack": {
             return {
@@ -159,7 +163,6 @@ export default function MainProvider({ children }) {
                     status: 0
                 })
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
-                return
             }
             dispatch({ type: "updater" })
         }

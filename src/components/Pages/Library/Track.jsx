@@ -18,6 +18,7 @@ export default function Track(data) {
     const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, duration, favorite } = data
+
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const updater = () => { data.onUpdater(id) }
@@ -93,7 +94,7 @@ export default function Track(data) {
     return (
         <div className='flex items-center gap-3'>
             <Toast text={toastData.text} status={toastData.status} />
-            <div onClick={() => setShowDetails(false)} className={` ${showDetails ? "fixed" : "hidden"} inset-0 z-30`}></div>
+            <div onClick={() => setShowDetails(false)} className={` ${showDetails ? "z-40 visible" : " invisible z-0"} fixed z-30 inset-0`}></div>
             {
                 cover ?
                     <img className='flex-1 shrink-0 size-14 rounded-sm object-cover aspect-square' src={cover} alt="img" />

@@ -15,15 +15,16 @@ export default function Songs() {
     const [filteredSongs, setFilteredSongs] = useState([])
     const [search, setSearch] = useState("")
     const [update, setUpdate] = useState(false)
-    const { isShuffle, isPlaying, filteredSongsUpdater } = useContext(States)
+    const { isShuffle, isPlaying, filteredSongsUpdater, stopMusic } = useContext(States)
     const dispatch = useContext(StateDispatcher)
 
     const navigate = useNavigate()
     const params = useParams()
 
-    useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs)}, [update, filteredSongsUpdater]);
+    useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs), console.log("g");}, [update, filteredSongsUpdater]);
 
     useEffect(() => {
+        console.log("h");
         if (mainUserData.length) {
             let filteredSongs;
             switch (params.type) {
@@ -46,10 +47,9 @@ export default function Songs() {
             setFilteredSongs(filteredSongs);
         }
     }, [mainUserData, params.type]);
+
     const songUpdater = id => {
-        setUpdate(preve => !preve)
-        let removedArray = [...mainUserData].filter(song => song.id != id)
-        if (!removedArray.length) setFilteredSongs([])
+        stopMusic()
     }
 
     const songSearchHandler = e => {

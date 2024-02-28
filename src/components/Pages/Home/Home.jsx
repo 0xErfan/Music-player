@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useContext, useState, useRef, memo } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -19,7 +19,7 @@ import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
 
-export default function Main() {
+export default memo(function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
@@ -166,7 +166,7 @@ export default function Main() {
                     <Link to="/artists"><Buttons icon={<GiMicrophone />} title="Artist" /></Link>
                     <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
                     <label htmlFor="fileUploader">
-                        <Buttons icon={<IoFolderOpenOutline />} title="Folder" />
+                        <Buttons icon={<IoFolderOpenOutline />} title="Add" />
                         <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />
                     </label>
                 </div>
@@ -200,4 +200,4 @@ export default function Main() {
             </section>
         </main>
     )
-}
+})

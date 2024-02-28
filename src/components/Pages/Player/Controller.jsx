@@ -18,6 +18,7 @@ export default function Controller() {
     const { isPlaying, songIndex, currentSong, musicMetadata, toastData, like, setCurrentTime, shouldRepeat, isShuffle, shouldIgnore, musicVolume, setMusicVolume, share } = useContext(States)
     const [musicTimer, setMusicMetadata] = useState({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
     const [showVolume, setShowVolume] = useState(false)
+    const [reseter, setReseter] = useState(false)
     const dispatch = useContext(StateDispatcher)
 
     useEffect(() => {
@@ -26,6 +27,15 @@ export default function Controller() {
 
         updatedMusicTimer.min = Math.trunc(duration / 60);
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
+
+        if (reseter) {
+            updatedMusicTimer.currentMin = 0
+            updatedMusicTimer.currentSec = 0
+            controllerActionHandler("next")
+            setMusicMetadata(updatedMusicTimer);
+            setReseter(false)
+            return;
+        }
 
         if (currentTime == duration) {
 
@@ -39,9 +49,7 @@ export default function Controller() {
                 dispatch({ type: "changeCurrent", payload: songIndex })
                 return
             }
-
-            if (!shouldIgnore) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
-
+            if (!shouldIgnore) controllerActionHandler("next")
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
@@ -49,6 +57,14 @@ export default function Controller() {
 
         setMusicMetadata(updatedMusicTimer);
     }, [musicMetadata.currentTime, musicMetadata.duration]);
+
+    const controllerActionHandler = (action, reset = null) => {
+        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+        action == "next" ?
+            dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
+            : dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
+        reset && setReseter(true)
+    }
 
     return (
         <div className='relative'>
@@ -63,7 +79,7 @@ export default function Controller() {
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
                     <p>{padStarter(musicTimer.currentMin) + ":" + padStarter(musicTimer.currentSec)}</p>
-                    <p>{padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec)}</p>
+                    <p>{musicMetadata.duration ? padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec) : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
                 <input
                     style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100}%)` }}
@@ -74,10 +90,7 @@ export default function Controller() {
 
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
                 <div
-                    onClick={() => {
-                        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
-                        dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
-                    }}
+                    onClick={() => controllerActionHandler("preve", 1)}
                     className='neoM-buttons'><IoPlayBackSharp className='size-12 p-4' />
                 </div>
 
@@ -90,10 +103,7 @@ export default function Controller() {
                     }
                 </div>
                 <div
-                    onClick={() => {
-                        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
-                        dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
-                    }}
+                    onClick={() => controllerActionHandler("next", 1)}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
             </div>
