@@ -44,7 +44,7 @@ export default function Nav() {
                                 className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'
                             >{isPlaying ? <GiPauseButton /> : <VscDebugStart />}</div>
                             <div className='flex-[8]'>
-                                <h3 className='font-bold'>{tagRemover(currentSong.name) || "?"}</h3>
+                                <h3 className='font-bold line-clamp-1'>{tagRemover(currentSong.name) || "?"}</h3>
                                 <p>{currentSong.artist || "?"}</p>
                             </div>
                             <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>

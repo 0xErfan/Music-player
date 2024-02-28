@@ -223,7 +223,6 @@ export default function MainProvider({ children }) {
             } else if (recentlyPlayed.length <= 4) {
                 state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
             } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
-
             dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
         }
     }, [state.currentSong])
