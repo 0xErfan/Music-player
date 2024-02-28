@@ -175,7 +175,7 @@ export default memo(function Main() {
                     <div><MdQueueMusic className='size-9' /></div>
                     <div className='flex items-center justify-between h-4/5 text-[18px]'>
                         <p>Recently Added</p>
-                        <p>{userSongs?.slice(-5).length}</p>
+                        <p>{userSongs?.slice(-5).length || 0}</p>
                     </div>
                 </Link>
 
@@ -184,14 +184,14 @@ export default memo(function Main() {
                         <div className='px-1'><IoMdMusicalNotes className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Playlist</p>
-                            <p>{userSongs?.filter(song => song.favorite).length}</p>
+                            <p>{userSongs?.filter(song => song.favorite).length || 0}</p>
                         </div>
                     </Link>
                     <Link to="songs/favorites" className='neoM-buttons duration-200 transition-all p-2'>
                         <div className='px-1'><FaHeart className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Favorite</p>
-                            <p>{userSongs?.filter(song => song.liked).length}</p>
+                            <p>{userSongs?.filter(song => song.liked).length || 0}</p>
                         </div>
                     </Link>
                 </div>

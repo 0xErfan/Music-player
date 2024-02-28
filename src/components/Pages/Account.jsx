@@ -14,7 +14,7 @@ export default function Account() {
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
         stopMusic()
         dispatch({ type: "updater" })
-        dispatch({ type: "reseter", payload: defaultState })
+        dispatch({ type: "reseter", payload: {...defaultState, isLoaded: true} })
         setUpdate(preve => !preve)
     }
 

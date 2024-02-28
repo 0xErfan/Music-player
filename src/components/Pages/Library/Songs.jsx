@@ -21,10 +21,9 @@ export default function Songs() {
     const navigate = useNavigate()
     const params = useParams()
 
-    useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs), console.log("g");}, [update, filteredSongsUpdater]);
+    useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs)}, [update, filteredSongsUpdater]);
 
     useEffect(() => {
-        console.log("h");
         if (mainUserData.length) {
             let filteredSongs;
             switch (params.type) {
@@ -49,7 +48,7 @@ export default function Songs() {
     }, [mainUserData, params.type]);
 
     const songUpdater = id => {
-        stopMusic()
+        // stopMusic()
     }
 
     const songSearchHandler = e => {

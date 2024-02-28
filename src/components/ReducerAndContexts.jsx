@@ -5,6 +5,7 @@ import { supabase } from '../client';
 
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
+
 export const defaultState = {
     isPlaying: 0,
     showToast: 0,
@@ -13,7 +14,7 @@ export const defaultState = {
     shouldRepeat: false,
     shouldIgnore: true,
     musicVolume: 6,
-    isLoaded: true,
+    isLoaded: false,
     isLogin: false,
     updater: false,
     filteredSongsUpdater: false,
@@ -23,9 +24,10 @@ export const defaultState = {
     musicMetadata: { currentTime: null, duration: null },
     toastData: { text: null, status: 0, loader: 0 },
     userData: null,
-    recentlyPlayedSongs: [],
     userSongsStorage: [],
-    share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err))
+    recentlyPlayedSongs: [],
+    share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)),
+    stopMusic: () => { audio.current.pause(), audio.current.src = "", audio.current = null }
 }
 
 export let mainUserData;
@@ -94,7 +96,7 @@ function stateReducer(state, action) {
             return { ...state, musicVolume: +action.payload }
         }
         case "reseter": {
-            return { ...action.payload }
+            return { ...defaultState, isLoaded: true }
         }
         case "removeLoading": {
             return { ...state, isLoaded: true }
@@ -129,15 +131,18 @@ export default function MainProvider({ children }) {
         userData: null,
         userSongsStorage: [],
         recentlyPlayedSongs: [],
-        share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)),
-        stopMusic: () => { audio.current.pause(), audio.current.src = "", audio.current = null }
     })
 
     let audio = useRef(new Audio());
 
+    state.share = async url => { if (state.currentSong?.name) await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)) }
+
+    state.stopMusic = () => { audio.current.pause(), audio.current.src = "", audio.current = null, dispatch({ type: "pause" }) }
+
     state.setMusicVolume = (volume) => { audio.current.volume = volume }
 
     state.like = async (action, name) => {
+        if (!state.currentSong?.name) return
 
         if (mainUserData.songs.length) {
             try {
@@ -182,49 +187,6 @@ export default function MainProvider({ children }) {
         }
     }
 
-    useEffect(() => {
-        let recentlyPlayed = [...state.recentlyPlayedSongs]
-        let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong.name)
-        if (state.currentSong) {
-
-            if (repeatedSong.length) {
-                recentlyPlayed = recentlyPlayed.filter(song => song.name != state.currentSong.name)
-                recentlyPlayed.push(repeatedSong[0])
-            } else if (recentlyPlayed.length <= 4) {
-                recentlyPlayed.push({ ...state.currentSong })
-            } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
-
-            dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
-        }
-    }, [state.currentSong])
-
-    useEffect(() => { fetchMusic() }, [state.currentSong?.name])
-
-    useEffect(() => {
-        let timer, ignore = true;
-        if (state.isPlaying && ignore) {
-            !state.shouldIgnore && audio.current.play().catch(err => { })
-
-            timer = setInterval(() => {
-                dispatch({
-                    type: "changeMetadata", payload: {
-                        ...state.musicMetadata,
-                        currentTime: Math.trunc(audio.current.currentTime),
-                        duration: Math.trunc(audio.current.duration)
-                    }
-                })
-            }, 1000)
-        } else !state.shouldIgnore && audio.current.pause()
-
-        return (() => { clearInterval(timer), ignore = false })
-    }, [state.currentSong, state.isPlaying, state.musicMetadata])
-
-    let userMetadata = state.userData && state.userData[0].user.user_metadata
-    if (userMetadata || state.userSongsStorage) {
-        mainUserData = userMetadata
-        state.currentSong = state.userSongsStorage[state.songIndex]
-    }
-
     async function fetchData() {
         const { data, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
 
@@ -239,6 +201,51 @@ export default function MainProvider({ children }) {
         }
     }
 
+    let userMetadata = state.userData && state.userData[0].user.user_metadata
+    if (userMetadata || state.userSongsStorage) {
+        mainUserData = userMetadata
+        state.currentSong = state.userSongsStorage[state.songIndex]
+    }
+
+    useEffect(() => {
+        if (!state.recentlyPlayedSongs) { // if uesr remove the last music of array
+            dispatch({ type: "recentlyPlayedSongsChange", payload: [] })
+            return
+        }
+
+        let recentlyPlayed = [...state.recentlyPlayedSongs]
+        let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
+
+        if (state.currentSong?.name) {
+            if (repeatedSong.length) {
+                recentlyPlayed = recentlyPlayed.filter(song => song.name != state.currentSong.name)
+                state.isPlaying && recentlyPlayed.push(repeatedSong[0])
+            } else if (recentlyPlayed.length <= 4) {
+                state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
+            } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
+
+            dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+        }
+    }, [state.currentSong])
+
+    useEffect(() => {
+        let timer, ignore = true;
+        if (state.isPlaying && ignore) {
+            !state.shouldIgnore && audio.current?.play().catch(err => { })
+            timer = setInterval(() => {
+                dispatch({
+                    type: "changeMetadata", payload: {
+                        ...state.musicMetadata,
+                        currentTime: Math.trunc(audio.current?.currentTime),
+                        duration: Math.trunc(audio.current?.duration)
+                    }
+                })
+            }, 1000)
+        } else !state.shouldIgnore && audio.current?.pause()
+
+        return (() => { clearInterval(timer), ignore = false })
+    }, [state.currentSong, state.isPlaying, state.musicMetadata])
+
     useEffect(() => {
         const checkLoginStatus = () => {
             const isLoggedIn = isLogin()
@@ -251,6 +258,7 @@ export default function MainProvider({ children }) {
         checkLoginStatus();
     }, [state.updater])
 
+    useEffect(() => { fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
 
     return (

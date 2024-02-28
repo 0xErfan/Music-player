@@ -11,16 +11,17 @@ import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast';
 import { getUserInfo, tagRemover } from '../../../utils';
+import { useNavigate } from 'react-router-dom';
 
 export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
-    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share } = useContext(States)
+    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, duration, favorite } = data
-
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
+    const navigate = useNavigate()
     const updater = () => { data.onUpdater(id) }
 
     const songLikeToggler = async () => {
@@ -38,6 +39,13 @@ export default function Track(data) {
             const { updatedSongsData, updatedSongsError } = await supabase.auth.updateUser({ data: { songs: updatedData } })
             if (updatedSongsError) throw new Error(updatedSongsError)
 
+            // check if songs array gets empty
+            let arrayAfterRemove = getUserInfo().user.user_metadata.songs.filter(song => song.name !== name)
+            if (!arrayAfterRemove.length) {
+                stopMusic()
+                dispatch({ type: "recentlyPlayedSongsChange", paylaod: [] })
+                navigate("/")
+            }
             dispatch({ type: "updater" })
             dispatch({
                 type: "toastOn",

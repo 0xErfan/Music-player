@@ -28,17 +28,7 @@ export default function Controller() {
         updatedMusicTimer.min = Math.trunc(duration / 60);
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
 
-        if (reseter) {
-            updatedMusicTimer.currentMin = 0
-            updatedMusicTimer.currentSec = 0
-            controllerActionHandler("next")
-            setMusicMetadata(updatedMusicTimer);
-            setReseter(false)
-            return;
-        }
-
-        if (currentTime == duration) {
-
+        if (currentTime == duration || reseter) {
             updatedMusicTimer.currentMin = 0
             updatedMusicTimer.currentSec = 0
 
@@ -49,7 +39,9 @@ export default function Controller() {
                 dispatch({ type: "changeCurrent", payload: songIndex })
                 return
             }
-            if (!shouldIgnore) controllerActionHandler("next")
+            if (!shouldIgnore && !reseter) controllerActionHandler("next")
+            setReseter(false)
+
         } else if (currentTime > 59) {
             updatedMusicTimer.currentMin = Math.trunc(currentTime / 60);
             updatedMusicTimer.currentSec = Math.trunc(currentTime - (updatedMusicTimer.currentMin * 60));
@@ -59,10 +51,13 @@ export default function Controller() {
     }, [musicMetadata.currentTime, musicMetadata.duration]);
 
     const controllerActionHandler = (action, reset = null) => {
+        if (!currentSong?.name) return
         if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
-        action == "next" ?
+
+        if (action == "next") {
             dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
-            : dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
+        } else if (action == "preve") dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
+
         reset && setReseter(true)
     }
 
@@ -82,7 +77,7 @@ export default function Controller() {
                     <p>{musicMetadata.duration ? padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec) : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
                 <input
-                    style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100}%)` }}
+                    style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100 || 0}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 || 0}%)` }}
                     onChange={e => setCurrentTime(e.target.value)}
                     value={musicMetadata.currentTime ?? 0}
                     className='timeLine' min={0} max={musicMetadata.duration ? musicMetadata.duration : ""} type="range"></input>
@@ -116,7 +111,7 @@ export default function Controller() {
                 <div onClick={() => setShowVolume(preve => !preve)} className={`neoM-buttons ${showVolume && "text-primaryOrange"}`}><IoVolumeHigh className='size-10 p-[10px]' /></div>
                 <div
                     className={`neoM-buttons ${mainUserData?.songs.find(song => song.liked && song.name == currentSong?.name) && "text-primaryOrange"}`}><IoMdHeart className='size-10 p-[10px]'
-                        onClick={() => like("liked", currentSong.name)}
+                        onClick={() => like("liked", currentSong?.name)}
                     />
                 </div>
                 <div onClick={() => share(musicUrl)} className='neoM-buttons'><IoShareSocialOutline className='size-10 p-[10px]' /></div>
