@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IoArrowBack } from "react-icons/io5";
 import { LiaRandomSolid } from "react-icons/lia";
@@ -20,7 +20,8 @@ export default function Songs() {
 
     const navigate = useNavigate()
     const params = useParams()
-
+    const audio = useRef()
+    
     useEffect(() => {isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs)}, [update, filteredSongsUpdater]);
 
     useEffect(() => {

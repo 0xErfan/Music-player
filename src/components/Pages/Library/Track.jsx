@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
@@ -17,9 +17,20 @@ export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
     const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic, musicMetadata } = useContext(States)
+    const [duration, setDuration] = useState(null)
     const dispatch = useContext(StateDispatcher)
-    const { cover, id, name, artistname, duration, favorite } = data
+    const { cover, id, name, artistname, favorite } = data
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
+
+
+    useMemo(() => {
+        if (!duration) {
+            const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${name}`;
+            let audio = new Audio();
+            audio.src = musicUrl;
+            audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
+        }
+    }, [duration]);
 
     const navigate = useNavigate()
 
@@ -119,7 +130,7 @@ export default function Track(data) {
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
 
-                    <p>{musicMetadata?.duration ? padStarter(Math.floor(musicMetadata.duration / 60)) + ":" + padStarter(musicMetadata.duration % 60) : "00:00"}</p>
+                    <p>{duration ? (padStarter(Math.floor(duration / 60))) + ":" + (padStarter(Math.floor(duration % 60))) : "Loading..."}</p>
                 </div>
             </div>
             <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>
