@@ -18,6 +18,7 @@ export const defaultState = {
     isLogin: false,
     updater: false,
     filteredSongsUpdater: false,
+    shouldIntrapt: false,
     storageUpdate: false,
     storageUpdate: false,
     currentSong: null,
@@ -26,8 +27,6 @@ export const defaultState = {
     userData: null,
     userSongsStorage: [],
     recentlyPlayedSongs: [],
-    share: async url => await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)),
-    stopMusic: () => { audio.current.pause(), audio.current.src = "", audio.current = null }
 }
 
 export let mainUserData;
@@ -139,9 +138,20 @@ export default function MainProvider({ children }) {
 
     let audio = useRef(new Audio());
 
+    let userMetadata = state.userData && state.userData[0].user.user_metadata
+    if (userMetadata || state.userSongsStorage) {
+        mainUserData = userMetadata
+        state.currentSong = state.userSongsStorage[state.songIndex]
+    }
+
     state.share = async url => { if (state.currentSong?.name) await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)) }
 
-    state.stopMusic = () => { audio.current.pause(), audio.current.src = "", audio.current = null, dispatch({ type: "pause" }) }
+    state.stopMusic = () => {
+        dispatch({ type: "pause" })
+        audio.current.pause()
+        audio.current.src = ""
+        audio.current = null
+    }
 
     state.setMusicVolume = (volume) => { audio.current.volume = volume }
 
@@ -203,12 +213,6 @@ export default function MainProvider({ children }) {
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
         }
-    }
-
-    let userMetadata = state.userData && state.userData[0].user.user_metadata
-    if (userMetadata || state.userSongsStorage) {
-        mainUserData = userMetadata
-        state.currentSong = state.userSongsStorage[state.songIndex]
     }
 
     const chanegMusic = () => {

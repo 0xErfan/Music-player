@@ -1,21 +1,13 @@
 import { Navigate } from 'react-router-dom'
 import { getUserInfo, isLogin } from '../../utils'
-import { StateDispatcher, States } from '../ReducerAndContexts'
-import { useContext, useState } from 'react'
-import { defaultState } from '../ReducerAndContexts'
+import { supabase } from '../../client'
 
 export default function Account() {
 
-    const dispatch = useContext(StateDispatcher)
-    const { stopMusic } = useContext(States)
-    const [update, setUpdate] = useState(false)
-
     const logoutHandler = () => {
+        supabase.auth.signOut()
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
-        stopMusic()
-        dispatch({ type: "updater" })
-        dispatch({ type: "reseter", payload: {...defaultState, isLoaded: true} })
-        setUpdate(preve => !preve)
+        location.reload()
     }
 
     return (

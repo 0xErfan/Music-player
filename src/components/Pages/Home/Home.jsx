@@ -18,8 +18,10 @@ import Toast from '../../Toast';
 import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
+import { isLogin } from '../../../utils';
 
 export default function Main() {
+
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
@@ -166,8 +168,8 @@ export default function Main() {
                     <Link to="/artists"><Buttons icon={<GiMicrophone />} title="Artist" /></Link>
                     <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
                     <label htmlFor="fileUploader">
-                        <Buttons icon={<IoFolderOpenOutline />} title="Add" />
-                        <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />
+                        <Buttons icon={<IoFolderOpenOutline />} opacity={ !isLogin() ? 1 : 0} title="Add" />
+                        {isLogin() && <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />}
                     </label>
                 </div>
 
