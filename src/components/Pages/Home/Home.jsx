@@ -19,7 +19,7 @@ import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
 
-export default memo(function Main() {
+export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, toastData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
@@ -200,4 +200,4 @@ export default memo(function Main() {
             </section>
         </main>
     )
-})
+}

@@ -28,7 +28,7 @@ export default function Songs() {
             let filteredSongs;
             switch (params.type) {
                 case "recentlies":
-                    filteredSongs = mainUserData.slice(-5);
+                    filteredSongs = [...mainUserData].slice(-5).reverse();
                     break;
                 case "playlist":
                     filteredSongs = mainUserData.filter(song => song.favorite);
@@ -46,10 +46,6 @@ export default function Songs() {
             setFilteredSongs(filteredSongs);
         }
     }, [mainUserData, params.type]);
-
-    const songUpdater = id => {
-        // stopMusic()
-    }
 
     const songSearchHandler = e => {
         setSearch(e.target.value)
@@ -87,7 +83,7 @@ export default function Songs() {
                         !filteredSongs.length ?
                             <div className='text-2xl font-bold text-center'>No songs yet...</div>
                             :
-                            filteredSongs.map(song => <Track key={song.id} onUpdater={songUpdater} {...song} />)
+                            filteredSongs.map(song => <Track key={song.id} {...song} />)
                     }
                 </div>
             </section>

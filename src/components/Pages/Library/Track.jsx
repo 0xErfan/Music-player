@@ -10,19 +10,18 @@ import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import Toast from '../../Toast';
-import { getUserInfo, tagRemover } from '../../../utils';
+import { getUserInfo, padStarter, tagRemover } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 
 export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
-    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic } = useContext(States)
+    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic, musicMetadata } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, duration, favorite } = data
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const navigate = useNavigate()
-    const updater = () => { data.onUpdater(id) }
 
     const songLikeToggler = async () => {
         await like("favorite", name)
@@ -53,7 +52,6 @@ export default function Track(data) {
                 status: 1
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
-            updater()
         } catch (error) {
             console.log(error);
             dispatch({
@@ -121,7 +119,7 @@ export default function Track(data) {
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
 
-                    <p>{currentSong?.duration || "00:00"}</p>
+                    <p>{musicMetadata?.duration ? padStarter(Math.floor(musicMetadata.duration / 60)) + ":" + padStarter(musicMetadata.duration % 60) : "00:00"}</p>
                 </div>
             </div>
             <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>

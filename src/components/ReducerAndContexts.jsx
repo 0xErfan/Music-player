@@ -98,6 +98,9 @@ function stateReducer(state, action) {
         case "reseter": {
             return { ...defaultState, isLoaded: true }
         }
+        case "shouldIntrapt": {
+            return { ...state, shouldIntrapt: action.payload }
+        }
         case "removeLoading": {
             return { ...state, isLoaded: true }
         }
@@ -123,6 +126,7 @@ export default function MainProvider({ children }) {
         isLogin: false,
         updater: false,
         filteredSongsUpdater: false,
+        shouldIntrapt: false,
         storageUpdate: false,
         storageUpdate: false,
         currentSong: null,
@@ -207,6 +211,20 @@ export default function MainProvider({ children }) {
         state.currentSong = state.userSongsStorage[state.songIndex]
     }
 
+    const chanegMusic = () => {
+        if (state.isShuffle) {
+            dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * getUserInfo().user.user_metadata.songs.length) })
+            return
+        } else if (state.shouldRepeat) {
+            dispatch({ type: "changeCurrent", payload: state.songIndex })
+            return
+        }
+        if (!state.currentSong?.name) return
+        if (state.shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+
+        dispatch({ type: "changeCurrent", payload: state.songIndex == state.mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 })
+    }
+
     useEffect(() => {
         if (!state.recentlyPlayedSongs) { // if uesr remove the last music of array
             dispatch({ type: "recentlyPlayedSongsChange", payload: [] })
@@ -229,6 +247,8 @@ export default function MainProvider({ children }) {
 
     useEffect(() => {
         let timer, ignore = true;
+        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
+
         if (state.isPlaying && ignore) {
             !state.shouldIgnore && audio.current?.play().catch(err => { })
             timer = setInterval(() => {

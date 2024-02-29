@@ -25,6 +25,7 @@ export default function Controller() {
         let { duration, currentTime } = musicMetadata;
         let updatedMusicTimer = { ...musicTimer };
 
+        dispatch({ type: "shouldIntrapt", payload: false })
         updatedMusicTimer.min = Math.trunc(duration / 60);
         updatedMusicTimer.sec = Math.trunc(duration - updatedMusicTimer.min * 60);
 
@@ -48,6 +49,8 @@ export default function Controller() {
         } else updatedMusicTimer.currentSec = Math.trunc(currentTime);
 
         setMusicMetadata(updatedMusicTimer);
+        return () => dispatch({ type: "shouldIntrapt", payload: true })
+
     }, [musicMetadata.currentTime, musicMetadata.duration]);
 
     const controllerActionHandler = (action, reset = null) => {
