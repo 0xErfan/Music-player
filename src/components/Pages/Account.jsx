@@ -5,7 +5,7 @@ import { supabase } from '../../client'
 export default function Account() {
 
     const logoutHandler = () => {
-        supabase.auth.signOut()
+        // supabase.auth.signOut()
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
         location.reload()
     }

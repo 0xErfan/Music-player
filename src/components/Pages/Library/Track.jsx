@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
@@ -9,28 +9,30 @@ import { MdDelete } from "react-icons/md";
 import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
-import Toast from '../../Toast';
+import { Oval } from 'react-loader-spinner';
 import { getUserInfo, padStarter, tagRemover } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 
 export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
-    const { toastData, userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic, musicMetadata } = useContext(States)
+    const { userSongsStorage, userData, currentSong, isPlaying, like, share, songIndex } = useContext(States)
     const [duration, setDuration] = useState(null)
+    const [loader, setLoader] = useState(false)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, favorite } = data
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
-
     useMemo(() => {
         if (!duration) {
+            console.log("hi");
             const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${name}`;
             let audio = new Audio();
             audio.src = musicUrl;
-            audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
+            audio.addEventListener('loadedmetadata', () => { setDuration(audio.duration) });
+            return () => { audio.removeEventListener("loadedmetadata", "") }
         }
-    }, [duration]);
+    }, []);
 
     const navigate = useNavigate()
 
@@ -41,6 +43,7 @@ export default function Track(data) {
 
     const deleteHandler = async () => {
         const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
+        setLoader(true)
         // make it separate later
         try {
             const { data, error } = await supabase.storage.from("users").remove(userData[0].user.email + `/${name}`)
@@ -51,15 +54,16 @@ export default function Track(data) {
 
             // check if songs array gets empty
             let arrayAfterRemove = getUserInfo().user.user_metadata.songs.filter(song => song.name !== name)
+            if (currentSong && currentSong.name == name) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
             if (!arrayAfterRemove.length) {
-                stopMusic()
-                dispatch({ type: "recentlyPlayedSongsChange", paylaod: [] })
-                navigate("/")
+                location.reload()
+                return
             }
-            dispatch({ type: "updater" })
+
+            dispatch({ type: "filteredSongsUpdater" })
             dispatch({
                 type: "toastOn",
-                text: "Music removed successfully !",
+                text: "Music deleted successfully !",
                 status: 1
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
@@ -72,6 +76,8 @@ export default function Track(data) {
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 2000);
         }
+        setShowDetails(false)
+        setLoader(false)
     }
 
     const musicDownloadHandler = async () => {
@@ -110,7 +116,6 @@ export default function Track(data) {
 
     return (
         <div className='flex items-center gap-3'>
-            <Toast text={toastData.text} status={toastData.status} />
             <div onClick={() => setShowDetails(false)} className={` ${showDetails ? "z-40 visible" : " invisible z-0"} fixed z-30 inset-0`}></div>
             {
                 cover ?
@@ -138,9 +143,17 @@ export default function Track(data) {
                 <div className={`inset-0 -left-[185px] z-40 ${showDetails ? "absolute" : "hidden"} neoM-bg h-36 p-4 -my-4 z-0`}>
                     <ul className='space-y-2 ch:flex ch:items-center ch:gap-2 ch:justify-between ch:cursor-pointer ch:duration-200 ch:opacity-70 ch-hover:opacity-100'>
                         <li onClick={songLikeToggler}>{favorite ? "Remove from" : "Add to"} playlist <MdPlaylistAdd className='shrink-0' /></li>
-                        <li onClick={musicDownloadHandler}>Download <FaDownload /></li>
+                        <li onClick={musicDownloadHandler}>Download <FaDownload /> </li>
                         <li onClick={() => share(musicUrl)}>Share <IoMdShare /></li>
-                        <li className='text-primaryOrange ' onClick={deleteHandler}>Delete <MdDelete /></li>
+                        <li className='text-primaryOrange ' onClick={deleteHandler}>Delete {
+                            !loader ? <MdDelete /> : <Oval
+                                visible={true}
+                                height="20"
+                                width="20"
+                                color="#A64717"
+                                ariaLabel="oval-loading"
+                            />
+                        }</li>
                     </ul>
                 </div>
             </div>

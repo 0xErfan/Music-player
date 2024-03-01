@@ -138,20 +138,13 @@ export default function MainProvider({ children }) {
 
     let audio = useRef(new Audio());
 
-    let userMetadata = state.userData && state.userData[0].user.user_metadata
+    let userMetadata = state.userData && getUserInfo()?.user.user_metadata
     if (userMetadata || state.userSongsStorage) {
         mainUserData = userMetadata
         state.currentSong = state.userSongsStorage[state.songIndex]
     }
 
     state.share = async url => { if (state.currentSong?.name) await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)) }
-
-    state.stopMusic = () => {
-        dispatch({ type: "pause" })
-        audio.current.pause()
-        audio.current.src = ""
-        audio.current = null
-    }
 
     state.setMusicVolume = (volume) => { audio.current.volume = volume }
 
@@ -191,6 +184,8 @@ export default function MainProvider({ children }) {
         audio.current.currentTime = time
         dispatch({ type: "play" })
     }
+
+    state.stopMusic = () => { audio.current?.pause(), audio.current = null }
 
     const fetchMusic = async () => {
         if (!audio.current) audio.current = new Audio() //re-assign the audio if the user logged out(logout will make audio null)
@@ -233,7 +228,7 @@ export default function MainProvider({ children }) {
         if (!state.recentlyPlayedSongs) { // if uesr remove the last music of array
             dispatch({ type: "recentlyPlayedSongsChange", payload: [] })
             return
-        }
+        } else if (!state.currentSong?.name) return
 
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
@@ -245,13 +240,16 @@ export default function MainProvider({ children }) {
             } else if (recentlyPlayed.length <= 4) {
                 state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
             } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
+
+            if (!recentlyPlayed.length) dispatch({ type: "updater" }) // trust me i sholud do it to show the first played song in ui.
             dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
         }
     }, [state.currentSong])
 
     useEffect(() => {
         let timer, ignore = true;
-        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
+        if (audio.current?.currentTime == audio.current?.duration && state.shouldIntrapt) chanegMusic()
+        if (!state.currentSong?.name) return;
 
         if (state.isPlaying && ignore) {
             !state.shouldIgnore && audio.current?.play().catch(err => { })
@@ -281,7 +279,7 @@ export default function MainProvider({ children }) {
         checkLoginStatus();
     }, [state.updater])
 
-    useEffect(() => { fetchMusic() }, [state.currentSong?.name])
+    useEffect(() => { if (state.currentSong?.name) fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
 
     return (

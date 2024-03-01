@@ -14,7 +14,6 @@ import { FaGithub } from "react-icons/fa6";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link, useNavigate } from 'react-router-dom';
-import Toast from '../../Toast';
 import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
@@ -23,13 +22,12 @@ import { isLogin } from '../../../utils';
 export default function Main() {
 
     const dispatch = useContext(StateDispatcher)
-    const { userData, toastData, isLoaded } = useContext(States)
+    const { userData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
     const navigate = useNavigate()
     const inputRef = useRef()
 
-    let userSongs
-    if (userData) userSongs = userData[0].user.user_metadata.songs
+    let userSongs = userData ? userData[0].user.user_metadata.songs : null
 
     const newSongSearchHandler = () => inputRef.current.value.trim().length && navigate(`/search/${inputRef.current.value}`)
 
@@ -116,7 +114,6 @@ export default function Main() {
 
     return (
         <main className='min-h-screen'>
-            <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
 
             {/* Loader */}
             <div className={`middle ${isLoaded ? "hidden" : "absolute"} left-0 right-0 w-full  z-40 h-screen`}>

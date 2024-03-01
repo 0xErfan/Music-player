@@ -22,6 +22,12 @@ export default function Controller() {
     const dispatch = useContext(StateDispatcher)
 
     useEffect(() => {
+
+        if (!currentSong) {
+            setMusicMetadata({ min: 0, sec: 0, currentMin: 0, currentSec: 0 })
+            return
+        }
+
         let { duration, currentTime } = musicMetadata;
         let updatedMusicTimer = { ...musicTimer };
 
@@ -66,7 +72,6 @@ export default function Controller() {
 
     return (
         <div className='relative'>
-            <Toast key="toast" text={toastData.text} status={toastData.status} />
             <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
             <div className={`flex items-center justify-center -rotate-90 w-[230px] duration-200 transition-all rounded-md absolute ${showVolume ? "-top-[12rem] opacity-1" : "opacity-0 -top-[42rem]"} -right-20 bg-transparent backdrop-blur-md h-12 z-50`}>
                 <input
@@ -76,13 +81,13 @@ export default function Controller() {
             </div>
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
-                    <p>{padStarter(musicTimer.currentMin) + ":" + padStarter(musicTimer.currentSec)}</p>
+                    <p>{currentSong ? padStarter(musicTimer.currentMin) + ":" + padStarter(musicTimer.currentSec) : "00:00"}</p>
                     <p>{musicMetadata.duration ? padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec) : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
                 <input
-                    style={{ background: `linear-gradient(90deg, #DA510B ${(musicMetadata.currentTime / musicMetadata.duration) * 100 || 0}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 || 0}%)` }}
+                    style={{ background: `linear-gradient(90deg, #DA510B ${currentSong ? (musicMetadata.currentTime / musicMetadata.duration) * 100 : 0}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 || 0}%)` }}
                     onChange={e => setCurrentTime(e.target.value)}
-                    value={musicMetadata.currentTime ?? 0}
+                    value={currentSong ? musicMetadata.currentTime : 0}
                     className='timeLine' min={0} max={musicMetadata.duration ? musicMetadata.duration : ""} type="range"></input>
             </div>
 
