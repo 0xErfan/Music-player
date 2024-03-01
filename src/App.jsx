@@ -9,7 +9,7 @@ function App() {
 
     return (
         <MainProvider>
-            <div className="max-w-[500px] w-full m-auto">
+            <div className="max-w-[500px] w-full m-auto md:border md:border-primaryOrange/20 h-screen">
                 {routes}
                 <Nav />
             </div>
