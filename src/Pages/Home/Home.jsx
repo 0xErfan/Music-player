@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, memo } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoFolderOpenOutline } from "react-icons/io5";
@@ -14,10 +14,9 @@ import { FaGithub } from "react-icons/fa6";
 import Buttons from './Buttons';
 import Recently from './Recently';
 import { Link, useNavigate } from 'react-router-dom';
-import { StateDispatcher, States } from '../../ReducerAndContexts';
-import { mainUserData } from '../../ReducerAndContexts';
-import { supabase } from "../../../client"
-import { getUserInfo, isLogin, padStarter } from '../../../utils';
+import { States, mainUserData, StateDispatcher } from '../../components/ReducerAndContexts';
+import { supabase } from '../../client';
+import { getUserInfo, isLogin, padStarter } from '../../utils';
 
 export default function Main() {
 

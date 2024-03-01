@@ -1,12 +1,13 @@
-import Songs from "./components/Pages/Library/Songs"
-import Search from "./components/Pages/Search"
-import Albums from "./components/Pages/Albums"
-import Artists from "./components/Pages/Artists"
-import Home from "./components/Pages/Home/Home"
-import Player from "./components/Pages/Player/Player"
-import Account from "./components/Pages/Account"
-import SignUp from "./components/Authentication/SignIn"
-import Login from "./components/Authentication/LogIn"
+import Songs from "./Pages/Library/Songs"
+import Search from "./Pages/Search"
+import Albums from "./Pages/Albums"
+import Artists from "./Pages/Artists"
+import Home from "./Pages/Home/Home"
+import Player from "./Pages/Player/Player"
+import Account from "./Pages/Account"
+import SignUp from "./Pages/SignIn"
+import Login from "./Pages/LogIn"
+import NotFound from "./Pages/NotFound"
 
 const routes = [
     { path: "/", element: <Home /> },
@@ -20,7 +21,7 @@ const routes = [
     { path: "/account", element: <Account /> },
     { path: "/login", element: <Login /> },
     { path: "/signUp", element: <SignUp /> },
-    { path: "/*", element: <p>Not Found</p> }
+    { path: "/*", element: <NotFound /> }
 ]
 
 export default routes;

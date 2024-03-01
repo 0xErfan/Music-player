@@ -1,8 +1,9 @@
 import Controller from './Controller';
-import { States } from '../../ReducerAndContexts';
+import { States } from '../../components/ReducerAndContexts';
 import { useContext } from 'react';
 import { FiMusic } from "react-icons/fi";
-import { tagRemover } from '../../../utils';
+import { tagRemover } from '../../utils';
+
 export default function Music() {
 
     const { currentSong } = useContext(States)

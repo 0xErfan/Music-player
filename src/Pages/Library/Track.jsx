@@ -2,15 +2,15 @@ import React, { useContext, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
-import { StateDispatcher, States, musicUrl } from '../../ReducerAndContexts';
+import { StateDispatcher, States, musicUrl } from '../../components/ReducerAndContexts';
 import { FaDownload } from "react-icons/fa6";
 import { MdPlaylistAdd } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoMdShare } from "react-icons/io";
-import { mainUserData } from '../../ReducerAndContexts';
-import { supabase } from '../../../client';
+import { mainUserData } from '../../components/ReducerAndContexts';
+import { supabase } from '../../client';
 import { Oval } from 'react-loader-spinner';
-import { getUserInfo, tagRemover } from '../../../utils';
+import { getUserInfo, tagRemover } from '../../utils';
 
 export default function Track(data) {
 

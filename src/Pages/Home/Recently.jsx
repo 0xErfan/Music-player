@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import Song from "./Song"
-import { States } from "../../ReducerAndContexts"
+import { States } from "../../components/ReducerAndContexts"
 
 export default function Recently() {
 

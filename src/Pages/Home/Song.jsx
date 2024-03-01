@@ -1,7 +1,7 @@
 import { VscDebugStart } from "react-icons/vsc";
 import { GiPauseButton } from "react-icons/gi";
-import { getUserInfo, tagRemover } from "../../../utils";
-import { StateDispatcher, States } from "../../ReducerAndContexts";
+import { getUserInfo, tagRemover } from "../../utils";
+import { StateDispatcher, States } from "../../components/ReducerAndContexts";
 import { useContext } from "react";
 
 export default function Song({ name }) {

@@ -6,8 +6,8 @@ import { CiSearch } from "react-icons/ci";
 import { VscDebugStart } from "react-icons/vsc";
 import { GiPauseButton } from "react-icons/gi";
 import Track from './Track';
-import { StateDispatcher, States } from '../../ReducerAndContexts';
-import { getUserInfo, isLogin } from '../../../utils';
+import { States, StateDispatcher } from '../../components/ReducerAndContexts';
+import { getUserInfo, isLogin } from '../../utils';
 
 export default function Songs() {
 

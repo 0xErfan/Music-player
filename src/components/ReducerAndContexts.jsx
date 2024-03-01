@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../utils';
 import { supabase } from '../client';
-
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
 

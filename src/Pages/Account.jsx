@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { getUserInfo, isLogin } from '../../utils'
-import { supabase } from '../../client'
+import { getUserInfo, isLogin } from '../utils'
 
 export default function Account() {
 

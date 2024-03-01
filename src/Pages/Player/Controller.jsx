@@ -6,11 +6,9 @@ import { GiPauseButton } from "react-icons/gi";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
-import { States, StateDispatcher } from '../../ReducerAndContexts';
-import { mainUserData } from '../../ReducerAndContexts';
-import { musicUrl } from '../../ReducerAndContexts';
-import Toast from '../../Toast';
-import { getUserInfo, padStarter } from '../../../utils';
+import { mainUserData } from '../../components/ReducerAndContexts';
+import { States, StateDispatcher, musicUrl } from '../../components/ReducerAndContexts';
+import { getUserInfo, padStarter } from '../../utils';
 
 
 export default function Controller() {
