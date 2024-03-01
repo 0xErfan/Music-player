@@ -75,7 +75,6 @@ export default function Main() {
                     if (uploadError) throw new Error(uploadError)
 
                     const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${newSong.name}`;
-                    console.log(musicUrl);
                     let audio = new Audio();
                     audio.src = musicUrl;
 
@@ -99,6 +98,7 @@ export default function Main() {
                         e.target.value = ""
                         setTimeout(() => dispatch({ type: "toastOff" }), 1000);
                     });
+                    return
                 } catch (err) {
                     console.log(err);
                     const { data, error } = await supabase.storage.from("users").remove(getUserInfo().user.email + `/${selectedFile.name}`)

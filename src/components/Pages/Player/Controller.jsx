@@ -85,9 +85,9 @@ export default function Controller() {
                     <p>{musicMetadata.duration ? getUserInfo().user.user_metadata.songs.find(song => song.name == currentSong.name).duration : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
                 <input
-                    style={{ background: `linear-gradient(90deg, #DA510B ${currentSong ? (musicMetadata.currentTime / musicMetadata.duration) * 100 : 0}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 || 0}%)` }}
+                    style={{ background: `linear-gradient(90deg, #DA510B ${currentSong ? (musicMetadata.currentTime / musicMetadata.duration) * 100 : 0}%, #DFDFDF ${currentSong ? (musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 : 0}%)` }}
                     onChange={e => setCurrentTime(e.target.value)}
-                    value={currentSong ? musicMetadata.currentTime : 0}
+                    value={musicMetadata.currentTime ?? 0}
                     className='timeLine' min={0} max={musicMetadata.duration ? musicMetadata.duration : ""} type="range"></input>
             </div>
 

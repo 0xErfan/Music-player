@@ -120,7 +120,7 @@ export default function Track(data) {
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
 
-                    <p>{getUserInfo().user.user_metadata.songs.find(song => song.name == name).duration}</p>
+                    <p>{getUserInfo().user.user_metadata.songs.find(song => song.name == name)?.duration}</p>
                 </div>
             </div>
             <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>
