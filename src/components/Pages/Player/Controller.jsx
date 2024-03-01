@@ -10,7 +10,7 @@ import { States, StateDispatcher } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { musicUrl } from '../../ReducerAndContexts';
 import Toast from '../../Toast';
-import { padStarter } from '../../../utils';
+import { getUserInfo, padStarter } from '../../../utils';
 
 
 export default function Controller() {
@@ -82,7 +82,7 @@ export default function Controller() {
             <div className='flex flex-col mb-16 space-y-2'>
                 <div className='flex items-center text-sm justify-between'>
                     <p>{currentSong ? padStarter(musicTimer.currentMin) + ":" + padStarter(musicTimer.currentSec) : "00:00"}</p>
-                    <p>{musicMetadata.duration ? padStarter(musicTimer.min) + ":" + padStarter(musicTimer.sec) : isPlaying ? "Loading..." : "00:00"}</p>
+                    <p>{musicMetadata.duration ? getUserInfo().user.user_metadata.songs.find(song => song.name == currentSong.name).duration : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
                 <input
                     style={{ background: `linear-gradient(90deg, #DA510B ${currentSong ? (musicMetadata.currentTime / musicMetadata.duration) * 100 : 0}%, #DFDFDF ${(musicMetadata.currentTime / musicMetadata.duration) * 100 - 100 || 0}%)` }}

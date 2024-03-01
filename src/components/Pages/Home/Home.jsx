@@ -17,7 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { StateDispatcher, States } from '../../ReducerAndContexts';
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from "../../../client"
-import { isLogin } from '../../../utils';
+import { getUserInfo, isLogin, padStarter } from '../../../utils';
 
 export default function Main() {
 
@@ -74,24 +74,34 @@ export default function Main() {
 
                     if (uploadError) throw new Error(uploadError)
 
-                    const { data, error } = await supabase.auth.updateUser({
-                        data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
-                    })
-                    if (error) throw new Error(error)
+                    const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${newSong.name}`;
+                    console.log(musicUrl);
+                    let audio = new Audio();
+                    audio.src = musicUrl;
+
+                    audio.addEventListener('loadedmetadata', async () => {
+
+                        newSong.duration = (padStarter(Math.floor(audio.duration / 60))) + ":" + (padStarter(Math.floor(audio.duration % 60)))
+
+                        const { data, error } = await supabase.auth.updateUser({
+                            data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
+                        })
+                        if (error) throw new Error(error)
 
 
-                    dispatch({ type: "updater" })
-                    dispatch({
-                        type: "toastOn",
-                        text: "Music added successfully !",
-                        status: 1
-                    })
-                    dispatch({ type: "filteredSongsUpdater" })
-                    e.target.value = ""
-                    setTimeout(() => dispatch({ type: "toastOff" }), 1000);
-                    return;
-
+                        dispatch({ type: "updater" })
+                        dispatch({
+                            type: "toastOn",
+                            text: "Music added successfully !",
+                            status: 1
+                        })
+                        dispatch({ type: "filteredSongsUpdater" })
+                        e.target.value = ""
+                        setTimeout(() => dispatch({ type: "toastOff" }), 1000);
+                    });
                 } catch (err) {
+                    console.log(err);
+                    const { data, error } = await supabase.storage.from("users").remove(getUserInfo().user.email + `/${selectedFile.name}`)
                     dispatch({
                         type: "toastOn",
                         text: "Check your internet connection !",
@@ -165,7 +175,7 @@ export default function Main() {
                     <Link to="/artists"><Buttons icon={<GiMicrophone />} title="Artist" /></Link>
                     <Link to="/albums"><Buttons icon={<BiAlbum />} title="Album" /></Link>
                     <label htmlFor="fileUploader">
-                        <Buttons icon={<IoFolderOpenOutline />} opacity={ !isLogin() ? 1 : 0} title="Add" />
+                        <Buttons icon={<IoFolderOpenOutline />} opacity={!isLogin() ? 1 : 0} title="Add" />
                         {isLogin() && <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />}
                     </label>
                 </div>

@@ -127,7 +127,6 @@ export default function MainProvider({ children }) {
         filteredSongsUpdater: false,
         shouldIntrapt: false,
         storageUpdate: false,
-        storageUpdate: false,
         currentSong: null,
         musicMetadata: { currentTime: null, duration: null },
         toastData: { text: null, status: 0, loader: 0 },
@@ -218,10 +217,10 @@ export default function MainProvider({ children }) {
             dispatch({ type: "changeCurrent", payload: state.songIndex })
             return
         }
-        if (!state.currentSong?.name) return
         if (state.shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+        if (!state.currentSong?.name) return
 
-        dispatch({ type: "changeCurrent", payload: state.songIndex == state.mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 })
+        dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 })
     }
 
     useEffect(() => {
@@ -241,15 +240,15 @@ export default function MainProvider({ children }) {
                 state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
             } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
 
-            if (!recentlyPlayed.length) dispatch({ type: "updater" }) // trust me i sholud do it to show the first played song in ui.
+            if (!recentlyPlayed.length) dispatch({ type: "filteredSongsUpdater" }) 
             dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
         }
     }, [state.currentSong])
 
     useEffect(() => {
         let timer, ignore = true;
-        if (audio.current?.currentTime == audio.current?.duration && state.shouldIntrapt) chanegMusic()
         if (!state.currentSong?.name) return;
+        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
 
         if (state.isPlaying && ignore) {
             !state.shouldIgnore && audio.current?.play().catch(err => { })

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { IoTriangle } from "react-icons/io5";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FiMusic } from "react-icons/fi";
@@ -10,31 +10,16 @@ import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../ReducerAndContexts';
 import { supabase } from '../../../client';
 import { Oval } from 'react-loader-spinner';
-import { getUserInfo, padStarter, tagRemover } from '../../../utils';
-import { useNavigate } from 'react-router-dom';
+import { getUserInfo, tagRemover } from '../../../utils';
 
 export default function Track(data) {
 
     const [showDetails, setShowDetails] = useState(false)
     const { userSongsStorage, userData, currentSong, isPlaying, like, share, songIndex } = useContext(States)
-    const [duration, setDuration] = useState(null)
     const [loader, setLoader] = useState(false)
     const dispatch = useContext(StateDispatcher)
     const { cover, id, name, artistname, favorite } = data
     const palyerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
-
-    useMemo(() => {
-        if (!duration) {
-            console.log("hi");
-            const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${name}`;
-            let audio = new Audio();
-            audio.src = musicUrl;
-            audio.addEventListener('loadedmetadata', () => { setDuration(audio.duration) });
-            return () => { audio.removeEventListener("loadedmetadata", "") }
-        }
-    }, []);
-
-    const navigate = useNavigate()
 
     const songLikeToggler = async () => {
         await like("favorite", name)
@@ -135,7 +120,7 @@ export default function Track(data) {
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
 
-                    <p>{duration ? (padStarter(Math.floor(duration / 60))) + ":" + (padStarter(Math.floor(duration % 60))) : "Loading..."}</p>
+                    <p>{getUserInfo().user.user_metadata.songs.find(song => song.name == name).duration}</p>
                 </div>
             </div>
             <div onClick={() => setShowDetails(true)} className='flex-[1/2] active:bg-black/25 duration-200 relative aspect-square rounded-full'>
