@@ -20,7 +20,7 @@ export default function Nav() {
     const navigate = useNavigate()
 
     useEffect(() => steActiveNav(location.pathname), [location.pathname])
-
+    console.log(location.pathname);
     useEffect(() => {
         const updatedData = { duration: 0, currentTime: 0 }
         const { duration, currentTime } = musicMetadata
@@ -30,7 +30,7 @@ export default function Nav() {
 
         setAudioData({ ...updatedData })
     }, [musicMetadata.duration, musicMetadata.currentTime])
-
+    console.log(activeNav);  
     return (
         <>
             <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
@@ -59,13 +59,13 @@ export default function Nav() {
                     }
                     <div className='mainNav'>
                         <ul className='grid grid-cols-4 text-xs text-center ch:py-3'>
-                            <Link to="/" className={`flex ${(activeNav == "/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
+                            <Link to="/Music-player" className={`flex ${(activeNav == "/Music-player" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                                 <div className='flex items-center justify-center cursor-pointer'>
                                     <AiFillHome className='size-6' />
                                 </div>
                                 Home
                             </Link>
-                            <Link to="/player" className={`flex text-primaryOrange ${activeNav.includes("player") && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
+                            <Link to="/player" className={`flex text-primaryOrange ${activeNav == "player" && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
                                 <div className='flex items-center justify-center'>
                                     <VscDebugStart className='size-6' />
                                 </div>

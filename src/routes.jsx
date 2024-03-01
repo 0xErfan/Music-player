@@ -10,7 +10,6 @@ import Login from "./Pages/LogIn"
 import NotFound from "./Pages/NotFound"
 
 const routes = [
-    { path: "/", element: <Home /> },
     { path: "/Music-player", element: <Home /> },
     { path: "/player", element: <Player /> },
     { path: "/search", element: <Search /> },
