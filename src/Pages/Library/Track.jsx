@@ -46,6 +46,8 @@ export default function Track(data) {
             }
 
             dispatch({ type: "filteredSongsUpdater" })
+            dispatch({ type: "updater" })
+            
             dispatch({
                 type: "toastOn",
                 text: "Music deleted successfully !",

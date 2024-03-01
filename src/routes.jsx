@@ -11,6 +11,7 @@ import NotFound from "./Pages/NotFound"
 
 const routes = [
     { path: "/", element: <Home /> },
+    { path: "/Music-player", element: <Home /> },
     { path: "/player", element: <Player /> },
     { path: "/search", element: <Search /> },
     { path: "/search/:text", element: <Search /> },
