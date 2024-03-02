@@ -50,8 +50,8 @@ export default function SignUp() {
 
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
-                navigate("/")
                 setIsSubmitting("")
+                location.reload()
             }, 2000);
 
         } catch (error) {
