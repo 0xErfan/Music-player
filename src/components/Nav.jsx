@@ -59,7 +59,7 @@ export default function Nav() {
                     }
                     <div className='mainNav'>
                         <ul className='grid grid-cols-4 text-xs text-center ch:py-3'>
-                            <Link to="/" className={`flex ${(activeNav == "/" || activeNav == "/Music-player" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
+                            <Link to="/" className={`flex ${(activeNav == "/" || activeNav == "/Music-player/" || activeNav.includes("/songs")) && "activeNav"} flex-col`}>
                                 <div className='flex items-center justify-center cursor-pointer'>
                                     <AiFillHome className='size-6' />
                                 </div>
