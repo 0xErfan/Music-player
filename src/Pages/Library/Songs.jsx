@@ -29,7 +29,7 @@ export default function Songs() {
             let filteredSongs;
             switch (params.type) {
                 case "recentlies":
-                    filteredSongs = [...mainUserData].slice(-5).reverse();
+                    filteredSongs = [...mainUserData].reverse();
                     break;
                 case "playlist":
                     filteredSongs = mainUserData.filter(song => song.favorite);
