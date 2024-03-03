@@ -245,6 +245,8 @@ export default function MainProvider({ children }) {
     }, [state.currentSong])
 
     useEffect(() => {
+        document.addEventListener("pause", () => dispatch({ type: "pause" }))
+        document.addEventListener("play", () => dispatch({ type: "play" }))
         let timer, ignore = true;
         if (!state.currentSong?.name) return;
         if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
