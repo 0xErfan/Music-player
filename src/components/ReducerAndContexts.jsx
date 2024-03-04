@@ -2,32 +2,9 @@ import React, { useEffect, useRef } from 'react'
 import { createContext, useReducer } from 'react'
 import { isLogin, getUserInfo } from '../utils';
 import { supabase } from '../client';
+
 export const StateDispatcher = createContext(null);
 export const States = createContext(null);
-
-export const defaultState = {
-    isPlaying: 0,
-    showToast: 0,
-    songIndex: 0,
-    isShuffle: false,
-    shouldRepeat: false,
-    shouldIgnore: true,
-    musicVolume: 6,
-    isLoaded: false,
-    isLogin: false,
-    updater: false,
-    filteredSongsUpdater: false,
-    shouldIntrapt: false,
-    storageUpdate: false,
-    storageUpdate: false,
-    currentSong: null,
-    musicMetadata: { currentTime: null, duration: null },
-    toastData: { text: null, status: 0, loader: 0 },
-    userData: null,
-    userSongsStorage: [],
-    recentlyPlayedSongs: [],
-}
-
 export let mainUserData;
 export let musicUrl;
 
@@ -92,9 +69,6 @@ function stateReducer(state, action) {
         }
         case "volumeChanger": {
             return { ...state, musicVolume: +action.payload }
-        }
-        case "reseter": {
-            return { ...defaultState, isLoaded: true }
         }
         case "shouldIntrapt": {
             return { ...state, shouldIntrapt: action.payload }
@@ -239,14 +213,18 @@ export default function MainProvider({ children }) {
                 state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
             } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
 
-            if (!recentlyPlayed.length) dispatch({ type: "filteredSongsUpdater" }) 
+            if (!recentlyPlayed.length) dispatch({ type: "updater" })
             dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
         }
     }, [state.currentSong])
 
+    //External device controllers
+    navigator.mediaSession.setActionHandler("nexttrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 }))
+    navigator.mediaSession.setActionHandler("previoustrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == 0 ? mainUserData.songs.length - 1 : state.songIndex - 1 }))
+    navigator.mediaSession.setActionHandler("pause", () => dispatch({ type: "pause" }))
+    navigator.mediaSession.setActionHandler("play", () => dispatch({ type: "play" }))
+
     useEffect(() => {
-        document.addEventListener("pause", () => dispatch({ type: "pause" }))
-        document.addEventListener("play", () => dispatch({ type: "play" }))
         let timer, ignore = true;
         if (!state.currentSong?.name) return;
         if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
