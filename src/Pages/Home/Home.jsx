@@ -183,7 +183,7 @@ export default function Main() {
                     <div><MdQueueMusic className='size-9' /></div>
                     <div className='flex items-center justify-between h-4/5 text-[18px]'>
                         <p>Recently Added</p>
-                        <p>{userSongs?.length + 1 || 0}</p>
+                        <p>{userSongs?.length || 0}</p>
                     </div>
                 </Link>
 
