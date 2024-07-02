@@ -19,27 +19,50 @@ export default function Login() {
     const changeHandler = ({ e, type }) => setFormData({ ...formData, [type]: e.target.value })
     
     const submitHandler = async e => {
+
         setIsSubmitting("submmiting")
         e.preventDefault()
 
         try {
+
+            if (!formData.email?.trim().length || !formData.password?.trim().length) {
+                dispatch({
+                    type: "toastOn",
+                    text: "Enter your email and password",
+                    status: 0
+                })
+
+                setTimeout(() => {
+                    dispatch({ type: "toastOff" })
+                    dispatch({ type: "updater" })
+                    setIsSubmitting("")
+                }, 2000);
+
+                return
+            }
+
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: formData.email,
                 password: formData.password,
             })
+
             if (error) throw new Error(error);
+
             setFormData({ email: "", name: "", password: "" })
+
             dispatch({
                 type: "toastOn",
                 text: "You logged in successfully",
                 status: 1
             })
+
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
                 dispatch({ type: "updater" })
                 navigate("/")
                 setIsSubmitting("")
             }, 2000);
+
             dispatch({ type: "updater" })
 
         } catch (error) {

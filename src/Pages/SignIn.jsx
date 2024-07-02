@@ -9,9 +9,11 @@ import { StateDispatcher, States } from '../components/ReducerAndContexts';
 import Toast from '../components/Toast';
 
 export default function SignUp() {
+
     const { toastData } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -23,6 +25,7 @@ export default function SignUp() {
     const changeHandler = ({ e, type }) => setFormData({ ...formData, [type]: e.target.value })
 
     const submitHandler = async e => {
+
         setIsSubmitting("submmiting")
         e.preventDefault()
 
@@ -39,9 +42,28 @@ export default function SignUp() {
         }
 
         try {
+
+            if (!formData.email?.trim().length || !formData.password?.trim().length || !formData.name?.trim().length) {
+
+                dispatch({
+                    type: "toastOn",
+                    text: "Fill all the fields first",
+                    status: 0
+                })
+
+                setTimeout(() => {
+                    dispatch({ type: "toastOff" })
+                    setIsSubmitting("")
+                }, 2000);
+                
+                return;
+            }
+
             const { data, error } = await supabase.auth.signUp(userData)
             if (error) throw new Error(error);
+
             setFormData({ email: "", name: "", password: "" })
+
             dispatch({
                 type: "toastOn",
                 text: "You signed up successfully",
