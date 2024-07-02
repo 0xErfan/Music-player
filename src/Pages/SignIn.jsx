@@ -79,7 +79,7 @@ export default function SignUp() {
 
         } catch (error) {
             let errorMessage = error.toString().toLowerCase()
-
+            
             if (errorMessage.includes("characters")) {
                 errorMessage = "Password should be at least 6 characters."
             } else if (errorMessage.includes("valid password")) {
@@ -87,7 +87,7 @@ export default function SignUp() {
             } else if (errorMessage.includes("format") || errorMessage.includes("provide")) {
                 errorMessage = "Please enter a valid email (:"
             } else if (errorMessage.includes("already registered")) {
-                errorMessage = "This ussername already exist ):"
+                errorMessage = "This username or email already exist ):"
             } else if (errorMessage.includes("fetch")) {
                 errorMessage = "Please check your connection!"
             }

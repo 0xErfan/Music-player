@@ -17,9 +17,11 @@ export default function Music() {
                         <FiMusic className="flex items-center size-full shrink-0 p-12 neoM-bg rounded-[8px]" />
                 }
             </div>
+
             <div className='text-center space-y-1 mb-2'>
                 <h3 className='text-xl min-h-14 line-clamp-2'>{currentSong ? tagRemover(currentSong.name) : "Loading..."}</h3>
             </div>
+            
             <Controller {...currentSong} />
         </>
     )

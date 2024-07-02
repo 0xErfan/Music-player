@@ -23,6 +23,7 @@ export default function Main() {
     const dispatch = useContext(StateDispatcher)
     const { userData, isLoaded } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
     const inputRef = useRef()
 
@@ -31,6 +32,8 @@ export default function Main() {
     const newSongSearchHandler = () => inputRef.current.value.trim().length && navigate(`/search/${inputRef.current.value}`)
 
     const newSongHandler = async e => {
+
+        if (isLoading) return;
 
         const selectedFile = e.target.files[0]
         if (!userData[0]) return
@@ -49,6 +52,8 @@ export default function Main() {
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
                 return;
             } else {
+
+                setIsLoading(true)
 
                 const newSong = {
                     id: mainUserData.counter,
@@ -110,6 +115,7 @@ export default function Main() {
                     setTimeout(() => dispatch({ type: "toastOff" }), 2000);
                     return;
                 }
+                finally { setIsLoading(false) }
             }
         }
         dispatch({

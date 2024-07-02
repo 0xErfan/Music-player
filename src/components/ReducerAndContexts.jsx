@@ -161,7 +161,6 @@ export default function MainProvider({ children }) {
 
     const fetchMusic = async () => {
         if (!audio.current) audio.current = new Audio() //re-assign the audio if the user logged out(logout will make audio null)
-
         if (state.userData && state.currentSong) {
             musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
             audio.current.src = musicUrl
@@ -182,25 +181,25 @@ export default function MainProvider({ children }) {
         }
     }
 
-    const chanegMusic = () => {
-        if (state.isShuffle) {
-            dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * getUserInfo().user.user_metadata.songs.length) })
-            return
-        } else if (state.shouldRepeat) {
-            dispatch({ type: "changeCurrent", payload: state.songIndex })
-            return
-        }
+    const changeMusic = () => {
+
+        if (state.isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * getUserInfo().user.user_metadata.songs.length) })
+
+        if (state.shouldRepeat) return dispatch({ type: "changeCurrent", payload: state.songIndex })
+
         if (state.shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+
         if (!state.currentSong?.name) return
 
         dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 })
     }
 
     useEffect(() => {
-        if (!state.recentlyPlayedSongs) { // if uesr remove the last music of array
-            dispatch({ type: "recentlyPlayedSongsChange", payload: [] })
-            return
-        } else if (!state.currentSong?.name) return
+
+        if (!state.recentlyPlayedSongs) return dispatch({ type: "recentlyPlayedSongsChange", payload: [] }) // if uesr remove the last music of array
+        if (!state.currentSong?.name) return
+
+        console.log('effect from state.currentSong running')
 
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
@@ -213,24 +212,25 @@ export default function MainProvider({ children }) {
                 state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
             } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
 
-            if (!recentlyPlayed.length) dispatch({ type: "updater" })
+            // if (!recentlyPlayed.length) dispatch({ type: "updater" })
             dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
         }
     }, [state.currentSong])
 
-    //External device controllers
-    navigator.mediaSession.setActionHandler("nexttrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 }))
-    navigator.mediaSession.setActionHandler("previoustrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == 0 ? mainUserData.songs.length - 1 : state.songIndex - 1 }))
-    navigator.mediaSession.setActionHandler("pause", () => dispatch({ type: "pause" }))
-    navigator.mediaSession.setActionHandler("play", () => dispatch({ type: "play" }))
-
     useEffect(() => {
-        let timer, ignore = true;
-        if (!state.currentSong?.name) return;
-        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) chanegMusic()
 
-        if (state.isPlaying && ignore) {
-            !state.shouldIgnore && audio.current?.play().catch(err => { })
+        let timer
+
+        if (!state.currentSong?.name) return;
+
+        console.log('effect from state.isPlaying running')
+
+        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) changeMusic()
+
+        if (state.isPlaying) {
+
+            !state.shouldIgnore && audio.current?.play()
+
             timer = setInterval(() => {
                 dispatch({
                     type: "changeMetadata", payload: {
@@ -240,25 +240,36 @@ export default function MainProvider({ children }) {
                     }
                 })
             }, 1000)
+
         } else !state.shouldIgnore && audio.current?.pause()
 
-        return (() => { clearInterval(timer), ignore = false })
+        return () => clearInterval(timer)
     }, [state.currentSong, state.isPlaying, state.musicMetadata])
 
     useEffect(() => {
+
         const checkLoginStatus = () => {
+
             const isLoggedIn = isLogin()
             dispatch({ type: "logCheck", payload: isLogin() })
+
             if (isLoggedIn) {
                 dispatch({ type: "fetchData", payload: getUserInfo() })
                 fetchData()
             }
         }
+
         checkLoginStatus();
     }, [state.updater])
 
-    useEffect(() => { if (state.currentSong?.name) fetchMusic() }, [state.currentSong?.name])
+    useEffect(() => { state.currentSong?.name && fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
+
+    //External device controllers
+    navigator.mediaSession.setActionHandler("nexttrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 }))
+    navigator.mediaSession.setActionHandler("previoustrack", () => dispatch({ type: "changeCurrent", payload: state.songIndex == 0 ? mainUserData.songs.length - 1 : state.songIndex - 1 }))
+    navigator.mediaSession.setActionHandler("pause", () => dispatch({ type: "pause" }))
+    navigator.mediaSession.setActionHandler("play", () => dispatch({ type: "play" }))
 
     return (
         <States.Provider value={state}>
