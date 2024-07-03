@@ -199,8 +199,6 @@ export default function MainProvider({ children }) {
         if (!state.recentlyPlayedSongs) return dispatch({ type: "recentlyPlayedSongsChange", payload: [] }) // if uesr remove the last music of array
         if (!state.currentSong?.name) return
 
-        console.log('effect from state.currentSong running')
-
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
 
@@ -222,9 +220,6 @@ export default function MainProvider({ children }) {
         let timer
 
         if (!state.currentSong?.name) return;
-
-        console.log('effect from state.isPlaying running')
-
         if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) changeMusic()
 
         if (state.isPlaying) {
