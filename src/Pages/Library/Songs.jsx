@@ -12,7 +12,7 @@ import { getUserInfo } from '../../utils';
 
 export default function Songs() {
 
-    const { isShuffle, isPlaying, updater, userSongsStorage } = useContext(States)
+    const { isShuffle, isPlaying, userSongsStorage, filteredSongsUpdater } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const [filteredSongs, setFilteredSongs] = useState(getUserInfo()?.user.user_metadata.songs)
     const [search, setSearch] = useState("")
@@ -21,7 +21,7 @@ export default function Songs() {
     const userMetadataSongs = getUserInfo()?.user.user_metadata.songs
     const [userSongs, setUserSongs] = useState()
     
-    useLayoutEffect(() => setFilteredSongs(userMetadataSongs?.length ? userMetadataSongs : userSongsStorage), [updater, userSongsStorage]);
+    useLayoutEffect(() => setFilteredSongs(userMetadataSongs?.length ? userMetadataSongs : userSongsStorage), [filteredSongsUpdater, userSongsStorage]);
 
     useEffect(() => {
 
@@ -40,7 +40,7 @@ export default function Songs() {
             setUserSongs(updatedSongs);
         }
 
-    }, [params.type, updater, filteredSongs]);
+    }, [params.type, filteredSongsUpdater, filteredSongs]);
 
     const songSearchHandler = e => {
 
@@ -91,7 +91,7 @@ export default function Songs() {
                     </div>
                 </div>
 
-                <div className='space-y-2'>
+                <div className='space-y-4'>
                     {
                         !userSongs?.length
                             ?

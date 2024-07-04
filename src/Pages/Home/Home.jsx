@@ -34,13 +34,12 @@ export default function Main() {
     const newSongHandler = async e => {
 
         if (isLoading) return;
-        setIsLoading(true)
 
         const selectedFile = e.target.files[0]
 
         if (selectedFile && selectedFile.type.startsWith("audio/")) {
 
-            const isAdded = userSongsStorage?.some(song => { if (song.name == selectedFile.name) return true })
+            const isAdded = userSongs?.some(song => { if (song.name == selectedFile.name) return true })
 
             if (isAdded) {
                 dispatch({
@@ -50,7 +49,6 @@ export default function Main() {
                 })
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
                 e.target.value = ""  //reest the input file value to be able check next user selection via onchange
-
             } else {
 
                 const newSong = {
@@ -62,6 +60,8 @@ export default function Main() {
                 }
 
                 try {
+                    setIsLoading(true)
+
                     dispatch({
                         type: "toastOn",
                         text: "Uploading song, please wait...",
@@ -72,7 +72,7 @@ export default function Main() {
                     const { _, error: uploadError } = await supabase.storage.from('users').upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
                     if (uploadError) throw new Error(uploadError)
 
-                    const { data, error } = await supabase.auth.updateUser({ data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 } })
+                    const { data, error } = await supabase.auth.updateUser({ data: { songs: [...userSongs, newSong], counter: mainUserData.counter + 1 } })
                     if (error) throw new Error(error)
 
                     dispatch({
@@ -176,12 +176,15 @@ export default function Main() {
                         <input
                             onChange={newSongHandler}
                             onClick={() => {
-                                !isLogin() && dispatch({
-                                    type: "toastOn",
-                                    text: "Please Login first",
-                                    status: 0
-                                })
-                                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+
+                                if (!isLogin()) {
+                                    dispatch({
+                                        type: "toastOn",
+                                        text: "Please Login first",
+                                        status: 0
+                                    })
+                                    setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                                }
                             }}
                             className='hidden' id='fileUploader' type={`${isLogin() ? 'file' : 'submit'}`}
                         />

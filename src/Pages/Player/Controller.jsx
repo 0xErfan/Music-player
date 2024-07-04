@@ -15,19 +15,14 @@ export default function Controller() {
 
     const {
         isPlaying,
-        songIndex,
         currentSong,
         musicMetadata,
         like,
         setCurrentTime,
         shouldRepeat,
-        isShuffle,
-        shouldIgnore,
         musicVolume,
         setMusicVolume,
         share,
-        userSongsStorage,
-        shouldIntrapt,
         changeMusic
     } = useContext(States)
 
@@ -45,31 +40,6 @@ export default function Controller() {
         return { currentMin, currentSec, min, sec }
 
     }, [musicMetadata])
-
-    // useEffect(() => {
-
-    //     const { duration, currentTime } = musicMetadata;
-
-    //     dispatch({ type: "shouldIntrapt", payload: false })
-
-    //     if (currentTime == duration) {
-    //         if (isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * userSongsStorage?.length) })
-    //         if (shouldRepeat) return dispatch({ type: "changeCurrent", payload: songIndex })
-    //         if (!shouldIgnore) controllerActionHandler("next")
-    //     }
-
-    //     return () => dispatch({ type: "shouldIntrapt", payload: true })
-
-    // }, [musicMetadata, isShuffle, shouldRepeat, shouldIgnore]);
-
-    const controllerActionHandler = action => {
-
-        if (!currentSong?.name) return
-        if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
-
-        if (action == "next") return dispatch({ type: "changeCurrent", payload: songIndex == userSongsStorage?.length - 1 ? 0 : songIndex + 1 })
-        if (action == "prev") dispatch({ type: "changeCurrent", payload: songIndex == 0 ? userSongsStorage?.length - 1 : songIndex - 1 })
-    }
 
     return (
         <div className='relative'>

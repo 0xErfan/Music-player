@@ -12,14 +12,12 @@ import { supabase } from '../../client';
 import { Oval } from 'react-loader-spinner';
 import { getUserInfo, isLogin, tagRemover } from '../../utils';
 
-export default function Track(data) {
+export default function Track({ cover, id, name, artistname, favorite }) {
 
     const dispatch = useContext(StateDispatcher)
     const [showDetails, setShowDetails] = useState(false)
     const [loader, setLoader] = useState(false)
     const { userSongsStorage, userData, currentSong, isPlaying, like, share, songIndex } = useContext(States)
-    const { cover, id, name, artistname, favorite } = data
-
     const playerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const songLikeToggler = async () => {
@@ -52,14 +50,13 @@ export default function Track(data) {
             const { updatedSongsError } = await supabase.auth.updateUser({ data: { songs: updatedData } })
             if (updatedSongsError) throw new Error(updatedSongsError)
 
-            // check if songs array gets empty
+            // check if songs array gets empty after removing the target music
             const arrayAfterRemove = userSongsStorage?.filter(song => song.name !== name)
 
             if (currentSong && currentSong.name == name) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
             if (!arrayAfterRemove.length) return location.reload()
 
             dispatch({ type: "filteredSongsUpdater" })
-            dispatch({ type: "updater" })
 
             dispatch({
                 type: "toastOn",

@@ -149,7 +149,7 @@ export default function MainProvider({ children }) {
 
                 const { _, error } = await supabase.auth.updateUser({ data: { songs: updatedData } })
                 if (error) throw new Error(error)
-                
+
                 if (action !== 'liked') {
 
                     dispatch({
@@ -218,19 +218,7 @@ export default function MainProvider({ children }) {
 
         if (isLogin()) {
 
-            // const { data: userSongs, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
-            const userSongs = state.userData?.length && state.userData[0].user.user_metadata.songs
-
-            // if (error) {
-            //     dispatch({
-            //         type: "toastOn",
-            //         text: "Check your internet connection!",
-            //         status: 0
-            //     })
-            //     setTimeout(() => dispatch({ type: "toastOff" }), 3000);
-            //     return;
-            // }
-
+            const userSongs = getUserInfo()?.user.user_metadata.songs
             dispatch({ type: "storageManage", payload: userSongs })
 
         } else {
@@ -257,8 +245,6 @@ export default function MainProvider({ children }) {
         if (state.userSongsStorage?.length) state.currentSong = state.userSongsStorage[state.songIndex]
     }, [state.userSongsStorage, state.songIndex])
 
-    useEffect(() => dispatch({ type: 'changeCurrent', payload: state.userSongsStorage?.length - 1 }), [state.userSongsStorage])
-
     useEffect(() => {
 
         if (!state.recentlyPlayedSongs) return dispatch({ type: "recentlyPlayedSongsChange", payload: [] }) // if uesr remove the last music of array
@@ -276,9 +262,12 @@ export default function MainProvider({ children }) {
             recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
         }
 
-        dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+        recentlyPlayed = recentlyPlayed.filter(song => state.userSongsStorage.find(data => data.name == song?.name)?.name == song?.name)
 
-    }, [state.currentSong])
+        dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+        console.log(recentlyPlayed)
+
+    }, [state.currentSong, state.userSongsStorage])
 
     useEffect(() => {
 
@@ -318,7 +307,7 @@ export default function MainProvider({ children }) {
         }
 
         checkLoginStatus();
-    }, [state.filteredSongsUpdater, state.userData?.length])
+    }, [state.filteredSongsUpdater, state.updater, state.userData?.length])
 
     useEffect(() => { state.currentSong?.name && fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
