@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useLayoutEffect, useState } from 'react'
 import { FaLock } from "react-icons/fa6";
 import { MdDownloadDone } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,9 +12,11 @@ export default function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" })
     const [isSubmitting, setIsSubmitting] = useState("")
     const [checkbox, setCheckbox] = useState(false)
-    const { toastData, songIndex } = useContext(States)
+    const { toastData, isLogin } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
+
+    useLayoutEffect(() => { if (isLogin) navigate('/') }, [isLogin])
 
     const changeHandler = ({ e, type }) => setFormData({ ...formData, [type]: e.target.value })
     

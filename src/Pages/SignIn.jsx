@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useLayoutEffect, useState } from 'react'
 import { FaUserAlt } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import { FaLock } from "react-icons/fa6";
@@ -10,9 +10,11 @@ import Toast from '../components/Toast';
 
 export default function SignUp() {
 
-    const { toastData } = useContext(States)
+    const { toastData, isLogin } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
+
+    useLayoutEffect(() => { if (isLogin) navigate('/') }, [isLogin])
 
     const [formData, setFormData] = useState({
         name: "",
