@@ -58,7 +58,7 @@ export default function Main() {
                 setIsLoading(true)
 
                 const newSong = {
-                    id: mainUserData.counter,
+                    id: Math.random() * 999999 + Date.now(),
                     name: selectedFile.name,
                     lastModifiedDate: selectedFile.lastModifiedDate,
                     liked: false,
@@ -74,9 +74,7 @@ export default function Main() {
                         loader: 1
                     })
 
-                    const { uploadData, uploadError } = await supabase.storage
-                        .from('users')
-                        .upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
+                    const { _, error: uploadError } = await supabase.storage.from('users').upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
 
                     if (uploadError) throw new Error(uploadError)
 

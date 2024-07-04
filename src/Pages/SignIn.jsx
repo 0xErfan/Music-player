@@ -13,16 +13,10 @@ export default function SignUp() {
     const { toastData, isLogin } = useContext(States)
     const dispatch = useContext(StateDispatcher)
     const navigate = useNavigate()
+    const [formData, setFormData] = useState({ name: "", email: "", password: "" })
+    const [isSubmitting, setIsSubmitting] = useState("")
 
     useLayoutEffect(() => { if (isLogin) navigate('/') }, [isLogin])
-
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-    })
-
-    const [isSubmitting, setIsSubmitting] = useState("")
 
     const changeHandler = ({ e, type }) => setFormData({ ...formData, [type]: e.target.value })
 
@@ -31,34 +25,39 @@ export default function SignUp() {
         setIsSubmitting("submmiting")
         e.preventDefault()
 
-        const userData = {
-            email: formData.email,
-            password: formData.password,
-            options: {
-                data: {
-                    songs: [],
-                    username: formData.name,
-                    counter: 0
-                },
-            },
+        if (!formData.email?.trim().length || !formData.password?.trim().length || !formData.name?.trim().length) {
+
+            dispatch({
+                type: "toastOn",
+                text: "Fill all the fields first",
+                status: 0
+            })
+
+            setTimeout(() => {
+                dispatch({ type: "toastOff" })
+                setIsSubmitting("")
+            }, 2000);
+
+            return;
         }
 
         try {
 
-            if (!formData.email?.trim().length || !formData.password?.trim().length || !formData.name?.trim().length) {
+            const { data: defaultMusics, error: defaultMusicsError } = await supabase.storage.from('default-musics').list()
+            if (defaultMusicsError) throw new Error('fetch failed')
 
-                dispatch({
-                    type: "toastOn",
-                    text: "Fill all the fields first",
-                    status: 0
-                })
+            const updatedDefaultMusics = defaultMusics.map(music => ({ ...music, ['isDefault']: true }))
 
-                setTimeout(() => {
-                    dispatch({ type: "toastOff" })
-                    setIsSubmitting("")
-                }, 2000);
-                
-                return;
+            const userData = {
+                email: formData.email,
+                password: formData.password,
+                options: {
+                    data: {
+                        songs: [...updatedDefaultMusics],
+                        username: formData.name,
+                        counter: 0
+                    },
+                },
             }
 
             const { data, error } = await supabase.auth.signUp(userData)
@@ -81,7 +80,7 @@ export default function SignUp() {
 
         } catch (error) {
             let errorMessage = error.toString().toLowerCase()
-            
+
             if (errorMessage.includes("characters")) {
                 errorMessage = "Password should be at least 6 characters."
             } else if (errorMessage.includes("valid password")) {

@@ -160,17 +160,25 @@ export default function MainProvider({ children }) {
     state.stopMusic = () => { audio.current?.pause(), audio.current = null }
 
     const fetchMusic = async () => {
+
         if (!audio.current) audio.current = new Audio() //re-assign the audio if the user logged out(logout will make audio null)
+
         if (state.userData && state.currentSong) {
-            musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
+            musicUrl = state.currentSong?.isDefault
+                ?
+                `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/default-musics/${state.currentSong.name}`
+                :
+                `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${state.currentSong.name}`
+
             audio.current.src = musicUrl
         }
     }
 
     async function fetchData() {
-        const { data, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
 
-        if (data) dispatch({ type: "storageManage", payload: data })
+        const { data, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
+        const defaultSongs = state.userData?.length && state.userData[0].user.user_metadata.songs
+
         if (error) {
             dispatch({
                 type: "toastOn",
@@ -179,6 +187,8 @@ export default function MainProvider({ children }) {
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
         }
+
+        dispatch({ type: "storageManage", payload: [...data, ...defaultSongs] })
     }
 
     const changeMusic = () => {
@@ -255,7 +265,7 @@ export default function MainProvider({ children }) {
         }
 
         checkLoginStatus();
-    }, [state.updater])
+    }, [state.updater, state.userData?.length])
 
     useEffect(() => { state.currentSong?.name && fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])

@@ -8,7 +8,7 @@ import { VscDebugStart } from "react-icons/vsc";
 import { IoPlayBackSharp } from "react-icons/io5";
 import { mainUserData } from '../../components/ReducerAndContexts';
 import { States, StateDispatcher, musicUrl } from '../../components/ReducerAndContexts';
-import { getUserInfo, padStarter } from '../../utils';
+import { padStarter } from '../../utils';
 
 
 export default function Controller() {
@@ -31,12 +31,15 @@ export default function Controller() {
     const [showVolume, setShowVolume] = useState(false)
     const dispatch = useContext(StateDispatcher)
 
-    const { currentMin, currentSec } = useMemo(() => {
+    const { currentMin, currentSec, min, sec } = useMemo(() => {
 
         const currentMin = Math.trunc(musicMetadata.currentTime / 60)
         const currentSec = Math.trunc(musicMetadata.currentTime - (currentMin * 60))
 
-        return { currentMin, currentSec }
+        const min = Math.trunc(musicMetadata.duration / 60)
+        const sec = Math.trunc(musicMetadata.duration - (min * 60))
+
+        return { currentMin, currentSec, min, sec }
 
     }, [musicMetadata])
 
@@ -87,7 +90,7 @@ export default function Controller() {
 
                 <div className='flex items-center text-sm justify-between'>
                     <p>{currentSong ? padStarter(currentMin) + ":" + padStarter(currentSec) : "00:00"}</p>
-                    <p>{musicMetadata.duration ? getUserInfo().user.user_metadata.songs.find(song => song.name == currentSong.name).duration : isPlaying ? "Loading..." : "00:00"}</p>
+                    <p>{musicMetadata.duration ? `${padStarter(min)}:${padStarter(sec)}` : isPlaying ? "Loading..." : "00:00"}</p>
                 </div>
 
                 <input
