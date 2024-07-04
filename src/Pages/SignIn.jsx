@@ -44,11 +44,12 @@ export default function SignUp() {
         try {
 
             const { data: defaultMusics, error: defaultMusicsError } = await supabase.storage.from('default-musics').list()
-            const defaultSongsUpdate = defaultSongs.filter(songs => songs.name !== '.emptyFolderPlaceholder')
+
+            const defaultSongsUpdate = defaultMusics
+                .filter(songs => songs.name !== '.emptyFolderPlaceholder')
+                .map(music => ({ ...music, ['isDefault']: true }))
 
             if (defaultMusicsError) throw new Error('fetch failed')
-
-            const updatedDefaultMusics = defaultMusics.map(music => ({ ...music, ['isDefault']: true }))
 
             const userData = {
                 email: formData.email,

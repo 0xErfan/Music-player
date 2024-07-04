@@ -18,31 +18,33 @@ export default function Songs() {
     const [search, setSearch] = useState("")
     const navigate = useNavigate()
     const params = useParams()
-    const userSongs = getUserInfo()?.user.user_metadata.songs
-
-    useLayoutEffect(() => setFilteredSongs(userSongs?.length ? userSongs : userSongsStorage), [updater]);
+    const userMetadataSongs = getUserInfo()?.user.user_metadata.songs
+    const [userSongs, setUserSongs] = useState()
+    
+    useLayoutEffect(() => setFilteredSongs(userMetadataSongs?.length ? userMetadataSongs : userSongsStorage), [updater, userSongsStorage]);
 
     useEffect(() => {
 
         if (filteredSongs?.length) {
 
-            let filteredSongs;
+            let updatedSongs;
 
             switch (params.type) {
-                case "recentlies": { filteredSongs = [...userSongs].reverse(); break }
-                case "playlist": { filteredSongs = userSongs.filter(song => song.favorite); break }
-                case "favorites": { filteredSongs = userSongs.filter(song => song.liked); break }
-                case "/": { filteredSongs = userSongs.filter(song => song.liked); break }
-                default: filteredSongs = userSongs;
+                case "recentlies": { updatedSongs = [...filteredSongs].reverse(); break }
+                case "playlist": { updatedSongs = [...filteredSongs].filter(song => song.favorite); break }
+                case "favorites": { updatedSongs = [...filteredSongs].filter(song => song.liked); break }
+                case "/": { updatedSongs = [...filteredSongs].filter(song => song.liked); break }
+                default: updatedSongs = [...filteredSongs];
             }
-
-            setFilteredSongs(filteredSongs);
+            
+            setUserSongs(updatedSongs);
         }
-    }, [params.type, updater]);
+
+    }, [params.type, updater, filteredSongs]);
 
     const songSearchHandler = e => {
 
-        const newSongsFilter = [...userSongs].filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
+        const newSongsFilter = (userSongs?.length ? userSongs : userSongsStorage)?.filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
 
         setSearch(e.target.value)
         setFilteredSongs(newSongsFilter)
@@ -91,11 +93,11 @@ export default function Songs() {
 
                 <div className='space-y-2'>
                     {
-                        !filteredSongs?.length
+                        !userSongs?.length
                             ?
                             <div className='text-2xl font-bold text-center'>No songs yet...</div>
                             :
-                            filteredSongs.map(song => <Track key={song.id} {...song} />)
+                            userSongs.map(song => <Track key={song.id} {...song} />)
                     }
                 </div>
 

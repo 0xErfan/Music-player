@@ -149,13 +149,16 @@ export default function MainProvider({ children }) {
 
                 const { _, error } = await supabase.auth.updateUser({ data: { songs: updatedData } })
                 if (error) throw new Error(error)
+                
+                if (action !== 'liked') {
 
-                dispatch({
-                    type: "toastOn",
-                    text: `Music  ${isAdded ? 'added to ' : 'removed from ' } playlist`,
-                    status: 1
-                })
-                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                    dispatch({
+                        type: "toastOn",
+                        text: `Music  ${isAdded ? 'added to ' : 'removed from '} playlist`,
+                        status: 1
+                    })
+                    setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                }
 
                 dispatch({ type: "filteredSongsUpdater" })
                 dispatch({ type: "updater" })
@@ -244,7 +247,7 @@ export default function MainProvider({ children }) {
                 setTimeout(() => dispatch({ type: "toastOff" }), 3000);
                 return;
             }
-            
+
             dispatch({ type: "storageManage", payload: defaultSongsUpdate })
         }
 
