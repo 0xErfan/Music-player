@@ -60,8 +60,8 @@ export default function Login() {
 
             setTimeout(() => {
                 dispatch({ type: "toastOff" })
-                dispatch({ type: "updater" })
                 navigate("/")
+                location.reload()
                 setIsSubmitting("")
             }, 2000);
 
