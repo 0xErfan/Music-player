@@ -64,7 +64,7 @@ export default function Songs() {
                         value={search}
                         onChange={songSearchHandler}
                         className='flex-[6] bg-primary outline-none placeholder:text-red-400/65 text-red-400/65'
-                        placeholder={`Search in ${filteredSongs?.length} musics...`}
+                        placeholder={`Search in ${userSongs?.length} musics...`}
                         type="text"
                     />
                     <div className='cursor-pointer'><CiSearch className='size-6 flex-1' /></div>
