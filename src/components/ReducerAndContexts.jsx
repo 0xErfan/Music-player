@@ -99,7 +99,6 @@ export default function MainProvider({ children }) {
         updater: false,
         filteredSongsUpdater: false,
         shouldIntrapt: false,
-        storageUpdate: false,
         currentSong: null,
         musicMetadata: { currentTime: null, duration: null },
         toastData: { text: null, status: 0, loader: 0 },
@@ -111,35 +110,56 @@ export default function MainProvider({ children }) {
     let audio = useRef(new Audio());
 
     let userMetadata = state.userData && getUserInfo()?.user.user_metadata
-    if (userMetadata || state.userSongsStorage) {
-        mainUserData = userMetadata
-        state.currentSong = state.userSongsStorage[state.songIndex]
-    }
+    mainUserData = userMetadata
 
-    state.share = async url => { if (state.currentSong?.name) await navigator.share({ title: "Listen to this music(:", url }).then(data => console.log(data)).catch(err => console.log(err)) }
+    state.share = async url => { if (state.currentSong?.name) await navigator.share({ title: "Listen to this music(:", url }) }
 
     state.setMusicVolume = (volume) => { audio.current.volume = volume }
 
     state.like = async (action, name) => {
+
         if (!state.currentSong?.name) return
 
-        if (mainUserData.songs.length) {
+        if (!state.isLogin) {
+
+            dispatch({
+                type: "toastOn",
+                text: "Please Login first",
+                status: 0
+            })
+            setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+
+            return
+        }
+
+        if (getUserInfo().user.user_metadata.songs?.length) {
+
             try {
 
-                let updatedData = [...mainUserData.songs]
+                let updatedData = [...getUserInfo().user.user_metadata.songs]
+                let isAdded
 
                 updatedData.some(song => {
                     if (song.name == name) {
                         song[action] = !song[action]
+                        isAdded = song[action]
                         return true
                     }
                 })
 
-                const { data, error } = await supabase.auth.updateUser({
-                    data: { songs: updatedData }
-                })
+                const { _, error } = await supabase.auth.updateUser({ data: { songs: updatedData } })
                 if (error) throw new Error(error)
+
+                dispatch({
+                    type: "toastOn",
+                    text: `Music  ${isAdded ? 'added to ' : 'removed from ' } playlist`,
+                    status: 1
+                })
+                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+
                 dispatch({ type: "filteredSongsUpdater" })
+                dispatch({ type: "updater" })
+
             } catch (error) {
                 dispatch({
                     type: "toastOn",
@@ -148,7 +168,6 @@ export default function MainProvider({ children }) {
                 })
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
             }
-            dispatch({ type: "updater" })
         }
     }
 
@@ -157,14 +176,32 @@ export default function MainProvider({ children }) {
         dispatch({ type: "play" })
     }
 
+    state.changeMusic = (action = 'next') => {
+
+        if (state.isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * state.userSongsStorage?.length) })
+
+        if (state.shouldRepeat) return audio.current.currentTime == audio.current.duration ? dispatch({ type: "changeCurrent", payload: state.songIndex }) : audio.current.currentTime = 0
+
+        if (state.shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
+
+        dispatch({
+            type: "changeCurrent",
+            payload: action == 'next'
+                ?
+                state.songIndex == state.userSongsStorage?.length - 1 ? 0 : state.songIndex + 1
+                :
+                state.songIndex == 0 ? state.userSongsStorage?.length - 1 : state.songIndex - 1
+        })
+    }
+
     state.stopMusic = () => { audio.current?.pause(), audio.current = null }
 
     const fetchMusic = async () => {
 
         if (!audio.current) audio.current = new Audio() //re-assign the audio if the user logged out(logout will make audio null)
 
-        if (state.userData && state.currentSong) {
-            musicUrl = state.currentSong?.isDefault
+        if (state.currentSong) {
+            musicUrl = state.currentSong?.isDefault || !state.isLogin
                 ?
                 `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/default-musics/${state.currentSong.name}`
                 :
@@ -176,33 +213,47 @@ export default function MainProvider({ children }) {
 
     async function fetchData() {
 
-        const { data, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
-        const defaultSongs = state.userData?.length && state.userData[0].user.user_metadata.songs
+        if (isLogin()) {
 
-        if (error) {
-            dispatch({
-                type: "toastOn",
-                text: "Check your internet connection!",
-                status: 0
-            })
-            setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+            // const { data: userSongs, error } = await supabase.storage.from("users").list(getUserInfo().user.email)
+            const userSongs = state.userData?.length && state.userData[0].user.user_metadata.songs
+
+            // if (error) {
+            //     dispatch({
+            //         type: "toastOn",
+            //         text: "Check your internet connection!",
+            //         status: 0
+            //     })
+            //     setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+            //     return;
+            // }
+
+            dispatch({ type: "storageManage", payload: userSongs })
+
+        } else {
+
+            const { data: defaultSongs, error } = await supabase.storage.from("default-musics").list()
+
+            if (error) {
+                dispatch({
+                    type: "toastOn",
+                    text: "Check your internet connection!",
+                    status: 0
+                })
+                setTimeout(() => dispatch({ type: "toastOff" }), 3000);
+                return;
+            }
+
+            dispatch({ type: "storageManage", payload: defaultSongs })
         }
 
-        dispatch({ type: "storageManage", payload: [...data, ...defaultSongs] })
     }
 
-    const changeMusic = () => {
+    useEffect(() => {
+        if (state.userSongsStorage?.length) state.currentSong = state.userSongsStorage[state.songIndex]
+    }, [state.userSongsStorage, state.songIndex])
 
-        if (state.isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * getUserInfo().user.user_metadata.songs.length) })
-
-        if (state.shouldRepeat) return dispatch({ type: "changeCurrent", payload: state.songIndex })
-
-        if (state.shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
-
-        if (!state.currentSong?.name) return
-
-        dispatch({ type: "changeCurrent", payload: state.songIndex == mainUserData?.songs.length - 1 ? 0 : state.songIndex + 1 })
-    }
+    useEffect(() => dispatch({ type: 'changeCurrent', payload: state.userSongsStorage?.length - 1 }), [state.userSongsStorage])
 
     useEffect(() => {
 
@@ -212,17 +263,17 @@ export default function MainProvider({ children }) {
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
 
-        if (state.currentSong?.name) {
-            if (repeatedSong.length) {
-                recentlyPlayed = recentlyPlayed.filter(song => song.name != state.currentSong.name)
-                state.isPlaying && recentlyPlayed.push(repeatedSong[0])
-            } else if (recentlyPlayed.length <= 4) {
-                state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
-            } else recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
-
-            // if (!recentlyPlayed.length) dispatch({ type: "updater" })
-            dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+        if (repeatedSong.length) {
+            recentlyPlayed = recentlyPlayed.filter(song => song.name != state.currentSong.name)
+            state.isPlaying && recentlyPlayed.push(repeatedSong[0])
+        } else if (recentlyPlayed.length <= 4) {
+            state.isPlaying && recentlyPlayed.push({ ...state.currentSong })
+        } else {
+            recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
         }
+
+        dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
+
     }, [state.currentSong])
 
     useEffect(() => {
@@ -230,7 +281,7 @@ export default function MainProvider({ children }) {
         let timer
 
         if (!state.currentSong?.name) return;
-        if (audio.current.currentTime == audio.current.duration && state.shouldIntrapt) changeMusic()
+        if (audio.current.currentTime == audio.current.duration) state.changeMusic()
 
         if (state.isPlaying) {
 
@@ -258,10 +309,8 @@ export default function MainProvider({ children }) {
             const isLoggedIn = isLogin()
             dispatch({ type: "logCheck", payload: isLogin() })
 
-            if (isLoggedIn) {
-                dispatch({ type: "fetchData", payload: getUserInfo() })
-                fetchData()
-            }
+            isLoggedIn && dispatch({ type: "fetchData", payload: getUserInfo() })
+            fetchData()
         }
 
         checkLoginStatus();

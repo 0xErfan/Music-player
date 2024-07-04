@@ -10,7 +10,7 @@ import { IoMdShare } from "react-icons/io";
 import { mainUserData } from '../../components/ReducerAndContexts';
 import { supabase } from '../../client';
 import { Oval } from 'react-loader-spinner';
-import { getUserInfo, tagRemover } from '../../utils';
+import { getUserInfo, isLogin, tagRemover } from '../../utils';
 
 export default function Track(data) {
 
@@ -29,6 +29,18 @@ export default function Track(data) {
 
     const deleteHandler = async () => {
 
+        if (!isLogin()) {
+
+            dispatch({
+                type: "toastOn",
+                text: "Please Login first",
+                status: 0
+            })
+            setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+
+            return
+        }
+
         const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
         setLoader(true)
 
@@ -41,7 +53,7 @@ export default function Track(data) {
             if (updatedSongsError) throw new Error(updatedSongsError)
 
             // check if songs array gets empty
-            const arrayAfterRemove = getUserInfo().user.user_metadata.songs.filter(song => song.name !== name)
+            const arrayAfterRemove = userSongsStorage?.filter(song => song.name !== name)
 
             if (currentSong && currentSong.name == name) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
             if (!arrayAfterRemove.length) return location.reload()
@@ -138,7 +150,7 @@ export default function Track(data) {
                             :
                             <IoTriangle className='rotate-90 size-[10px]' />
                     }
-                    <p>{getUserInfo().user.user_metadata.songs.find(song => song.name == name)?.duration}</p>
+                    <p>{userSongsStorage?.find(song => song.name == name)?.duration}</p>
 
                 </div>
 

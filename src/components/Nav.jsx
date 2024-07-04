@@ -53,7 +53,7 @@ export default function Nav() {
                                 <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
                                 <div
                                     onClick={() => like("liked", currentSong.name)}
-                                    className={`flex flex-1 items-center cursor-pointer ${mainUserData.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
+                                    className={`flex flex-1 items-center cursor-pointer ${mainUserData?.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
                             </div>
                         )
                     }
@@ -65,7 +65,7 @@ export default function Nav() {
                                 </div>
                                 Home
                             </Link>
-                            <Link to="/player" className={`flex text-primaryOrange ${activeNav.includes("/player") && "activeNav"} ${isLogin() ? "cursor-pointer opacity-100" : "opacity-20"}  flex-col`}>
+                            <Link to="/player" className={`flex text-primaryOrange ${activeNav.includes("/player") && "activeNav"} flex-col`}>
                                 <div className='flex items-center justify-center'>
                                     <VscDebugStart className='size-6' />
                                 </div>

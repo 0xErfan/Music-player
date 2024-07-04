@@ -14,6 +14,10 @@
     }
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 body {
     @apply bg-primary text-primaryWhite font-josefinSans select-none;
 }

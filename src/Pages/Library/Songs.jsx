@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { IoArrowBack } from "react-icons/io5";
 import { LiaRandomSolid } from "react-icons/lia";
@@ -7,43 +7,43 @@ import { VscDebugStart } from "react-icons/vsc";
 import { GiPauseButton } from "react-icons/gi";
 import Track from './Track';
 import { States, StateDispatcher } from '../../components/ReducerAndContexts';
-import { getUserInfo, isLogin } from '../../utils';
+import { getUserInfo } from '../../utils';
+
 
 export default function Songs() {
 
-    const { isShuffle, isPlaying, filteredSongsUpdater } = useContext(States)
+    const { isShuffle, isPlaying, updater, userSongsStorage } = useContext(States)
     const dispatch = useContext(StateDispatcher)
-    const [mainUserData, setMainUserData] = useState([])
-    const [filteredSongs, setFilteredSongs] = useState([])
+    const [filteredSongs, setFilteredSongs] = useState(getUserInfo()?.user.user_metadata.songs)
     const [search, setSearch] = useState("")
-
     const navigate = useNavigate()
     const params = useParams()
+    const userSongs = getUserInfo()?.user.user_metadata.songs
+
+    useLayoutEffect(() => setFilteredSongs(userSongs?.length ? userSongs : userSongsStorage), [updater]);
 
     useEffect(() => {
-        isLogin() && setMainUserData(getUserInfo().user.user_metadata.songs)
-    }, [filteredSongsUpdater]);
 
-    useEffect(() => {
-
-        if (mainUserData.length) {
+        if (filteredSongs?.length) {
 
             let filteredSongs;
 
             switch (params.type) {
-                case "recentlies": { filteredSongs = [...mainUserData].reverse(); break }
-                case "playlist": { filteredSongs = mainUserData.filter(song => song.favorite); break }
-                case "favorites": { filteredSongs = mainUserData.filter(song => song.liked); break }
-                case "/": { filteredSongs = mainUserData.filter(song => song.liked); break }
-                default: filteredSongs = mainUserData;
+                case "recentlies": { filteredSongs = [...userSongs].reverse(); break }
+                case "playlist": { filteredSongs = userSongs.filter(song => song.favorite); break }
+                case "favorites": { filteredSongs = userSongs.filter(song => song.liked); break }
+                case "/": { filteredSongs = userSongs.filter(song => song.liked); break }
+                default: filteredSongs = userSongs;
             }
 
             setFilteredSongs(filteredSongs);
         }
-    }, [mainUserData, params.type]);
+    }, [params.type, updater]);
 
     const songSearchHandler = e => {
-        const newSongsFilter = [...mainUserData].filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
+
+        const newSongsFilter = [...userSongs].filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
+
         setSearch(e.target.value)
         setFilteredSongs(newSongsFilter)
     }
@@ -91,7 +91,7 @@ export default function Songs() {
 
                 <div className='space-y-2'>
                     {
-                        !filteredSongs.length
+                        !filteredSongs?.length
                             ?
                             <div className='text-2xl font-bold text-center'>No songs yet...</div>
                             :

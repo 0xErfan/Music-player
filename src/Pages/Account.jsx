@@ -4,14 +4,16 @@ import { getUserInfo, isLogin } from '../utils'
 export default function Account() {
 
     const logoutHandler = () => {
-        // supabase.auth.signOut()
         localStorage.removeItem("sb-inbskwhewximhtmsxqxi-auth-token")
         location.reload()
     }
 
     return (
         <>
-            {!isLogin() ? <Navigate replace={true} to="/login" /> :
+            {!isLogin()
+                ?
+                <Navigate replace={true} to="/login" />
+                :
                 <div className='container ch:break-words mt-4'>
                     <div className='neoM-bg py-2 px-3 mt-3'>Username: {getUserInfo().user.user_metadata.username}</div>
                     <div className='neoM-bg py-2 px-3 mt-3'>Email: {getUserInfo().user.email}</div>

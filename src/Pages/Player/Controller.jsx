@@ -25,7 +25,10 @@ export default function Controller() {
         shouldIgnore,
         musicVolume,
         setMusicVolume,
-        share
+        share,
+        userSongsStorage,
+        shouldIntrapt,
+        changeMusic
     } = useContext(States)
 
     const [showVolume, setShowVolume] = useState(false)
@@ -43,29 +46,29 @@ export default function Controller() {
 
     }, [musicMetadata])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const { duration, currentTime } = musicMetadata;
+    //     const { duration, currentTime } = musicMetadata;
 
-        dispatch({ type: "shouldIntrapt", payload: false })
+    //     dispatch({ type: "shouldIntrapt", payload: false })
 
-        if (currentTime == duration) {
-            if (isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * mainUserData?.songs.length) })
-            if (shouldRepeat) return dispatch({ type: "changeCurrent", payload: songIndex })
-            if (!shouldIgnore) controllerActionHandler("next")
-        }
+    //     if (currentTime == duration) {
+    //         if (isShuffle) return dispatch({ type: "changeCurrent", payload: Math.floor(Math.random() * userSongsStorage?.length) })
+    //         if (shouldRepeat) return dispatch({ type: "changeCurrent", payload: songIndex })
+    //         if (!shouldIgnore) controllerActionHandler("next")
+    //     }
 
-        return () => dispatch({ type: "shouldIntrapt", payload: true })
+    //     return () => dispatch({ type: "shouldIntrapt", payload: true })
 
-    }, [musicMetadata, isShuffle, shouldRepeat, shouldIgnore]);
+    // }, [musicMetadata, isShuffle, shouldRepeat, shouldIgnore]);
 
     const controllerActionHandler = action => {
 
         if (!currentSong?.name) return
         if (shouldIgnore) dispatch({ type: "shouldIgnoreDisabler" })
 
-        if (action == "next") return dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
-        if (action == "preve") dispatch({ type: "changeCurrent", payload: songIndex == 0 ? mainUserData.songs.length - 1 : songIndex - 1 })
+        if (action == "next") return dispatch({ type: "changeCurrent", payload: songIndex == userSongsStorage?.length - 1 ? 0 : songIndex + 1 })
+        if (action == "prev") dispatch({ type: "changeCurrent", payload: songIndex == 0 ? userSongsStorage?.length - 1 : songIndex - 1 })
     }
 
     return (
@@ -107,7 +110,7 @@ export default function Controller() {
             <div className='flex items-center justify-center gap-9 ch:fled ch:justify-center ch:rounded-xl ch:items-center ch:cursor-pointer'>
 
                 <div
-                    onClick={() => controllerActionHandler("preve", 1)}
+                    onClick={() => changeMusic("prev")}
                     className='neoM-buttons'><IoPlayBackSharp className='size-12 p-4' />
                 </div>
 
@@ -121,7 +124,7 @@ export default function Controller() {
                 </div>
 
                 <div
-                    onClick={() => controllerActionHandler("next", 1)}
+                    onClick={() => changeMusic("next")}
                     className='neoM-buttons'><IoPlayBackSharp className='rotate-180 size-12 p-4' />
                 </div>
 

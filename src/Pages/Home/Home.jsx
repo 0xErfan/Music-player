@@ -16,32 +16,31 @@ import Recently from './Recently';
 import { Link, useNavigate } from 'react-router-dom';
 import { States, mainUserData, StateDispatcher } from '../../components/ReducerAndContexts';
 import { supabase } from '../../client';
-import { getUserInfo, isLogin, padStarter } from '../../utils';
+import { getUserInfo, isLogin } from '../../utils';
 import Loader from '../../components/Loader';
 
 export default function Main() {
 
     const dispatch = useContext(StateDispatcher)
-    const { userData, isLoaded } = useContext(States)
+    const { userData, isLoaded, userSongsStorage } = useContext(States)
     const [sideMenuShow, setSideMenuShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
     const inputRef = useRef()
-
-    let userSongs = userData?.length ? userData[0].user.user_metadata.songs : null
+    const userSongs = getUserInfo()?.user.user_metadata.songs
 
     const newSongSearchHandler = () => inputRef.current.value.trim().length && navigate(`/search/${inputRef.current.value}`)
 
     const newSongHandler = async e => {
 
         if (isLoading) return;
+        setIsLoading(true)
 
         const selectedFile = e.target.files[0]
-        if (!userData[0]) return
 
         if (selectedFile && selectedFile.type.startsWith("audio/")) {
 
-            const isAdded = userData[0].user.user_metadata.songs.some(song => { if (song.name == selectedFile.name) return true })
+            const isAdded = userSongsStorage?.some(song => { if (song.name == selectedFile.name) return true })
 
             if (isAdded) {
                 dispatch({
@@ -52,10 +51,7 @@ export default function Main() {
                 setTimeout(() => dispatch({ type: "toastOff" }), 2000);
                 e.target.value = ""  //reest the input file value to be able check next user selection via onchange
 
-                return;
             } else {
-
-                setIsLoading(true)
 
                 const newSong = {
                     id: Math.random() * 999999 + Date.now(),
@@ -66,7 +62,6 @@ export default function Main() {
                 }
 
                 try {
-
                     dispatch({
                         type: "toastOn",
                         text: "Uploading song, please wait...",
@@ -75,56 +70,48 @@ export default function Main() {
                     })
 
                     const { _, error: uploadError } = await supabase.storage.from('users').upload(userData[0].user.email + "/" + selectedFile.name, selectedFile)
-
                     if (uploadError) throw new Error(uploadError)
 
-                    const musicUrl = `https://inbskwhewximhtmsxqxi.supabase.co/storage/v1/object/public/users/${getUserInfo().user.email}/${newSong.name}`;
-                    let audio = new Audio();
-                    audio.src = musicUrl;
+                    const { data, error } = await supabase.auth.updateUser({ data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 } })
+                    if (error) throw new Error(error)
 
-                    audio.addEventListener('loadedmetadata', async () => {
+                    dispatch({
+                        type: "toastOn",
+                        text: "Music added successfully !",
+                        status: 1
+                    })
 
-                        newSong.duration = (padStarter(Math.floor(audio.duration / 60))) + ":" + (padStarter(Math.floor(audio.duration % 60)))
+                    dispatch({ type: "updater" })
+                    dispatch({ type: "filteredSongsUpdater" })
 
-                        const { data, error } = await supabase.auth.updateUser({
-                            data: { songs: [...userData[0].user.user_metadata.songs, newSong], counter: mainUserData.counter + 1 }
-                        })
-                        if (error) throw new Error(error)
+                    e.target.value = ""
+                    setTimeout(() => dispatch({ type: "toastOff" }), 1000);
 
-
-                        dispatch({ type: "updater" })
-                        dispatch({
-                            type: "toastOn",
-                            text: "Music added successfully !",
-                            status: 1
-                        })
-                        dispatch({ type: "filteredSongsUpdater" })
-                        e.target.value = ""
-                        setTimeout(() => dispatch({ type: "toastOff" }), 1000);
-                    });
-                    return
                 } catch (err) {
+
                     console.log(err);
-                    const { data, error } = await supabase.storage.from("users").remove(getUserInfo().user.email + `/${selectedFile.name}`)
+                    await supabase.storage.from("users").remove(getUserInfo().user.email + `/${selectedFile.name}`)
+
                     dispatch({
                         type: "toastOn",
                         text: "Check your internet connection !",
                         status: 0
                     })
+
                     e.target.value = ""
                     setTimeout(() => dispatch({ type: "toastOff" }), 2000);
-                    return;
                 }
                 finally { setIsLoading(false) }
             }
+        } else {
+            dispatch({
+                type: "toastOn",
+                text: "Please choose a file with audio format!",
+                status: 0,
+            })
+            e.target.value = ""
+            setTimeout(() => dispatch({ type: "toastOff" }), 2800);
         }
-        dispatch({
-            type: "toastOn",
-            text: "Please choose a file with audio format!",
-            status: 0,
-        })
-        e.target.value = ""
-        setTimeout(() => dispatch({ type: "toastOff" }), 2800);
     }
 
     return (
@@ -186,7 +173,18 @@ export default function Main() {
                             opacity={!isLogin() ? 1 : 0}
                             title="Add"
                         />
-                        {isLogin() && <input onChange={newSongHandler} className='hidden' id='fileUploader' type="file" />}
+                        <input
+                            onChange={newSongHandler}
+                            onClick={() => {
+                                !isLogin() && dispatch({
+                                    type: "toastOn",
+                                    text: "Please Login first",
+                                    status: 0
+                                })
+                                setTimeout(() => dispatch({ type: "toastOff" }), 2000);
+                            }}
+                            className='hidden' id='fileUploader' type={`${isLogin() ? 'file' : 'submit'}`}
+                        />
                     </label>
 
                 </div>
@@ -195,7 +193,7 @@ export default function Main() {
                     <div><MdQueueMusic className='size-9' /></div>
                     <div className='flex items-center justify-between h-4/5 text-[18px]'>
                         <p>Recently Added</p>
-                        <p>{userSongs?.length || 0}</p>
+                        <p>{(userSongs?.length ? userSongs : userSongsStorage)?.length || 0}</p>
                     </div>
                 </Link>
 
@@ -204,7 +202,7 @@ export default function Main() {
                         <div className='px-1'><IoMdMusicalNotes className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Playlist</p>
-                            <p>{userSongs?.filter(song => song.favorite).length || 0}</p>
+                            <p>{(userSongs?.length ? userSongs : userSongsStorage)?.filter(song => song.favorite).length || 0}</p>
                         </div>
                     </Link>
 
@@ -212,13 +210,13 @@ export default function Main() {
                         <div className='px-1'><FaHeart className='size-8' /></div>
                         <div className='flex items-center justify-between h-4/5 text-[18px]'>
                             <p>Favorite</p>
-                            <p>{userSongs?.filter(song => song.liked).length || 0}</p>
+                            <p>{(userSongs?.length ? userSongs : userSongsStorage)?.filter(song => song.liked).length || 0}</p>
                         </div>
                     </Link>
                 </div>
 
                 <Recently />
-                
+
             </section>
         </main>
     )
