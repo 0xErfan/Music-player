@@ -233,6 +233,7 @@ export default function MainProvider({ children }) {
         } else {
 
             const { data: defaultSongs, error } = await supabase.storage.from("default-musics").list()
+            const defaultSongsUpdate = defaultSongs.filter(songs => songs.name !== '.emptyFolderPlaceholder')
 
             if (error) {
                 dispatch({
@@ -243,8 +244,8 @@ export default function MainProvider({ children }) {
                 setTimeout(() => dispatch({ type: "toastOff" }), 3000);
                 return;
             }
-
-            dispatch({ type: "storageManage", payload: defaultSongs })
+            
+            dispatch({ type: "storageManage", payload: defaultSongsUpdate })
         }
 
     }
