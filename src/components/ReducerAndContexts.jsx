@@ -161,7 +161,7 @@ export default function MainProvider({ children }) {
                 }
 
                 dispatch({ type: "filteredSongsUpdater" })
-                dispatch({ type: "updater" })
+                // dispatch({ type: "updater" })
 
             } catch (error) {
                 dispatch({
@@ -318,7 +318,7 @@ export default function MainProvider({ children }) {
         }
 
         checkLoginStatus();
-    }, [state.updater, state.userData?.length])
+    }, [state.filteredSongsUpdater, state.userData?.length])
 
     useEffect(() => { state.currentSong?.name && fetchMusic() }, [state.currentSong?.name])
     useEffect(() => { setTimeout(() => dispatch({ type: "removeLoading" }), 1500) }, [])
