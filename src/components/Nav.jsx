@@ -37,7 +37,7 @@ export default function Nav() {
             
             <nav
                 onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")}
-                className="navbar fixed m-auto w-full max-w-[500px] bottom-0 left-0 right-0 z-40 text-primaryWhite">
+                className="navbar fixed m-auto w-full max-w-[500px] bottom-0 left-0 right-0 z-20 text-primaryWhite">
 
                 <div>
                     {
