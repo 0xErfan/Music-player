@@ -13,9 +13,9 @@ export default function Song({ name }) {
 
         <div className='flex items-center gap-2'>
 
-            <div className='h-12 flex items-center justify-center shrink-0 neoM-buttons duration-200 transition-all flex-[1]'>
+            <div className='h-12 overflow-hidden flex items-center justify-center shrink-0 neoM-buttons duration-200 transition-all flex-[1]'>
                 <svg
-                    className="  size-full bg-primary p-[8px]"
+                    className="size-full bg-primary p-[8px]"
                     width="30px"
                     height="30px"
                     viewBox="0 0 24 24"
