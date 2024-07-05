@@ -55,8 +55,8 @@ export default function Track({ cover, id, name, artistname, favorite }) {
             const arrayAfterRemove = userSongsStorage?.filter(song => song.name !== name)
 
             if (currentSong?.name == name) {
-                dispatch({ type: "pause" })
                 dispatch({ type: "changeCurrent", payload: null })
+                dispatch({ type: "pause" })
             }
 
             if (!arrayAfterRemove.length) return location.reload()
