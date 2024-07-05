@@ -20,6 +20,9 @@ function stateReducer(state, action) {
                 return { ...state }
             }
         }
+        case "clearCurrentSongs": {
+            return { ...state, isPlaying: 0, currentSong: null }
+        }
         case "newTrack": {
             return {
                 ...state,
@@ -197,7 +200,7 @@ export default function MainProvider({ children }) {
         })
     }
 
-    state.stopMusic = () => { audio.current?.pause(), audio.current = null }
+    state.stopMusic = () => { audio.current?.pause() }
 
     const fetchMusic = async () => {
 

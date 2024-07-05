@@ -17,7 +17,7 @@ export default function Track({ cover, id, name, artistname, favorite }) {
     const dispatch = useContext(StateDispatcher)
     const [showDetails, setShowDetails] = useState(false)
     const [loader, setLoader] = useState(false)
-    const { userSongsStorage, userData, currentSong, isPlaying, like, share, songIndex } = useContext(States)
+    const { userSongsStorage, userData, currentSong, isPlaying, like, share, stopMusic } = useContext(States)
 
     const playerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
@@ -45,22 +45,20 @@ export default function Track({ cover, id, name, artistname, favorite }) {
 
         try {
 
-            const { error } = await supabase.storage.from("users").remove(userData[0].user.email + `/${name}`)
+            const { data, error } = await supabase.storage.from("users").remove(userData[0].user.email + `/${name}`)
             if (error) throw new Error(error)
 
-            const { updatedSongsError } = await supabase.auth.updateUser({ data: { songs: updatedData } })
+            const { _, error: updatedSongsError } = await supabase.auth.updateUser({ data: { songs: updatedData } })
             if (updatedSongsError) throw new Error(updatedSongsError)
+
+            if (currentSong?.name == name) { stopMusic(), dispatch({ type: 'clearCurrentSongs' }), console.log('hi') }
 
             // check if songs array gets empty after removing the target music
             const arrayAfterRemove = userSongsStorage?.filter(song => song.name !== name)
 
-            if (currentSong?.name == name) {
-                dispatch({ type: "changeCurrent", payload: null })
-                dispatch({ type: "pause" })
-            }
-
+            
             if (!arrayAfterRemove.length) return location.reload()
-
+            
             dispatch({ type: "filteredSongsUpdater" })
 
             dispatch({
@@ -69,7 +67,8 @@ export default function Track({ cover, id, name, artistname, favorite }) {
                 status: 1
             })
             setTimeout(() => dispatch({ type: "toastOff" }), 3000);
-
+            
+            
         } catch (error) {
             console.log(error);
             dispatch({
