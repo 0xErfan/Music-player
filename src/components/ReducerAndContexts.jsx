@@ -265,7 +265,6 @@ export default function MainProvider({ children }) {
         recentlyPlayed = recentlyPlayed.filter(song => state.userSongsStorage.find(data => data.name == song?.name)?.name == song?.name)
 
         dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
-        console.log(recentlyPlayed)
 
     }, [state.currentSong, state.userSongsStorage])
 
