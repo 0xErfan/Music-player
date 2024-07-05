@@ -44,10 +44,10 @@ export default function Songs() {
 
     const songSearchHandler = e => {
 
-        const newSongsFilter = (userSongs?.length ? userSongs : userSongsStorage)?.filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
+        const newSongsFilter = (userMetadataSongs?.length ? userMetadataSongs : userSongsStorage)?.filter(song => song.name.toLowerCase().includes(e.target.value.toLowerCase()))
 
         setSearch(e.target.value)
-        setFilteredSongs(newSongsFilter)
+        setUserSongs(newSongsFilter)
     }
 
     return (

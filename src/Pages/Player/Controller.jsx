@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { FiRepeat } from "react-icons/fi";
 import { IoVolumeHigh } from "react-icons/io5";
 import { IoMdHeart } from "react-icons/io";
@@ -42,7 +42,7 @@ export default function Controller() {
     }, [musicMetadata])
 
     return (
-        <div className='relative'>
+        <div className='relative pb-[140px]'>
 
             <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
 

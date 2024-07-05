@@ -13,7 +13,7 @@ export default function Song({ name }) {
 
         <div className='flex items-center gap-2'>
 
-            <div className='h-12 flex items-center justify-center shrink-0 neoM-buttons duration-200 transition-all overflow-hidden flex-[1]'>
+            <div className='h-12 flex items-center justify-center shrink-0 neoM-buttons duration-200 transition-all flex-[1]'>
                 <svg
                     className="  size-full bg-primary p-[8px]"
                     width="30px"
@@ -30,7 +30,7 @@ export default function Song({ name }) {
                 </svg>
             </div>
 
-            <div className="neoM-bg flex cursor-pointer items-center justify-between gap-2 flex-[6] h-12 p-2 z-10">
+            <div className="neoM-bg flex items-center justify-between gap-2 flex-[6] h-12 p-2 z-10">
 
                 <div onClick={() => dispatch({ type: "changeCurrent", payload: getUserInfo().user.user_metadata.songs.findIndex(song => song.name == name) })}>
                     <p className='w-full max-w-5/6 line-clamp-1'>{tagRemover(name) || "Loading..."}</p>
@@ -40,15 +40,9 @@ export default function Song({ name }) {
                     {
                         isPlaying && currentSong?.name == name
                             ?
-                            <GiPauseButton
-                                onClick={() => dispatch({ type: "pause" })}
-                                className='size-6 z-20 p-1 text-[#2C2F33]'
-                            />
+                            <GiPauseButton className='size-6 z-20 p-1 text-[#2C2F33]' />
                             :
-                            <VscDebugStart
-                                onClick={() => dispatch({ type: "changeCurrent", payload: getUserInfo().user.user_metadata.songs.findIndex(song => song.name == name) })}
-                                className='size-6 p-px text-[#2C2F33]'
-                            />
+                            <VscDebugStart className='size-6 p-px text-[#2C2F33]' />
                     }
                 </div>
             </div>

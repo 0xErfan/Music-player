@@ -121,7 +121,7 @@ export default function Main() {
                 !isLoaded ? <Loader /> : null
             }
 
-            <section className='container relative overflow-y-hidden'>
+            <section className='container relative'>
 
                 <div onClick={() => setSideMenuShow(false)} className={` ${sideMenuShow ? "fixed" : "hidden"} inset-0 z-40`}></div>
 
@@ -218,7 +218,9 @@ export default function Main() {
                     </Link>
                 </div>
 
-                <Recently />
+                <div className='pb-[130px]'>
+                    <Recently />
+                </div>
 
             </section>
         </main>

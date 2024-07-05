@@ -10,7 +10,7 @@ export default function Music() {
 
     return (
         <>
-            <div className='flex flex-col neoM-buttons m-auto rounded-xl my-10 max-w-[65%] aspect-square border-[10px] overflow-hidden border-primary'>
+            <div className='flex flex-col neoM-buttons m-auto rounded-xl my-10 max-w-[60%] aspect-square border-[10px] border-primary'>
                 {
                     currentSong?.cover ? <img className='object-cover size-full rounded-[8px]' src="images/city.jpg" alt="city" />
                         :

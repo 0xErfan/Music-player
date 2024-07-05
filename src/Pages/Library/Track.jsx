@@ -18,6 +18,7 @@ export default function Track({ cover, id, name, artistname, favorite }) {
     const [showDetails, setShowDetails] = useState(false)
     const [loader, setLoader] = useState(false)
     const { userSongsStorage, userData, currentSong, isPlaying, like, share, songIndex } = useContext(States)
+
     const playerHandler = () => { dispatch({ type: "changeCurrent", payload: [...userSongsStorage].findIndex(song => song.name == name) }) }
 
     const songLikeToggler = async () => {
@@ -39,7 +40,7 @@ export default function Track({ cover, id, name, artistname, favorite }) {
             return
         }
 
-        const updatedData = [...mainUserData.songs].filter(song => song.id !== id)
+        const updatedData = getUserInfo()?.user.user_metadata.songs?.filter(song => song.id !== id)
         setLoader(true)
 
         try {
@@ -53,7 +54,11 @@ export default function Track({ cover, id, name, artistname, favorite }) {
             // check if songs array gets empty after removing the target music
             const arrayAfterRemove = userSongsStorage?.filter(song => song.name !== name)
 
-            if (currentSong && currentSong.name == name) dispatch({ type: "changeCurrent", payload: songIndex == mainUserData?.songs.length - 1 ? 0 : songIndex + 1 })
+            if (currentSong?.name == name) {
+                dispatch({ type: "pause" })
+                dispatch({ type: "changeCurrent", payload: null })
+            }
+
             if (!arrayAfterRemove.length) return location.reload()
 
             dispatch({ type: "filteredSongsUpdater" })

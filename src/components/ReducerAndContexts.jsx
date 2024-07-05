@@ -262,11 +262,11 @@ export default function MainProvider({ children }) {
             recentlyPlayed[recentlyPlayed.length - 1] = state.currentSong
         }
 
-        recentlyPlayed = recentlyPlayed.filter(song => state.userSongsStorage.find(data => data.name == song?.name)?.name == song?.name)
+        recentlyPlayed = recentlyPlayed.filter(song => state.userSongsStorage.find(data => data.name == song.name)?.name == song.name)
 
         dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
 
-    }, [state.currentSong, state.userSongsStorage])
+    }, [state.currentSong, state.userSongsStorage, state.filteredSongsUpdater])
 
     useEffect(() => {
 
