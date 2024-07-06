@@ -251,7 +251,7 @@ export default function MainProvider({ children }) {
     useEffect(() => {
 
         if (!state.recentlyPlayedSongs) return dispatch({ type: "recentlyPlayedSongsChange", payload: [] }) // if uesr remove the last music of array
-        if (!state.currentSong?.name) return
+        if (!state.currentSong?.name || !state.isPlaying) return
 
         let recentlyPlayed = [...state.recentlyPlayedSongs]
         let repeatedSong = [...recentlyPlayed].filter(song => song.name == state.currentSong?.name)
@@ -269,7 +269,7 @@ export default function MainProvider({ children }) {
 
         dispatch({ type: "recentlyPlayedSongsChange", payload: recentlyPlayed })
 
-    }, [state.currentSong, state.userSongsStorage, state.filteredSongsUpdater])
+    }, [state.currentSong, state.userSongsStorage, state.filteredSongsUpdater, state.isPlaying])
 
     useEffect(() => {
 
