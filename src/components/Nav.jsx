@@ -32,30 +32,47 @@ export default function Nav() {
     }, [musicMetadata.duration, musicMetadata.currentTime])
 
     return (
-        <>
+        <nav className='relative'>
             <Toast key="toast" text={toastData.text} status={toastData.status} loader={toastData.loader} />
-            
-            <nav
+
+            <div
+                className="navbar fixed m-auto w-full max-w-[500px] bottom-0 left-0 right-0 z-30 text-primaryWhite bg-inherit"
                 onClick={e => (!e.target.className.toString() || e.target.className.toString().includes("font")) && navigate("/player")}
-                className="navbar fixed m-auto w-full max-w-[500px] bottom-0 left-0 right-0 z-20 text-primaryWhite">
+            >
+
 
                 <div>
                     {
                         currentSong && (!activeNav.includes('/login') && !activeNav.includes('/signUp')) && (
-                            <div className='flex items-center justify-between relative px-4 py-2 text-sm inset-0 bg-black/70 gap-4'>
-                                <div
-                                    onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
-                                    className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'
-                                >{isPlaying ? <GiPauseButton /> : <VscDebugStart />}</div>
-                                <div className='flex-[8]'>
-                                    <h3 className='font-bold line-clamp-1'>{tagRemover(currentSong.name) || "?"}</h3>
-                                    <p>{currentSong.artist || "?"}</p>
+                            <>
+                                <span className='absolute right-0 left-0 z-20 w-full bg-primary h-14'></span>
+
+                                <div className='flex items-center justify-between relative px-4 rounded-t-[4px] py-2 z-40 text-sm inset-0 bg-black/70 gap-4'>
+
+                                    <div
+                                        onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}
+                                        className='flex flex-1 items-center cursor-pointer justify-center ch:size-5'>{isPlaying ? <GiPauseButton /> : <VscDebugStart />}
+                                    </div>
+
+                                    <div className='flex-[8]'>
+                                        <h3 className='font-bold line-clamp-1'>{tagRemover(currentSong.name) || "?"}</h3>
+                                        <p>{currentSong.artist || "?"}</p>
+                                    </div>
+
+                                    <div
+                                        style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }}
+                                        className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}>
+
+                                    </div>
+
+                                    <div
+                                        onClick={() => like("liked", currentSong.name)}
+                                        className={`flex flex-1 items-center cursor-pointer ${mainUserData?.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}
+                                    >
+                                        <FaHeart />
+                                    </div>
                                 </div>
-                                <div style={{ width: `${(audioData.currentTime / audioData.duration) * 100}%` }} className={`h-[2px] bg-primaryOrange absolute bottom-0 right-0 left-0 rounded-full`}></div>
-                                <div
-                                    onClick={() => like("liked", currentSong.name)}
-                                    className={`flex flex-1 items-center cursor-pointer ${mainUserData?.songs.find(song => song.liked && song.name == currentSong.name) && "text-primaryOrange"} justify-center ch:size-5`}><FaHeart /></div>
-                            </div>
+                            </>
                         )
                     }
 
@@ -93,7 +110,7 @@ export default function Nav() {
                         </ul>
                     </div>
                 </div>
-            </nav>
-        </>
+            </div>
+        </nav>
     )
 }

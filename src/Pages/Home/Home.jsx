@@ -218,7 +218,7 @@ export default function Main() {
                     </Link>
                 </div>
 
-                <div className='pb-[130px]'>
+                <div className='pb-[150px]'>
                     <Recently />
                 </div>
 

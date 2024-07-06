@@ -2,7 +2,7 @@ import React from 'react'
 
 const Loader = () => {
   return (
-      <div className={`middle absolute left-0 right-0 w-full  z-40 h-screen`}>
+      <div className={`middle fixed inset-0 w-full z-[1000] h-screen`}>
           <div className="flex items-center flex-col justify-center h-full">
               <div>
                   <div className="bar bar1"></div>

@@ -42,7 +42,7 @@ export default function Controller() {
     }, [musicMetadata])
 
     return (
-        <div className='relative pb-[140px]'>
+        <div className='relative pb-[150px]'>
 
             <div onClick={() => setShowVolume(false)} className={` ${showVolume ? "fixed" : "hidden"} inset-0 z-40`}></div>
 
