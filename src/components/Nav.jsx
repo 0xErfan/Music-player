@@ -41,7 +41,7 @@ export default function Nav() {
 
                 <div>
                     {
-                        currentSong && (
+                        currentSong && (!activeNav.includes('/login') && !activeNav.includes('/signUp')) && (
                             <div className='flex items-center justify-between relative px-4 py-2 text-sm inset-0 bg-black/70 gap-4'>
                                 <div
                                     onClick={() => dispatch({ type: isPlaying ? "pause" : "play" })}

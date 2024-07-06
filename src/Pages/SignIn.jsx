@@ -130,7 +130,7 @@ export default function SignUp() {
                         <input disabled={isSubmitting == "submmiting"} value="Submit" className='bg-primary flex-1 text-[17px] outline-none placeholder:text-red-400/65 text-red-400/65 placeholder:tracking-wide' type="submit" />
                         <div className='cursor-pointer'><MdDownloadDone className='size-6 flex-[6]' /></div>
                     </label>
-                    <div className='text-[14px]'>Already have account? <Link replace={true} to="/logIn"><span className='underline text-red-400/65'>Login here</span></Link></div>
+                    <div className='text-[14px]'>Already have account? <Link replace={true} to="/login"><span className='underline text-red-400/65'>Login here</span></Link></div>
                 </form>
             </div>
         </section>
